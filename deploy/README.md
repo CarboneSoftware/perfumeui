@@ -13,6 +13,7 @@ usuario → Cloudflare (SSL) → cloudflared → Traefik de Coolify (HTTP) → c
 | `Dockerfile` (raíz) | Etapa 1: `pnpm install` + `pnpm build`. Etapa 2: oauth2-proxy sirviendo `apps/docs/dist`. |
 | `.dockerignore` (raíz) | Deja afuera `node_modules`, `dist`, `.env*`, `.git`. |
 | `deploy/oauth2-proxy.cfg` | Config del proxy, sin secretos. |
+| `deploy/templates/error.html` | Página de error del proxy (403 sin el rol, fallas de login) con el estilo de PerfumeUI. CSS y logos inline: se sirve antes del login. |
 
 ## 1. Keycloak
 

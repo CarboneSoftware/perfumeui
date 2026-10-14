@@ -19,6 +19,7 @@ RUN pnpm build
 FROM quay.io/oauth2-proxy/oauth2-proxy:v7.15.5-alpine
 COPY --from=build /app/apps/docs/dist /srv/dist
 COPY deploy/oauth2-proxy.cfg /etc/oauth2-proxy.cfg
+COPY deploy/templates /etc/oauth2-proxy/templates
 
 EXPOSE 4180
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \

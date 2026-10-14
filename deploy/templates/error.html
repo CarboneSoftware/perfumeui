@@ -1,0 +1,277 @@
+{{define "error.html"}}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>
+      {{ if eq .StatusCode 403 }}Sin acceso{{ else }}{{.StatusCode}}
+      {{.Title}}{{ end }} · PerfumeUI
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+    />
+    <style>
+      /* Página de error de oauth2-proxy (deploy/oauth2-proxy.cfg → custom_templates_dir).
+       Se sirve antes del login, así que no puede pedir nada de dist/: el CSS y los logos
+       van inline. Los valores son copia de packages/perfumeui/src/styles/perfumeui-tokens.scss. */
+      :root {
+        color-scheme: light;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --accent-light: #1d4ed8;
+        --accent-ink: #ffffff;
+        --font-sans:
+          "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+        --radius-card: 12px;
+        --radius-input: 10px;
+        --radius-pill: 999px;
+        --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        --bg: #f7f7f7;
+        --surface: #ffffff;
+        --ink: #141414;
+        --ink-muted: #525252;
+        --ink-soft: #7a7a7a;
+        --line: rgba(16, 16, 16, 0.12);
+        --hover-layer: rgba(16, 16, 16, 0.04);
+        --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --accent-light: #acdaff;
+          --bg: #181818;
+          --surface: #202020;
+          --ink: #ffffff;
+          --ink-muted: rgba(255, 255, 255, 0.78);
+          --ink-soft: rgba(255, 255, 255, 0.62);
+          --line: rgba(255, 255, 255, 0.14);
+          --hover-layer: rgba(255, 255, 255, 0.08);
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        padding: 32px 16px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 460px;
+        padding: 40px 40px 32px;
+        background: var(--surface);
+        border-radius: var(--radius-card);
+        text-align: center;
+      }
+
+      .logo {
+        display: block;
+        height: 26px;
+        width: auto;
+        margin: 0 auto 32px;
+      }
+      .logo--on-dark {
+        display: none;
+      }
+      @media (prefers-color-scheme: dark) {
+        .logo--on-light {
+          display: none;
+        }
+        .logo--on-dark {
+          display: block;
+        }
+      }
+
+      .code {
+        display: inline-block;
+        margin-bottom: 16px;
+        padding: 4px 12px;
+        border-radius: var(--radius-pill);
+        background: var(--accent-soft);
+        color: var(--accent-light);
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+      }
+      .lead {
+        margin: 0;
+        color: var(--ink-muted);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .lead strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      details {
+        margin-top: 24px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        text-align: left;
+        font-size: 13px;
+      }
+      summary {
+        padding: 10px 14px;
+        color: var(--ink-muted);
+        cursor: pointer;
+      }
+      details pre {
+        margin: 0;
+        padding: 0 14px 12px;
+        color: var(--ink-soft);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 32px;
+      }
+      .actions > * {
+        flex: 1 1 160px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 10px 18px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-pill);
+        font: 500 14px/1.4 var(--font-sans);
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          background-color 0.2s var(--ease),
+          border-color 0.2s var(--ease);
+      }
+      .btn--primary {
+        background: var(--accent);
+        color: var(--accent-ink);
+      }
+      .btn--primary:hover {
+        background: var(--accent-hover);
+      }
+      .btn--ghost {
+        background: transparent;
+        color: var(--ink);
+        border-color: var(--line);
+      }
+      .btn--ghost:hover {
+        background: var(--hover-layer);
+      }
+      .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      footer {
+        color: var(--ink-soft);
+        font-size: 12px;
+      }
+
+      @media (max-width: 480px) {
+        .card {
+          padding: 32px 24px 24px;
+        }
+        h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <img
+        class="logo logo--on-light"
+        alt="Servaltek"
+        src="data:image/png;base64,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"
+      />
+      <img
+        class="logo logo--on-dark"
+        alt=""
+        src="data:image/png;base64,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"
+      />
+
+      <span class="code">{{.StatusCode}}</span>
+
+      {{ if eq .StatusCode 403 }}
+      <h1>No tenés acceso</h1>
+      <p class="lead">
+        Tu cuenta de Servaltek no tiene permiso para ver los docs de PerfumeUI.
+        Pedile a un admin que te asigne el rol <strong>developer</strong>.
+      </p>
+      {{ else }}
+      <h1>Algo salió mal</h1>
+      <p class="lead">
+        No pudimos completar el inicio de sesión. Probá de nuevo en un rato.
+      </p>
+      {{ end }} {{ if or .Message .RequestID }}
+      <details>
+        <summary>Más detalles</summary>
+        <pre>
+{{ if .Message }}{{.Message}}{{ end }}{{ if .RequestID }}
+ID de la solicitud: {{.RequestID}}{{ end }}</pre
+        >
+      </details>
+      {{ end }}
+
+      <div class="actions">
+        {{ if eq .StatusCode 403 }}
+        <!-- Cierra la sesión del proxy y la de Keycloak, para poder entrar con otra cuenta. -->
+        <a
+          class="btn btn--ghost"
+          href="{{.ProxyPrefix}}/sign_out?rd=https%3A%2F%2Fauth.servaltek.com%2Frealms%2Fservaltek%2Fprotocol%2Fopenid-connect%2Flogout%3Fclient_id%3Dperfumeui-docs%26post_logout_redirect_uri%3Dhttps%253A%252F%252Fperfume.servaltek.com%252F"
+          >Cambiar de cuenta</a
+        >
+        {{ end }}
+        <form method="GET" action="{{.ProxyPrefix}}/sign_in">
+          <input
+            type="hidden"
+            name="rd"
+            value="{{ if .Redirect }}{{.Redirect}}{{ else }}/{{ end }}"
+          />
+          <button type="submit" class="btn btn--primary">Reintentar</button>
+        </form>
+      </div>
+    </main>
+
+    <footer>© Servaltek · PerfumeUI</footer>
+  </body>
+</html>
+{{end}}
