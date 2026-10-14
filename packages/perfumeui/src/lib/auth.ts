@@ -2,8 +2,7 @@ import { UserManager, WebStorageStateStore } from "oidc-client-ts";
 
 export const userManager = new UserManager({
     authority: "https://auth.servaltek.com/realms/servaltek",
-    client_id: "perfumeui-docs",
-    // client_id: "servaltek-auth-dev",
+    client_id: "servaltek-frontend",
     redirect_uri: `${window.location.origin}/callback`,
     post_logout_redirect_uri: window.location.origin,
     silent_redirect_uri: `${window.location.origin}/silent-renew`,

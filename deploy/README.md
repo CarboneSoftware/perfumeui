@@ -34,7 +34,7 @@ En el realm `servaltek`:
    oauth2-proxy.
 
 Además, el `AppNavbar` de los docs hace su propio login del lado del cliente con el client
-`servaltek-auth-dev` (`packages/perfumeui/src/lib/auth.ts`). Para que ande en el dominio nuevo, ese
+`servaltek-frontend` (`packages/perfumeui/src/lib/auth.ts`). Para que ande en el dominio nuevo, ese
 client tiene que tener:
 
 - Valid redirect URIs: `https://perfume.servaltek.com/callback` y `https://perfume.servaltek.com/silent-renew`
