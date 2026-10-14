@@ -88,3 +88,8 @@ import { Button } from '@servaltek/perfumeui';
 
 El paquete publica los `.astro` fuente (no hay paso de build): el proyecto que lo consume los compila y necesita `sass`.
 Los componentes esperan los assets de marca en `/res/` y `/pics/` del `public/` del consumidor.
+
+## Deploy
+
+Los docs se publican en Coolify detrás de oauth2-proxy, y sólo entran cuentas de Keycloak con el
+rol `perfumeui-docs:viewer`. Pasos y configuración en [`deploy/README.md`](deploy/README.md).

@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/.astro
+**/*.tsbuildinfo
+.env*
+.git
+.claude
+Dockerfile
+.dockerignore
