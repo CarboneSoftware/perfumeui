@@ -92,4 +92,4 @@ Los componentes esperan los assets de marca en `/res/` y `/pics/` del `public/` 
 ## Deploy
 
 Los docs se publican en Coolify detrás de oauth2-proxy, y sólo entran cuentas de Keycloak con el
-rol `perfumeui-docs:viewer`. Pasos y configuración en [`deploy/README.md`](deploy/README.md).
+rol de realm `developer`. Pasos y configuración en [`deploy/README.md`](deploy/README.md).

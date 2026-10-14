@@ -2,7 +2,7 @@
 
 El sitio sale en `https://perfumeui.servaltek.com`, en Coolify, detrás de
 [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/): sólo entran las cuentas de
-Keycloak (`auth.servaltek.com`, realm `servaltek`) que tengan el client role `perfumeui-docs:viewer`.
+Keycloak (`auth.servaltek.com`, realm `servaltek`) que tengan el rol de realm `developer`.
 
 ```
 usuario → Traefik de Coolify (dominio + SSL) → contenedor [oauth2-proxy + dist/] ↔ Keycloak
@@ -25,11 +25,13 @@ En el realm `servaltek`:
    - Valid post logout redirect URIs: `https://perfumeui.servaltek.com/*`
    - Web origins: `https://perfumeui.servaltek.com`
 2. **Credentials** del client: copiá el *Client secret* (va en Coolify).
-3. **Roles** del client → Create role: `viewer`.
-4. **Client scopes** del client → `perfumeui-docs-dedicated` → Add mapper → By configuration → **Audience**
+3. **Client scopes** del client → `perfumeui-docs-dedicated` → Add mapper → By configuration → **Audience**
    - Included Client Audience: `perfumeui-docs` · Add to access token: **On**
-5. **Groups** → crear `perfumeui-docs-viewers` → Role mapping → Assign role → filtrar por clients →
-   `perfumeui-docs viewer`. Meté en ese grupo las cuentas que tienen que entrar.
+4. Chequeá que las cuentas que tienen que entrar tengan el rol de realm **`developer`**
+   (Users → la cuenta → Role mapping, directo o heredado de un grupo).
+5. **Client scopes** del client → pestaña *Setup*: el scope **`roles`** tiene que estar como *Default*
+   (viene así de fábrica). Es el que mete `realm_access.roles` en el access token, que es lo que mira
+   oauth2-proxy.
 
 Además, el `AppNavbar` de los docs hace su propio login del lado del cliente con el client
 `servaltek-auth-dev` (`packages/perfumeui/src/lib/auth.ts`). Para que ande en el dominio nuevo, ese
@@ -40,7 +42,7 @@ client tiene que tener:
 
 ## 2. Coolify
 
-1. **New Resource → Private Repository** (GitHub App o deploy key) → este repo, branch `master`.
+1. **New Resource → Private Repository** (GitHub App o deploy key) → este repo, branch `main`.
 2. Build Pack: **Dockerfile** · Dockerfile location: `/Dockerfile` · Base directory: `/`.
 3. Domains: `https://perfumeui.servaltek.com` · Ports exposes: `4180`.
 4. **Environment variables** (marcalas como secretas, *no* como build variables):
@@ -51,14 +53,14 @@ client tiene que tener:
    | `OAUTH2_PROXY_COOKIE_SECRET` | salida de `openssl rand -base64 32 \| tr -- '+/' '-_'` |
 
 5. Health check: el contenedor ya trae uno (`/ping`), no hace falta configurar otro.
-6. Deploy. Con *Auto Deploy* activado, cada push a `master` reconstruye.
+6. Deploy. Con *Auto Deploy* activado, cada push a `main` reconstruye.
 
 El DNS de `perfumeui.servaltek.com` tiene que apuntar (registro A) a la IP del VPS antes del
 primer deploy, para que Coolify pueda sacar el certificado de Let's Encrypt.
 
 ## Dar o sacar acceso
 
-Agregás o sacás la cuenta del grupo `perfumeui-docs-viewers` en Keycloak. Quien pierde el rol
+Le das o le sacás el rol `developer` a la cuenta en Keycloak. Quien pierde el rol
 queda afuera en, como mucho, 15 minutos (`cookie_refresh` en `oauth2-proxy.cfg`).
 
 ## Probar el contenedor en local
