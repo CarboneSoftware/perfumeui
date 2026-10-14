@@ -1,0 +1,84 @@
+---
+/**
+ * Escena de ejemplo para el slot `visual` de HeroSlide en las páginas de
+ * PerfumeUI. Solo para la documentación: arma una ventana de vidrio con las
+ * primitivas de `styles/hero-scene.css`, sin depender de los datos del sitio
+ * (las escenas reales de la home leen `data/projects` y `data/company`).
+ */
+import "@servaltek/perfumeui/styles/hero-scene.css";
+
+interface Props {
+  title: string;
+  subtitle: string;
+  pill?: string;
+  float?: { title: string; body: string };
+}
+
+const { title, subtitle, pill, float } = Astro.props;
+---
+
+<div class="scene">
+  <div class="scene__slab scene__slab--a"></div>
+  <div class="scene__slab scene__slab--b"></div>
+
+  <div class="scene-window">
+    <div class="scene-window__bar">
+      <img src="/res/stek-logotype-light.png" alt="" />
+    </div>
+    <p class="scene-window__title">{title}</p>
+    <p class="scene-window__subtitle">{subtitle}</p>
+    <div class="demo-rows">
+      <span class="demo-row"></span>
+      <span class="demo-row demo-row--short"></span>
+      <span class="demo-row"></span>
+    </div>
+  </div>
+
+  {
+    float && (
+      <div class="scene-float demo-float">
+        <span class="scene-tile demo-tile">✓</span>
+        <span class="scene-float__text">
+          <strong>{float.title}</strong>
+          <span>{float.body}</span>
+        </span>
+      </div>
+    )
+  }
+
+  {pill && <span class="scene-pill demo-pill">{pill}</span>}
+</div>
+
+<style>
+  .demo-rows {
+    display: grid;
+    gap: 1.4cqw;
+  }
+
+  .demo-row {
+    height: 4.4cqw;
+    border-radius: 1.6cqw;
+    background: #ffffff;
+    border: 1px solid rgba(16, 17, 20, 0.06);
+  }
+
+  .demo-row--short {
+    width: 70%;
+  }
+
+  .demo-float {
+    left: 0;
+    bottom: 14%;
+  }
+
+  .demo-tile {
+    background: var(--accent);
+    font-size: 3cqw;
+    font-weight: 700;
+  }
+
+  .demo-pill {
+    right: 6%;
+    bottom: 4%;
+  }
+</style>

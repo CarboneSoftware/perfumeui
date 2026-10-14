@@ -1,0 +1,166 @@
+---
+/**
+ * Primitiva de botón. TODO CTA de la landing pasa por acá.
+ *
+ * Variantes:
+ *  - primary  → acento sólido (acción principal en cualquier fondo)
+ *  - outline  → borde oscuro sobre fondo claro
+ *  - glass    → translúcido con borde blanco, sobre foto o fondo oscuro
+ *  - light    → blanco sólido con tinta oscura, sobre foto
+ *  - ghost    → sin borde ni fondo
+ */
+interface Props {
+  href?: string;
+  variant?: "primary" | "outline" | "glass" | "light" | "ghost";
+  size?: "sm" | "md" | "lg";
+  /**
+   * Etiqueta a renderizar. Por defecto `a` si hay href, si no `button`.
+   * Usar `span` cuando el botón vive dentro de otro `<a>` (no se pueden anidar).
+   */
+  as?: "a" | "button" | "span";
+  class?: string;
+  id?: string;
+}
+
+const { href, variant = "primary", size = "md", as, class: className, id } = Astro.props;
+const Tag = as ?? (href ? "a" : "button");
+---
+
+<Tag
+  id={id}
+  class:list={["btn", `btn--${variant}`, `btn--${size}`, className]}
+  href={href}
+>
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1;
+    border: 1px solid transparent;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+    box-sizing: border-box;
+    transition:
+      background-color var(--t-base) ease,
+      border-color var(--t-base) ease,
+      color var(--t-base) ease,
+      box-shadow var(--t-base) ease,
+      transform 0.1s ease;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  /* ---- Tamaños (fluidos) ---- */
+  .btn--sm {
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .btn--md {
+    padding: 0.85rem 1.6rem;
+    font-size: 0.95rem;
+  }
+
+  .btn--lg {
+    padding: clamp(0.95rem, 1vw + 0.7rem, 1.05rem)
+      clamp(1.6rem, 2vw + 1rem, 2rem);
+    font-size: clamp(1rem, 0.4vw + 0.95rem, 1.05rem);
+  }
+
+  /* ---- Variantes ----
+     `primary`, `outline` y `ghost` resuelven contra los tokens compartidos.
+     `glass` y `light` van siempre sobre una foto, así que mantienen sus
+     literales blancos: no dependen de la superficie del tema. */
+  .btn--primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  .btn--primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn--primary:active {
+    transform: translateY(0);
+  }
+
+  /* Sobre fondo claro */
+  .btn--outline {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+    backdrop-filter: blur(20px);
+  }
+
+  .btn--outline:hover {
+    background: var(--hover-layer);
+    border-color: var(--ink-soft);
+  }
+
+  /* Sobre foto o fondo oscuro */
+  .btn--glass {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .btn--glass:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.55);
+    transform: translateY(-1px);
+  }
+
+  /* Blanco sólido sobre foto */
+  .btn--light {
+    background: #ffffff;
+    color: #0c0c0c;
+    border-color: #ffffff;
+  }
+
+  .btn--light:hover {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(255, 255, 255, 0.88);
+    transform: translateY(-1px);
+  }
+
+  /* Sin borde */
+  .btn--ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: transparent;
+  }
+
+  .btn--ghost:hover {
+    background: var(--hover-layer);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn,
+    .btn:hover,
+    .btn:active {
+      transform: none;
+    }
+  }
+</style>

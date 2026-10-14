@@ -1,0 +1,196 @@
+---
+/**
+ * Cabecera estándar de sección: kicker + título + bajada (+ link opcional).
+ *
+ * Es la única fuente de la escala tipográfica de los títulos: si un título
+ * necesita otro tamaño, se agrega una talla acá, no un `clamp()` suelto en
+ * la sección.
+ */
+import type { Align, CtaLink, HeadingSize, Tone } from "../types";
+import TextLink from "./TextLink.astro";
+
+interface Props {
+  kicker?: string;
+  title: string;
+  body?: string;
+  /** sm = FAQ · md = secciones · lg = declaración · xl = cabecera de página. */
+  size?: HeadingSize;
+  align?: Align;
+  as?: "h1" | "h2" | "h3";
+  tone?: Tone;
+  /** Link secundario; en `align="start"` se alinea a la derecha del título. */
+  link?: CtaLink;
+  /** Separación con el contenido que sigue. */
+  gap?: "none" | "sm" | "md";
+  /** Ancho máximo del bloque de texto (ej: "60ch", "900px"). */
+  maxWidth?: string;
+}
+
+const {
+  kicker,
+  title,
+  body,
+  size = "md",
+  align = "start",
+  as: Tag = "h2",
+  tone = "light",
+  link,
+  gap = "md",
+  maxWidth,
+} = Astro.props;
+---
+
+<header
+  class:list={[
+    "heading",
+    `heading--${size}`,
+    `heading--${align}`,
+    `heading--${tone}`,
+    `heading--gap-${gap}`,
+    { "heading--split": !!link },
+  ]}
+>
+  <div class="heading__text" style={maxWidth ? `max-width:${maxWidth}` : undefined}>
+    {kicker && <span class="heading__kicker">{kicker}</span>}
+    <Tag class="heading__title">{title}</Tag>
+    {body && <p class="heading__body">{body}</p>}
+  </div>
+
+  {
+    link && (
+      <div class="heading__link">
+        <TextLink href={link.href} tone={tone}>
+          {link.label}
+        </TextLink>
+      </div>
+    )
+  }
+</header>
+
+<style lang="scss">
+  .heading {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .heading__text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  /* Título + link en la misma línea, el link pegado a la derecha. */
+  .heading--split {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .heading--center {
+    align-items: center;
+    text-align: center;
+
+    .heading__text {
+      align-items: center;
+    }
+  }
+
+  /* ---- Separación con el contenido que sigue ---- */
+  .heading--gap-none {
+    margin-bottom: 0;
+  }
+
+  .heading--gap-sm {
+    margin-bottom: 24px;
+
+    @media screen and (min-width: 768px) {
+      margin-bottom: 32px;
+    }
+  }
+
+  .heading--gap-md {
+    margin-bottom: 40px;
+
+    @media screen and (min-width: 1085px) {
+      margin-bottom: 56px;
+    }
+  }
+
+  /* ---- Piezas ---- */
+  .heading__kicker {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .heading__title {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+
+  .heading__body {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-muted);
+    max-width: 60ch;
+  }
+
+  /* ---- Escala ---- */
+  .heading--sm .heading__title {
+    font-size: clamp(24px, 2.6vw, 30px);
+  }
+
+  .heading--md .heading__title {
+    font-size: clamp(30px, 4vw, 46px);
+  }
+
+  .heading--lg .heading__title {
+    font-size: clamp(34px, 4.6vw, 68px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .heading--xl .heading__title {
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .heading--lg .heading__body,
+  .heading--xl .heading__body {
+    font-size: 19px;
+    line-height: 1.6;
+    max-width: 64ch;
+  }
+
+  /* ---- Sobre fondo oscuro ---- */
+  .heading--dark {
+    .heading__kicker {
+      color: var(--ink-on-dark-soft);
+    }
+
+    .heading__title {
+      color: var(--ink-on-dark);
+    }
+
+    .heading__body {
+      color: var(--ink-on-dark-muted);
+    }
+  }
+
+  @media screen and (max-width: 639px) {
+    .heading--split {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

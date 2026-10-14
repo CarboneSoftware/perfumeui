@@ -1,0 +1,609 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import Button from "@servaltek/perfumeui/components/ui/Button.astro";
+
+const variants = [
+  { name: "primary", stage: "light", label: "Primary", body: "Acento sólido. La acción principal, en cualquier fondo." },
+  { name: "outline", stage: "light", label: "Outline", body: "Borde oscuro sobre fondo claro. Acción secundaria." },
+  { name: "glass", stage: "photo-a", label: "Glass", body: "Translúcido con borde blanco, sobre foto o fondo oscuro." },
+  { name: "light", stage: "photo-b", label: "Light", body: "Blanco sólido con tinta oscura. Máximo contraste sobre foto." },
+  { name: "ghost", stage: "light", label: "Ghost", body: "Sin borde ni fondo. Para la acción que no compite con nada." },
+];
+
+const sizes = [
+  { name: "sm", spec: ".55rem 1rem" },
+  { name: "md", spec: ".85rem 1.6rem" },
+  { name: "lg", spec: "fluido" },
+];
+
+const props = [
+  { name: "href", type: "string", default: "—", body: "Si viene, renderiza <a>. Si no, <button>." },
+  { name: "variant", type: '"primary" | "outline" | "glass" | "light" | "ghost"', default: '"primary"', body: "primary, outline y ghost resuelven contra los tokens; glass y light van sobre foto." },
+  { name: "size", type: '"sm" | "md" | "lg"', default: '"md"', body: "lg es fluido con clamp(); sm y md son fijos." },
+  { name: "as", type: '"a" | "button" | "span"', default: '"a" si hay href', body: "span cuando el botón vive dentro de otro <a> — los anchors no se anidan." },
+  { name: "class", type: "string", default: "—", body: "Clase extra sobre .btn, para posicionarlo desde el padre." },
+];
+---
+
+<PerfumeUILayout
+  title="Button"
+  description="La primitiva de botón de PerfumeUI: cinco variantes, tres tamaños, una regla — nunca escribas a mano un link con forma de píldora."
+>
+  <nav class="breadcrumb" aria-label="Ubicación">
+    <span>Componentes</span>
+    <span class="breadcrumb__sep">/</span>
+    <span>Primitivas</span>
+    <span class="breadcrumb__sep">/</span>
+    <span class="breadcrumb__current">Button</span>
+  </nav>
+
+  <h1 class="page-title">Button</h1>
+  <p class="page-lead">
+    Todo CTA de un producto Servaltek pasa por acá. Cinco variantes, tres
+    tamaños y una regla: nunca escribas a mano un link con forma de píldora.
+  </p>
+
+  <section class="playground">
+    <div class="playground__stage" id="pui-stage" data-stage="light">
+      <Button id="pui-demo-btn" variant="primary" size="md">Primary</Button>
+    </div>
+
+    <div class="playground__controls">
+      <div class="control-group">
+        <span class="control-group__label">Variante</span>
+        <div class="chips" data-chip-group="variant">
+          {variants.map((v) => (
+            <button type="button" class="chip" data-value={v.name} aria-pressed={v.name === "primary" ? "true" : "false"}>
+              {v.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-group__label">Tamaño</span>
+        <div class="chips" data-chip-group="size">
+          {sizes.map((s) => (
+            <button type="button" class="chip" data-value={s.name} aria-pressed={s.name === "md" ? "true" : "false"}>
+              {s.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-group__label">Fondo</span>
+        <div class="chips" data-chip-group="stage">
+          <button type="button" class="chip" data-value="light" aria-pressed="true">claro</button>
+          <button type="button" class="chip" data-value="soft" aria-pressed="false">suave</button>
+          <button type="button" class="chip" data-value="dark" aria-pressed="false">oscuro</button>
+          <button type="button" class="chip" data-value="photo-a" aria-pressed="false">foto</button>
+        </div>
+      </div>
+
+      <div class="control-group control-group--grow">
+        <span class="control-group__label">Etiqueta</span>
+        <input type="text" id="pui-label-input" class="label-input" value="Primary" />
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Variantes</h2>
+    <p class="block__body">
+      primary, outline y ghost resuelven contra los tokens compartidos. glass
+      y light van siempre sobre una foto, así que mantienen sus literales
+      blancos: no dependen de la superficie del tema.
+    </p>
+
+    <div class="variant-grid">
+      {
+        variants.map((v) => (
+          <div class="variant-card">
+            <div class={`variant-card__stage variant-card__stage--${v.stage}`}>
+              <Button as="span" variant={v.name as any} size="md">
+                {v.label}
+              </Button>
+            </div>
+            <div class="variant-card__body">
+              <span class="mono">{v.name}</span>
+              <p class="variant-card__text">{v.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Tamaños</h2>
+    <p class="block__body">
+      lg es fluido: crece con el viewport hasta 1.05rem de tipografía y 2rem
+      de padding lateral. sm y md son fijos.
+    </p>
+
+    <div class="size-box">
+      {
+        sizes.map((s) => (
+          <div class="size-item">
+            <Button as="span" variant="primary" size={s.name as any}>
+              {s.name}
+            </Button>
+            <span class="mono mono--faint">{s.name} · {s.spec}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Props</h2>
+    <div class="props-table">
+      <div class="props-table__head">
+        <span>Prop</span>
+        <span>Tipo</span>
+        <span>Default</span>
+      </div>
+      {
+        props.map((p, i) => (
+          <div class={`props-table__row ${i === props.length - 1 ? "props-table__row--last" : ""}`}>
+            <span class="mono">{p.name}</span>
+            <div>
+              <span class="mono mono--accent">{p.type}</span>
+              <p class="props-table__desc">{p.body}</p>
+            </div>
+            <span class="mono mono--faint">{p.default}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Hacé / No hagas</h2>
+    <p class="block__body">
+      Las dos decisiones que más se equivocan al integrar el botón.
+    </p>
+
+    <div class="dodont-grid">
+      <div class="dodont-card">
+        <div class="dodont-card__media dodont-card__media--photo-a">
+          <Button as="span" variant="light" size="sm">Light</Button>
+        </div>
+        <p class="dodont-card__label dodont-card__label--do">Hacé</p>
+        <p class="dodont-card__text">
+          Sobre foto usá <span class="mono">light</span> o
+          <span class="mono">glass</span>: son las dos variantes que no
+          dependen de la superficie del tema.
+        </p>
+      </div>
+
+      <div class="dodont-card">
+        <div class="dodont-card__media dodont-card__media--photo-a">
+          <Button as="span" variant="outline" size="sm">Outline</Button>
+        </div>
+        <p class="dodont-card__label dodont-card__label--dont">No hagas</p>
+        <p class="dodont-card__text">
+          <span class="mono">outline</span> sobre foto: su borde y su tinta
+          salen de los tokens del tema claro y desaparecen.
+        </p>
+      </div>
+
+      <div class="dodont-card">
+        <div class="dodont-card__media dodont-card__media--light">
+          <a class="dodont-noop-link" href="#"><Button as="span" variant="primary" size="sm">Continuar</Button></a>
+        </div>
+        <p class="dodont-card__label dodont-card__label--do">Hacé</p>
+        <p class="dodont-card__text">
+          Si el botón vive dentro de otro <span class="mono">&lt;a&gt;</span>
+          pasale <span class="mono">as="span"</span>. Los anchors no se anidan.
+        </p>
+      </div>
+
+      <div class="dodont-card">
+        <div class="dodont-card__media dodont-card__media--light">
+          <span class="fake-button">Enviar</span>
+        </div>
+        <p class="dodont-card__label dodont-card__label--dont">No hagas</p>
+        <p class="dodont-card__text">
+          Un link con estilos propios. Radio, peso y padding se van del
+          sistema al primer copy-paste.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  .breadcrumb {
+    padding-top: 40px;
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .breadcrumb__sep {
+    margin: 0 6px;
+    color: var(--line);
+  }
+
+  .breadcrumb__current {
+    color: var(--ink);
+  }
+
+  .page-title {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--ink);
+    margin: 0 0 20px;
+  }
+
+  .page-lead {
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    max-width: 60ch;
+    margin: 0 0 56px;
+  }
+
+  .block {
+    margin-bottom: 80px;
+  }
+
+  .block__title {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+
+  .block__body {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .mono--faint {
+    color: var(--ink-muted);
+    font-size: 12px;
+  }
+
+  .mono--accent {
+    color: var(--accent-text);
+    font-size: 12px;
+    word-break: break-word;
+  }
+
+  /* ---- Playground ---- */
+  .playground {
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    overflow: hidden;
+    margin-bottom: 80px;
+  }
+
+  .playground__stage {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+  }
+
+  .playground__stage[data-stage="light"] {
+    background: var(--stage, var(--surface));
+  }
+
+  .playground__stage[data-stage="soft"] {
+    background: var(--surface-alt);
+  }
+
+  .playground__stage[data-stage="dark"] {
+    background: var(--band-bg, #101114);
+  }
+
+  .playground__stage[data-stage="photo-a"] {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)),
+      url("/pics/lau2-ph.png") center / cover;
+  }
+
+  .playground__controls {
+    padding: 24px 24px 26px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .control-group--grow {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .control-group__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    all: unset;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 13px;
+    border-radius: var(--radius-pill);
+    background: var(--stage, var(--surface));
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .chip[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .label-input {
+    box-sizing: border-box;
+    border-radius: var(--radius-input);
+    border: 1px solid var(--line);
+    background: var(--stage, var(--surface));
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+    padding: 9px 12px;
+  }
+
+  /* ---- Variantes ---- */
+  .variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .variant-card {
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .variant-card__stage {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .variant-card__stage--light {
+    background: var(--stage, var(--surface));
+  }
+
+  .variant-card__stage--photo-a {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)),
+      url("/pics/lau2-ph.png") center / cover;
+  }
+
+  .variant-card__stage--photo-b {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.35)),
+      url("/pics/tile-a.png") center / cover;
+  }
+
+  .variant-card__body {
+    padding: 18px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .variant-card__text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  /* ---- Tamaños ---- */
+  .size-box {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    padding: 48px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 28px;
+  }
+
+  .size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* ---- Props ---- */
+  .props-table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .props-table__head {
+    display: grid;
+    grid-template-columns: minmax(100px, 140px) minmax(0, 1fr) minmax(90px, 140px);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    padding: 0 4px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .props-table__row {
+    display: grid;
+    grid-template-columns: minmax(100px, 140px) minmax(0, 1fr) minmax(90px, 140px);
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+    gap: 12px;
+  }
+
+  .props-table__row--last {
+    border-bottom: none;
+  }
+
+  .props-table__desc {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin: 5px 0 0;
+  }
+
+  /* ---- Hacé/No hagas ---- */
+  .dodont-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .dodont-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .dodont-card__media {
+    height: 140px;
+    border-radius: var(--radius-media);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .dodont-card__media--photo-a {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)),
+      url("/pics/lau2-ph.png") center / cover;
+  }
+
+  .dodont-card__media--light {
+    background: var(--stage, var(--surface));
+  }
+
+  .dodont-card__label {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .dodont-card__label--do {
+    color: var(--accent-text);
+  }
+
+  .dodont-card__label--dont {
+    color: var(--ink-muted);
+  }
+
+  .dodont-card__text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  /* A propósito fuera del sistema: no un token de radio, no la fuente
+     var(--font-sans), no --t-base. Es el ejemplo de "No hagas". */
+  .fake-button {
+    display: inline-flex;
+    font-family: system-ui;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 20px;
+    border-radius: 8px;
+    background: var(--ink);
+    color: var(--bg);
+  }
+</style>
+
+<script>
+  const stage = document.getElementById("pui-stage");
+  const demoBtn = document.getElementById("pui-demo-btn");
+  const labelInput = document.getElementById(
+    "pui-label-input",
+  ) as HTMLInputElement | null;
+
+  const setPressed = (group: HTMLElement, value: string) => {
+    group.querySelectorAll<HTMLButtonElement>(".chip").forEach((chip) => {
+      chip.setAttribute(
+        "aria-pressed",
+        String(chip.dataset.value === value),
+      );
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-chip-group]").forEach((group) => {
+    const kind = group.dataset.chipGroup;
+    group.addEventListener("click", (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLButtonElement>(".chip");
+      if (!chip || !demoBtn) return;
+      const value = chip.dataset.value!;
+      setPressed(group, value);
+
+      if (kind === "variant") {
+        Array.from(demoBtn.classList)
+          .filter((c) => /^btn--(primary|outline|glass|light|ghost)$/.test(c))
+          .forEach((c) => demoBtn.classList.remove(c));
+        demoBtn.classList.add(`btn--${value}`);
+      } else if (kind === "size") {
+        Array.from(demoBtn.classList)
+          .filter((c) => /^btn--(sm|md|lg)$/.test(c))
+          .forEach((c) => demoBtn.classList.remove(c));
+        demoBtn.classList.add(`btn--${value}`);
+      } else if (kind === "stage" && stage) {
+        stage.dataset.stage = value;
+      }
+    });
+  });
+
+  labelInput?.addEventListener("input", () => {
+    if (demoBtn) demoBtn.textContent = labelInput.value || "";
+  });
+
+  // Ejemplo ilustrativo de "Hacé": un <a> real envolviendo un Button
+  // as="span" — el href="#" es de utilería, no debe navegar.
+  document
+    .querySelector(".dodont-noop-link")
+    ?.addEventListener("click", (e) => e.preventDefault());
+</script>

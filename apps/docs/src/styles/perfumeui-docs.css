@@ -1,0 +1,419 @@
+/**
+ * Estilos compartidos de las páginas de PerfumeUI.
+ *
+ * Vive como CSS global (importado una sola vez en PerfumeUILayout) porque lo
+ * usan las páginas — no un componente — y el `<style>` de Astro es scoped por
+ * archivo: sin esto cada página de componente repetiría el mismo bloque.
+ *
+ * Todo acá adentro va prefijado `pui-`. La página del Button es anterior a
+ * este archivo y trae su propia copia scoped con nombres sin prefijo; no se
+ * pisan.
+ */
+
+/* ---- Tema (igual que la guía de Fluxenture) ----
+   Los tokens se invierten solos con data-wtl-theme en <html>. Acá solo va el
+   fondo de la página (global.css apunta a --color-bg, que no existe en los
+   tokens) y el acento para texto, que en oscuro pasa a --accent-light para
+   que los textos azules lean sobre negro. */
+:root {
+  --accent-text: var(--accent);
+}
+
+:root[data-wtl-theme="dark"] {
+  --accent-text: var(--accent-light);
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* ---- Ajustes del AppNavbar en celulares angostos (de la guía de
+   Fluxenture). Con el switch de tema son tres botones a la derecha. Los
+   estilos del navbar son scoped, por eso el !important. ---- */
+nav .title-nav {
+  white-space: nowrap;
+}
+
+@media (max-width: 479px) {
+  nav .title-nav {
+    font-size: 15px !important;
+  }
+  nav .content .wrap {
+    gap: 4px !important;
+  }
+  nav .content .wrap .pipe {
+    margin: 0 8px !important;
+  }
+  nav .content .wrap .logo-img {
+    height: 18px !important;
+  }
+}
+
+@media (max-width: 399px) {
+  nav {
+    padding-left: 12px !important;
+    padding-right: 4px !important;
+  }
+  nav .title-nav {
+    font-size: 14px !important;
+  }
+  nav .content .wrap .pipe {
+    margin: 0 6px !important;
+  }
+  nav .content .wrap .logo-img {
+    height: 16px !important;
+  }
+  nav .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* ---- Cabecera de página ---- */
+.pui-breadcrumb {
+  padding-top: 40px;
+  font-size: 14px;
+  color: var(--ink-muted);
+  margin-bottom: 24px;
+}
+
+.pui-breadcrumb__sep {
+  margin: 0 6px;
+  color: var(--line);
+}
+
+.pui-breadcrumb__current {
+  color: var(--ink);
+}
+
+.pui-title {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+
+.pui-lead {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 60ch;
+  margin: 0 0 56px;
+}
+
+/* ---- Bloques ---- */
+.pui-block {
+  margin-bottom: 80px;
+}
+
+.pui-block__title {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.pui-block__body {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  max-width: 62ch;
+  margin: 0 0 32px;
+}
+
+/* ---- Código en línea ---- */
+.pui-mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.pui-mono--faint {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.pui-mono--accent {
+  color: var(--accent-text);
+  font-size: 12px;
+  word-break: break-word;
+}
+
+/* ---- Marco de ejemplo ---- */
+.pui-preview {
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.pui-preview + .pui-preview {
+  margin-top: 24px;
+}
+
+.pui-preview__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  box-sizing: border-box;
+}
+
+.pui-preview__stage--flush {
+  display: block;
+  padding: 0;
+}
+
+.pui-preview__stage--light {
+  background: var(--stage, var(--surface));
+}
+
+.pui-preview__stage--soft {
+  background: var(--surface-alt);
+}
+
+.pui-preview__stage--dark {
+  background: var(--surface-dark);
+}
+
+.pui-preview__stage--photo {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)),
+    url("/pics/lau2-ph.png") center / cover;
+}
+
+.pui-preview__foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px 16px;
+  border-top: 1px solid var(--line);
+}
+
+.pui-preview__caption {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0;
+  max-width: 62ch;
+}
+
+/* ---- Grillas ---- */
+.pui-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.pui-grid--wide {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+
+.pui-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---- Tabla de props ---- */
+.pui-props {
+  display: flex;
+  flex-direction: column;
+}
+
+.pui-props__head,
+.pui-props__row {
+  display: grid;
+  grid-template-columns: minmax(100px, 150px) minmax(0, 1fr) minmax(90px, 150px);
+  gap: 12px;
+}
+
+.pui-props__head {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  padding: 0 4px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pui-props__row {
+  padding: 18px 4px;
+  border-bottom: 1px solid var(--line);
+  align-items: start;
+}
+
+.pui-props__row:last-child {
+  border-bottom: none;
+}
+
+.pui-props__desc {
+  font-size: 14px;
+  color: var(--ink-muted);
+  margin: 5px 0 0;
+}
+
+/* ---- Hacé / No hagas ---- */
+.pui-dodont {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.pui-dodont__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pui-dodont__media {
+  min-height: 140px;
+  border-radius: var(--radius-media);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-bottom: 6px;
+  background: var(--stage, var(--surface));
+}
+
+.pui-dodont__media--dark {
+  background: var(--surface-dark);
+}
+
+.pui-dodont__media--photo {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)),
+    url("/pics/lau2-ph.png") center / cover;
+}
+
+.pui-dodont__label {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.pui-dodont__label--do {
+  color: var(--accent-text);
+}
+
+.pui-dodont__label--dont {
+  color: var(--ink-muted);
+}
+
+.pui-dodont__text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* ---- Bloque de código ---- */
+.pui-code {
+  margin: 0;
+  padding: 20px 22px;
+  border-radius: var(--radius-card);
+  background: var(--surface-dark);
+  color: var(--ink-on-dark);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.pui-code + .pui-block__body,
+.pui-preview + .pui-code,
+.pui-code + .pui-preview {
+  margin-top: 24px;
+}
+
+/* ---- Tarjeta de texto (comportamientos, reglas) ---- */
+.pui-card {
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 22px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pui-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+
+.pui-card__text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* ---- Lista con viñetas dentro de un bloque ---- */
+.pui-list {
+  margin: 0 0 32px;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  max-width: 70ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+.pui-list strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---- Marco redimensionable (demo en iframe) ---- */
+.pui-frame {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  height: 560px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg);
+  transition: width 0.25s ease;
+}
+
+.pui-frame-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pui-chip {
+  all: unset;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--stage, var(--surface));
+  color: var(--ink-muted);
+  border: 1px solid var(--line);
+}
+
+.pui-chip[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.pui-chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

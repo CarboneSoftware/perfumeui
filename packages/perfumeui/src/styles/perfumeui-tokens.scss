@@ -1,0 +1,220 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// Witlens · base design tokens
+//
+// CANONICAL COPY: witlens-landing/src/styles/witlens-tokens.scss
+// Vendored byte-identical into witlens-app and witlens-event. Do NOT edit a
+// copy in place — edit the canonical file and copy it over. In those two repos
+// `pnpm tokens:check` diffs the copy against this file.
+//
+// Scope: colour, typography, radii/spacing and the light/dark logo — the values
+// the three frontends must agree on so a user crossing witlens.studio →
+// app.witlens.studio → the event gallery never sees a second brand. This is NOT
+// a design system: no component classes live here.
+//
+// Theming is by attribute, so a dark section can sit inside a light page (the
+// landing) *and* a whole app can be dark (witlens-event) from one file:
+//
+//   <html>                        → light (the default)
+//   <html data-wtl-theme="dark">  → dark, app-wide
+//   <nav data-wtl-theme="dark">   → dark, for that subtree only
+//
+// Keep the dark block last: `[data-wtl-theme='dark']` ties with
+// `[data-wtl-theme='light']` on specificity and wins on source order.
+//
+// The two themes are also exposed as mixins, for the case where an app is
+// entirely one theme and needs it on a plain selector — Angular's critical-CSS
+// inliner does not carry attribute-selector rules on <html> into the inlined
+// block, so a dark app that relied on the attribute alone would paint the light
+// palette until the deferred stylesheet lands:
+//
+//   @use './styles/perfumeui-tokens' as tokens;
+//   :root { @include tokens.dark; }
+// ═══════════════════════════════════════════════════════════════════════════
+
+@mixin base {
+  /* ── Brand accent — identical in both themes ─────────────────────────── */
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-light: #509cff;
+  --accent-ink: #ffffff; /* text/icons on an accent fill */
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  --font-sans: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-icons: "Material Symbols Outlined";
+
+  /* ── Shape ───────────────────────────────────────────────────────────── */
+  --radius-input: 10px;
+  --radius-card: 18px;
+  --radius-media: 20px;
+  --radius-pill: 999px;
+  --radius-btn: var(--radius-pill);
+
+  /* ── Spacing (4px base) ──────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --btn-pad-y: 10px;
+  --btn-pad-x: 18px;
+
+  /* ── Motion ──────────────────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  // The two apps run wide (gallery + admin panel). The marketing site narrows
+  // this to 1200px in its own global.scss — a deliberate local override.
+  --content-max: 1600px;
+
+  /* ── Logo ────────────────────────────────────────────────────────────── */
+  // The same two SVGs ship at /res/ in all three repos. `--logo-src` resolves
+  // to whichever reads correctly on the current theme's surface; for a brand
+  // link prefer a real <img> with alt text and pick the file in markup.
+  --logo-on-light: url("/res/wt-logo-dark.svg");
+  --logo-on-dark: url("/res/wt-logo-light.svg");
+
+  /* ── Motion (theme-independent) ──────────────────────────────────────── */
+  --t-base: 0.2s;
+
+  /* ── Section rhythm (theme-independent) ─────────────────────────────────
+     Consumed by Section.astro/CardScroller.astro. `--gutter` is a single
+     responsive value (no paired -lg token) since CardScroller has no
+     breakpoint of its own to swap it at. */
+  --section-py: 64px;
+  --section-py-lg: 96px;
+  --section-py-sm: 40px;
+  --section-py-sm-lg: 64px;
+  --section-px: 20px;
+  --section-px-lg: 56px;
+  --gutter: clamp(20px, 5vw, 56px);
+  --content-narrow: 860px;
+
+  /* ── Accent wash (theme-independent, same accent both themes) ──────────── */
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+
+  /* ── "On dark" ink/surface (theme-independent) ───────────────────────────
+     For a Section surface="dark" band inside an otherwise light *or* dark
+     page — always dark, regardless of the ambient `data-wtl-theme`. Kept as
+     literals on purpose, same reasoning as Button's `glass`/`light` variants:
+     they don't resolve against the surface they sit on. */
+  --surface-dark: #111111;
+  --ink-on-dark: #ffffff;
+  --ink-on-dark-soft: rgba(255, 255, 255, 0.7);
+  --ink-on-dark-muted: rgba(255, 255, 255, 0.55);
+  --line-on-dark: rgba(255, 255, 255, 0.14);
+}
+
+/* ── LIGHT (default) ─────────────────────────────────────────────────────── */
+@mixin light {
+  color-scheme: light;
+
+  // Neutral ramp: 100 is the base surface, 1000 the far end (max contrast
+  // against it). The dark theme inverts the lightness, not the roles.
+  --gs-100: #ffffff;
+  --gs-200: #f7f7f7;
+  --gs-300: #ececec;
+  --gs-400: #dfdfdf;
+  --gs-500: #c5c5c5;
+  --gs-600: #9b9b9b;
+  --gs-700: #7a7a7a;
+  --gs-800: #5f5f5f;
+  --gs-900: #333333;
+  --gs-1000: #111111;
+
+  --font-color-100: #141414; /* primary ink      */
+  --font-color-200: #7a7a7a; /* faint / metadata */
+  --font-color-300: #525252; /* body / subtitles */
+
+  --border: rgba(16, 16, 16, 0.12);
+  --hover-layer: rgba(16, 16, 16, 0.04);
+  --active-layer: rgba(16, 16, 16, 0.09);
+  --navbar-bg: rgba(255, 255, 255, 0.82);
+  --scrim: rgba(236, 236, 236, 0.82);
+
+  --logo-src: var(--logo-on-light);
+
+  // Aliases the landing's components were already written against.
+  --fg: var(--font-color-100);
+  --fg-muted: var(--font-color-200);
+  --bg: var(--gs-100);
+
+  // More aliases (Button/Section/SectionHeading/TextLink) — same idea, `--ink`
+  // reads as the "generic content on this surface" name that those components
+  // already shipped with, `--font-color-N` is the canonical source of truth.
+  --ink: var(--font-color-100);
+  --ink-soft: var(--font-color-200);
+  --ink-muted: var(--font-color-300);
+  --line: var(--border);
+  --surface: var(--gs-100);
+  --surface-subtle: var(--gs-200);
+  --surface-muted: var(--gs-300);
+  --surface-alt: var(--gs-400);
+
+  --aside-item-hover: var(--gs-300);
+}
+
+/* ── DARK ────────────────────────────────────────────────────────────────── */
+@mixin dark {
+  color-scheme: dark;
+
+  --gs-100: #000000;
+  --gs-200: #131313;
+  --gs-300: #1c1c1c;
+  --gs-400: #282828;
+  --gs-500: #383838;
+  --gs-600: #484848;
+  --gs-700: #585858;
+  --gs-800: #686868;
+  --gs-900: #787878;
+  --gs-1000: #f5f5f5;
+
+  --font-color-100: #ffffff;
+  --font-color-200: rgba(255, 255, 255, 0.62);
+  --font-color-300: rgba(255, 255, 255, 0.78);
+
+  --border: rgba(255, 255, 255, 0.14);
+  --hover-layer: rgba(255, 255, 255, 0.08);
+  --active-layer: rgba(255, 255, 255, 0.16);
+  --navbar-bg: #242424cc;
+  --scrim: rgba(0, 0, 0, 0.82);
+
+  --logo-src: var(--logo-on-dark);
+
+  --fg: var(--font-color-100);
+  --fg-muted: var(--font-color-200);
+  --bg: var(--gs-300);
+
+  --ink: var(--font-color-100);
+  --ink-soft: var(--font-color-200);
+  --ink-muted: var(--font-color-300);
+  --line: var(--border);
+  --surface: var(--gs-400);
+  --surface-subtle: var(--gs-500);
+  --surface-muted: var(--gs-400);
+  --surface-alt: var(--gs-500);
+
+  --aside-item-hover: var(--gs-500);
+}
+
+/* ── Emission ─────────────────────────────────────────────────────────────
+   Light is the page default; anything carrying data-wtl-theme flips its own
+   subtree. `:root[data-wtl-theme='dark']` (0,2,0) outranks `:root`, and the
+   bare attribute selector ties with the light one and wins on source order —
+   so the dark block must stay last. */
+:root {
+  @include base;
+  @include light;
+}
+
+[data-wtl-theme="light"] {
+  @include light;
+}
+
+:root[data-wtl-theme="dark"],
+[data-wtl-theme="dark"] {
+  @include dark;
+}

@@ -1,0 +1,1081 @@
+---
+import { ChevronDown, Menu, Moon, Sun, UserRound } from "@lucide/astro";
+import Button from "./Button.astro";
+import DropdownMenu from "./DropdownMenu.astro";
+
+interface ScrollState {
+  // number = px, "50vh" = 50% del alto del viewport,
+  // "25%" = 25% del rango scrolleable de la página.
+  at: number | string;
+  // Opcional: hasta dónde el estado sigue activo. Si se omite, activo hasta el
+  // final de la página. Útil para "bandas" (ej: dark solo entre 170vh y 280vh).
+  until?: number | string;
+  add?: string;
+  remove?: string;
+}
+
+interface SectionState {
+  // Selector CSS del elemento. El estado se aplica mientras la sección esté
+  // "cruzando" la línea del nav (top del elemento por encima del nav, bottom
+  // por debajo). Preferí esto sobre scrollStates cuando el umbral depende del
+  // contenido y no de un valor fijo de vh.
+  selector: string;
+  add?: string;
+  remove?: string;
+}
+
+const {
+  navItems,
+  title,
+  backgroundColor,
+  maxWidth = "var(--content-max)",
+  theme = "light",
+  position = "sticky",
+  scrollStates = [] as ScrollState[],
+  sectionStates = [] as SectionState[],
+  // Muestra el switch claro/oscuro. Off por defecto: servaltek.com no lo usa.
+  themeToggle = false,
+  // Hairline de 1px abajo del nav (--border del tema). Off por defecto: la
+  // landing lo usa sobre heroes a sangre, donde la línea sobra.
+  borderBottom = false,
+} = Astro.props;
+
+// Public cotizador lives in the app (Fase 0 · D1) — a guest quotes without login, no domain change on
+// sign-in. PUBLIC_APP_URL ends with a slash; new URL() joins the "cotizar" path safely.
+const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.witlens.studio/";
+// La guía puede publicarse bajo un subpath (GUIDE_BASE=/guia): logo y assets van relativos al base.
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+
+<nav
+  class:list={[theme, { bordered: borderBottom }]}
+  data-wtl-theme={theme}
+  style={`position: ${position}; background-color: ${backgroundColor};`}
+  data-scroll-states={JSON.stringify(scrollStates)}
+  data-section-states={JSON.stringify(sectionStates)}
+>
+  <div class="content" style={`max-width: ${maxWidth};`}>
+    <div class="wrap">
+      <a class="logo" href={base}>
+        <div class="logotype">
+          <img
+            class="logo-img logo-img--for-light"
+            src={`${base}res/stek-logotype-light.png`}
+            alt="Logo"
+          />
+          <img
+            class="logo-img logo-img--for-dark"
+            src={`${base}res/stek-logotype-dark.png`}
+            alt="Logo"
+          />
+          {
+          title &&  
+          <div class="pipe" />
+          <div class="title-nav"> 
+          {title} 
+          </div>
+          }
+        </div>
+      </a>
+
+      <div class="desktop-nav">
+        <div class="desktop-nav-list">
+          {
+            navItems &&
+              navItems.map((item: any) => {
+                return (
+                  <div class="desktop-nav-item">
+                    <a href={item.url}>{item.label}</a>
+                    <div class="line" />
+                  </div>
+                );
+              })
+          }
+        </div>
+
+        <!-- Desborde: en anchos intermedios (tablet, laptop chica) los items
+             que no entran en la barra se pasan acá en vez de cortarse. El
+             script decide cuáles; sin desborde el wrapper queda oculto. -->
+        <div class="nav-more is-hidden">
+          <DropdownMenu align="end" width="220px" id="nav-more-menu">
+            <button
+              slot="trigger"
+              type="button"
+              class="nav-more__btn"
+              data-dropdown-trigger
+            >
+              Más
+              <span class="nav-more__chevron"><ChevronDown size={14} /></span>
+            </button>
+
+            <div class="nav-more__list">
+              {
+                navItems &&
+                  navItems.map((item: any) => (
+                    <a href={item.url} class="is-hidden" role="menuitem">
+                      {item.label}
+                    </a>
+                  ))
+              }
+            </div>
+          </DropdownMenu>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      {
+        themeToggle && (
+          <button
+            type="button"
+            class="icon-btn theme-btn"
+            aria-label="Activar modo oscuro"
+            title="Modo oscuro"
+            data-theme-toggle
+          >
+            <span class="theme-btn__icon theme-btn__icon--moon"><Moon size={20} /></span>
+            <span class="theme-btn__icon theme-btn__icon--sun"><Sun size={20} /></span>
+          </button>
+        )
+      }
+      <DropdownMenu align="end" width="320px" disabled id="account-menu">
+        <a
+          slot="trigger"
+          class="icon-btn user-btn"
+          href={appUrl}
+          aria-label="Cuenta"
+          data-dropdown-trigger
+        >
+          <span class="user-btn__icon"><UserRound size={20} /></span>
+          <span class="user-btn__initials"></span>
+        </a>
+
+        <div class="account">
+          <div class="account__top">
+            <img
+              class="account__brand account__brand--for-light"
+              src={`${base}res/stek-logotype-light.png`}
+              alt=""
+              height="16"
+            />
+            <img
+              class="account__brand account__brand--for-dark"
+              src={`${base}res/stek-logotype-dark.png`}
+              alt=""
+              height="16"
+            />
+            <!-- <span class="account__brand-name">Witlens</span> -->
+            <button type="button" class="account__signout">
+              Cerrar sesión
+            </button>
+          </div>
+
+          <div class="account__body">
+            <span class="account__avatar" aria-hidden="true">
+              <span class="account__avatar-icon"><UserRound size={30} /></span>
+              <span class="account__avatar-initials"></span>
+            </span>
+            <div class="account__id">
+              <p class="account__name"></p>
+              <p class="account__email"></p>
+              <!-- <a class="account__link" href={appUrl}>Ver cuenta</a> -->
+            </div>
+          </div>
+        </div>
+      </DropdownMenu>
+      <button
+        class="icon-btn menu-btn"
+        aria-expanded="false"
+        aria-controls="drawer"  
+      >
+        <Menu size={20} />
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Fuera del <nav> a propósito: el nav tiene backdrop-filter y eso lo
+     convierte en el contenedor de sus hijos position: fixed, rompiendo el
+     posicionamiento del drawer. -->
+<aside style={`background-color: ${backgroundColor};`} id="drawer" class:list={["drawer", theme]} data-wtl-theme={theme}>
+  <div class="drawer__panel">
+    <div class="mobile-nav">
+      {
+        navItems &&
+          navItems.map((item: any) => {
+            return <a href={item.url}>{item.label}</a>;
+          })
+      }
+    </div>
+  </div>
+</aside>
+<button
+  id="filter"
+  class:list={["filter", theme]}
+  data-wtl-theme={theme}
+  aria-label="Cerrar menú"
+  tabindex="-1"></button>
+
+{
+  themeToggle && (
+    <script is:inline>
+      // Corre apenas se parsea el nav, antes del primer pintado: si <html> ya
+      // trae el tema guardado (lo pone el script del <head>), el nav, el drawer
+      // y el filtro arrancan en ese tema en vez de parpadear en el del prop.
+      (() => {
+        const t = document.documentElement.dataset.wtlTheme;
+        if (t !== "dark" && t !== "light") return;
+        const els = [
+          document.querySelector("nav[data-scroll-states]"),
+          document.getElementById("drawer"),
+          document.getElementById("filter"),
+        ];
+        for (const el of els) {
+          if (!el) continue;
+          el.classList.toggle("dark", t === "dark");
+          el.classList.toggle("light", t === "light");
+          el.dataset.wtlTheme = t;
+        }
+      })();
+    </script>
+  )
+}
+
+<script>
+  import { login, logout, checkSession } from "../../lib/auth";
+
+  // Servaltek SSO (Keycloak, vía oidc-client-ts). checkSession prueba primero la
+  // sesión guardada en esta pestaña y, si no hay o expiró, un signinSilent
+  // (iframe invisible) que levanta una sesión ya iniciada en otra app del realm
+  // servaltek. Highlights el ícono de cuenta Y cambia qué hace el click:
+  // deslogueado, dispara el login (redirige a auth.servaltek.com y vuelve acá);
+  // logueado, abre el menú de cuenta con nombre, mail y "Cerrar sesión". Si algo
+  // sale mal acá (cookies de terceros bloqueadas, Keycloak caído) el ícono
+  // simplemente queda en su comportamiento deslogueado de siempre — nunca vale
+  // la pena mostrar el error en una página pública.
+  const userBtn = document.querySelector<HTMLAnchorElement>(".user-btn");
+  const accountMenu = userBtn?.closest<HTMLElement>("[data-dropdown]");
+  const initialsEl = document.querySelector<HTMLElement>(".user-btn__initials");
+  const avatarInitialsEl = document.querySelector<HTMLElement>(
+    ".account__avatar-initials",
+  );
+  const nameEl = document.querySelector<HTMLElement>(".account__name");
+  const emailEl = document.querySelector<HTMLElement>(".account__email");
+  const signOutBtn =
+    document.querySelector<HTMLButtonElement>(".account__signout");
+  let isAuthenticated = false;
+
+  checkSession().then((user) => {
+    isAuthenticated = !!user;
+    userBtn?.classList.toggle("logged-in", isAuthenticated);
+
+    if (user) {
+      const { given_name, family_name, name, preferred_username, email } =
+        user.profile;
+      const fullName =
+        name ?? `${given_name ?? ""} ${family_name ?? ""}`.trim();
+      if (fullName) userBtn?.setAttribute("title", fullName);
+
+      // Con sesión el click abre el menú en vez de disparar el login.
+      accountMenu?.removeAttribute("data-dropdown-disabled");
+
+      // El menú se llena con lo que haya: si el token no trae nombre queda sólo
+      // el mail, y el bloque de identidad no se rompe porque los <p> vacíos no
+      // ocupan alto.
+      if (nameEl) nameEl.textContent = fullName;
+      if (emailEl) emailEl.textContent = email ?? "";
+
+      // Iniciales en vez del icono, en el botón y en el avatar del menú. El
+      // fallback al username/email cubre el token sin given_name / family_name;
+      // si no sale nada usable no se agrega .has-initials y quedan los iconos,
+      // mejor que un botón vacío.
+      const initials = (
+        `${given_name?.[0] ?? ""}${family_name?.[0] ?? ""}` ||
+        (preferred_username?.[0] ?? "") ||
+        (email?.[0] ?? "")
+      ).toUpperCase();
+      if (initials) {
+        if (initialsEl) initialsEl.textContent = initials;
+        if (avatarInitialsEl) avatarInitialsEl.textContent = initials;
+        // La clase va en la raíz del dropdown, que envuelve al trigger y al
+        // panel, así el mismo estado destapa las iniciales en los dos lugares.
+        accountMenu?.classList.add("has-initials");
+      }
+
+      signOutBtn?.addEventListener("click", () => logout());
+    }
+  });
+
+  userBtn?.addEventListener("click", (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      login();
+    }
+  });
+
+  const menuBtn = document.querySelector<HTMLButtonElement>(".menu-btn");
+  const nav = document.querySelector<HTMLElement>("nav");
+  const aside = document.querySelector<HTMLElement>("aside.drawer");
+  const filter = document.querySelector<HTMLElement>("#filter.filter");
+
+  const setDrawer = (open: boolean) => {
+    aside?.classList.toggle("opened", open);
+    filter?.classList.toggle("opened", open);
+    nav?.classList.toggle("opened", open);
+    document.body.style.overflow = open ? "hidden" : "";
+    menuBtn?.setAttribute("aria-expanded", String(open));
+  };
+
+
+  const closeDrawer = () => setDrawer(false);
+  const toggleDrawer = () => setDrawer(!aside?.classList.contains("opened"));
+
+  menuBtn?.addEventListener("click", toggleDrawer);
+  // Zona muerta (el backdrop translúcido): cerrar al clickear cualquier parte.
+  filter?.addEventListener("click", closeDrawer);
+  // Cerrar cuando el usuario clickea un link del drawer (navega o va a un
+  // anchor de la misma página). Delegamos para captar futuros links también.
+  aside?.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("a")) closeDrawer();
+  });
+  // Accesibilidad: ESC cierra el drawer si está abierto.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && aside?.classList.contains("opened")) {
+      closeDrawer();
+    }
+  });
+
+  // Desborde de la barra desktop: entre el breakpoint mobile y una pantalla
+  // ancha los items pueden no entrar. En vez de cortarlos, los que sobran
+  // (de derecha a izquierda) se pasan al menú "Más", manteniendo el orden.
+  // No reemplaza al drawer: por debajo de 768px .desktop-nav no se muestra
+  // (ancho 0) y esto no hace nada.
+  const desktopNav = nav?.querySelector<HTMLElement>(".desktop-nav");
+  const barItems = Array.from(
+    desktopNav?.querySelectorAll<HTMLElement>(".desktop-nav-item") ?? [],
+  );
+  const moreWrap = desktopNav?.querySelector<HTMLElement>(".nav-more");
+  const moreItems = Array.from(
+    moreWrap?.querySelectorAll<HTMLElement>(".nav-more__list a") ?? [],
+  );
+
+  if (desktopNav && moreWrap && barItems.length > 0) {
+    const fitItems = () => {
+      const available = desktopNav.clientWidth;
+      if (available === 0) return;
+
+      // Medir con todo visible: los anchos dependen de la fuente cargada,
+      // así que no se cachean. Pasa todo en el mismo frame, sin pintar.
+      barItems.forEach((el) => el.classList.remove("is-hidden"));
+      moreWrap.classList.add("is-hidden");
+      const widths = barItems.map((el) => el.offsetWidth);
+      const total = widths.reduce((a, b) => a + b, 0);
+
+      let visible = barItems.length;
+      if (total > available) {
+        moreWrap.classList.remove("is-hidden");
+        let room = available - moreWrap.offsetWidth;
+        visible = 0;
+        while (visible < widths.length && room >= widths[visible]) {
+          room -= widths[visible];
+          visible++;
+        }
+      }
+
+      barItems.forEach((el, i) => el.classList.toggle("is-hidden", i >= visible));
+      moreItems.forEach((el, i) => el.classList.toggle("is-hidden", i < visible));
+      moreWrap.classList.toggle("is-hidden", visible === barItems.length);
+    };
+
+    // .desktop-nav toma su ancho del padre (flex: 1, min-width: 0), no de sus
+    // hijos, así que ocultar items no realimenta al observer.
+    new ResizeObserver(fitItems).observe(desktopNav);
+    document.fonts?.ready.then(fitItems);
+  }
+
+  // Switch claro/oscuro (solo si se pasó `themeToggle`). El tema vive en
+  // <html> (`data-wtl-theme` para los tokens de Servaltek y `data-theme` para
+  // Starlight) y se recuerda en localStorage["wtl-theme"].
+  const themeBtn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+
+  const applyTheme = (theme: "light" | "dark") => {
+    const root = document.documentElement;
+    root.dataset.wtlTheme = theme;
+    root.dataset.theme = theme;
+    for (const el of [nav, aside, filter]) {
+      if (!el) continue;
+      el.classList.toggle("dark", theme === "dark");
+      el.classList.toggle("light", theme === "light");
+      el.dataset.wtlTheme = theme;
+    }
+    themeBtn?.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Activar modo claro" : "Activar modo oscuro",
+    );
+    themeBtn?.setAttribute("title", theme === "dark" ? "Modo claro" : "Modo oscuro");
+  };
+
+  if (themeBtn) {
+    applyTheme(nav?.classList.contains("dark") ? "dark" : "light");
+    themeBtn.addEventListener("click", () => {
+      const next = nav?.classList.contains("dark") ? "light" : "dark";
+      applyTheme(next);
+      try {
+        localStorage.setItem("wtl-theme", next);
+      } catch {}
+    });
+  }
+
+  // Estados de scroll genéricos: cada { at, add?, remove? } se aplica cuando
+  // scrollY > at, y se revierte cuando no. `at` acepta px (number),
+  // "Nvh" (relativo al viewport) o "N%" (relativo al rango scrolleable).
+  type ScrollState = {
+    at: number | string;
+    until?: number | string;
+    add?: string;
+    remove?: string;
+  };
+  const statesRaw = nav?.dataset.scrollStates;
+  let scrollStates: ScrollState[] = [];
+  try {
+    scrollStates = statesRaw ? (JSON.parse(statesRaw) as ScrollState[]) : [];
+  } catch {
+    scrollStates = [];
+  }
+
+  const resolveAt = (at: number | string): number => {
+    if (typeof at === "number") return at;
+    const m = /^(-?[\d.]+)(vh|%)$/.exec(at.trim());
+    if (!m) return Number(at); // fallback: intenta como número puro
+    const val = parseFloat(m[1]);
+    if (m[2] === "vh") return (val * window.innerHeight) / 100;
+    // "%": porcentaje del rango scrolleable total de la página
+    const range = document.documentElement.scrollHeight - window.innerHeight;
+    return (val * range) / 100;
+  };
+
+  // Targets a los que se propagan las clases. drawer/filter necesitan la
+  // misma clase que nav para que las CSS vars de tema flipeen en cascada.
+  const targets = [nav, aside, filter].filter(
+    (el): el is HTMLElement => el != null,
+  );
+
+  // Las clases de arriba flipean el tema, pero el set de tokens compartido se
+  // selecciona por atributo (`[data-wtl-theme]`), no por clase. Hay que
+  // reespejar el atributo después de cada toggle: si no, la clase cambia y los
+  // tokens se quedan clavados en el tema con el que se renderizó el nav.
+  const syncTheme = () => {
+    for (const el of targets) {
+      el.dataset.wtlTheme = el.classList.contains("dark") ? "dark" : "light";
+    }
+  };
+
+  if (nav && scrollStates.length > 0) {
+    const applyScrollStates = () => {
+      const y = window.scrollY;
+      for (const { at, until, add, remove } of scrollStates) {
+        const start = resolveAt(at);
+        const end = until != null ? resolveAt(until) : Infinity;
+        const active = y > start && y < end;
+        for (const el of targets) {
+          if (add) el.classList.toggle(add, active);
+          if (remove) el.classList.toggle(remove, !active);
+        }
+      }
+      syncTheme();
+    };
+    window.addEventListener("scroll", applyScrollStates, { passive: true });
+    // Re-evaluar al redimensionar: vh y % dependen del tamaño de la ventana
+    // / del documento, y el scroll solo no cubre esos cambios.
+    window.addEventListener("resize", applyScrollStates, { passive: true });
+    applyScrollStates();
+  }
+
+  // Estados basados en secciones: activos mientras la sección cruza la línea
+  // del nav. Robusto al alto del viewport (a diferencia de scrollStates+vh).
+  type SectionState = { selector: string; add?: string; remove?: string };
+  const sectionRaw = nav?.dataset.sectionStates;
+  let sectionStates: SectionState[] = [];
+  try {
+    sectionStates = sectionRaw
+      ? (JSON.parse(sectionRaw) as SectionState[])
+      : [];
+  } catch {
+    sectionStates = [];
+  }
+
+  if (nav && sectionStates.length > 0) {
+    const navLine = () => nav.getBoundingClientRect().bottom;
+
+    const applySectionStates = () => {
+      const line = navLine();
+      for (const { selector, add, remove } of sectionStates) {
+        const el = document.querySelector(selector);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        const active = rect.top <= line && rect.bottom > line;
+        for (const target of targets) {
+          if (add) target.classList.toggle(add, active);
+          if (remove) target.classList.toggle(remove, !active);
+        }
+      }
+      syncTheme();
+    };
+    window.addEventListener("scroll", applySectionStates, { passive: true });
+    window.addEventListener("resize", applySectionStates, { passive: true });
+    applySectionStates();
+  }
+</script>
+
+<style>
+  .logotype {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .title-nav {
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 18px;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .logo {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Los dos logos coexisten en el DOM; se muestra uno según la clase de tema
+     del nav. Así el swap acompaña sin flash el toggle de scroll. */
+  nav .logo-img--for-dark {
+    display: none;
+  }
+  nav.dark .logo-img--for-light {
+    display: none;
+  }
+  nav.dark .logo-img--for-dark {
+    display: inline-block;
+  }
+
+  /* Tema scopeado (NO global): cada raíz del componente (nav, drawer y filter
+     son hermanos) lleva su propio `data-wtl-theme`, que trae el set de tokens
+     compartido para ese subárbol. Los nombres locales de abajo son solo alias
+     sobre esos tokens — ya no hay valores literales ni un bloque `.dark`. */
+  nav,
+  .drawer,
+  .filter {
+    --color: var(--font-color-100);
+    --background: var(--gs-100);
+    --navbar-color: var(--navbar-bg);
+    --traslucid: var(--scrim);
+    --color-secondary: var(--font-color-200);
+    transition: all 0.2s ease;
+  }
+
+  /* Prop `borderBottom`. Con box-sizing: border-box el alto total sigue en
+     56px, así que nada que se pegue abajo del nav (top: 56px) se corre. */
+  nav.bordered {
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav {
+    color: var(--color);
+    background-color: var(--navbar-color);
+
+    width: 100%;
+    height: 56px;
+    padding-left: 16px;
+    padding-right: 8px;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    backdrop-filter: saturate(180%) blur(20px);
+    z-index: 10;
+
+    .content {
+      height: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+      z-index: 15;
+
+      .wrap {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        height: 100%;
+        /* Los botones de la derecha no ceden ancho: lo que sobra o falta lo
+           absorbe la barra de links. */
+        flex: none;
+
+        /* El wrap del logo + links ocupa el resto y puede achicarse por debajo
+           de su contenido, así .desktop-nav tiene un ancho real que medir. */
+        &:first-child {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .logo {
+          flex: none;
+        }
+
+        .logo-img {
+          height: 20px;
+        }
+
+        .desktop-nav {
+          display: none;
+          align-items: center;
+          height: 100%;
+          flex: 1;
+          min-width: 0;
+
+          .desktop-nav-list {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            min-width: 0;
+            /* Red de seguridad antes de que corra el script: recorta en vez de
+               empujar los botones de la derecha. */
+            overflow: hidden;
+          }
+
+          .desktop-nav-item {
+            display: flex;
+            flex: none;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            /* align-items: center; */
+            padding: 0 14px;
+            box-sizing: border-box;
+            gap: 5px;
+            position: relative;
+            white-space: nowrap;
+
+            &.is-hidden {
+              display: none;
+            }
+
+            a {
+              all: unset;
+              font-size: 13px;
+              font-weight: 400;
+              cursor: pointer;
+              color: var(--color);
+              transition: all 0.3s ease;
+            }
+
+            .line {
+              width: 0%;
+              height: 1px;
+              background-color: transparent;
+              position: absolute;
+              bottom: 10px;
+              filter: blur(10px);
+              transition: all 0.3s ease;
+            }
+
+            &:hover {
+              a {
+                color: var(--color);
+                transition: all 0.3s ease;
+              }
+              .line {
+                filter: blur(0);
+                width: calc(100% - 32px);
+                background-color: var(--color);
+              }
+            }
+          }
+
+          @media screen and (min-width: 768px) {
+            display: flex;
+            .pipe {
+              display: block;
+            }
+          }
+        }
+
+        .nav-more {
+          display: flex;
+          flex: none;
+          align-items: center;
+          height: 100%;
+
+          &.is-hidden {
+            display: none;
+          }
+        }
+
+        .pipe {
+          height: 20px;
+          width: 2px;
+          background-color: var(--color);
+          margin: 0 12px;
+        }
+      }
+    }
+
+    &.opened {
+      background-color: var(--background);
+    }
+
+    .menu-btn {
+      @media screen and (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
+
+  .drawer {
+    position: fixed;
+    width: 100%;
+    z-index: 9;
+    top: 0;
+    padding-top: 56px;
+    left: 0;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.33, 0.08, 0.3, 1);
+    opacity: 0;
+    transition: all 0.3s;
+
+    .drawer__panel {
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .mobile-nav {
+      display: flex;
+      flex-direction: column;
+      padding: 16px 0;
+      box-sizing: border-box;
+
+      a {
+        all: unset;
+        font-size: 25px;
+        font-weight: 600;
+        padding: 10px 40px;
+        color: var(--color);
+        box-sizing: border-box;
+      }
+    }
+
+    &.opened {
+      transition: all 0.3s;
+      opacity: 1;
+      background-color: var(--background);
+      grid-template-rows: 1fr;
+    }
+  }
+
+  .filter {
+    all: unset;
+    width: 100%;
+    height: 100dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    background-color: var(--traslucid);
+    -webkit-backdrop-filter: blur(10px) saturate(3);
+    backdrop-filter: blur(10px) saturate(3);
+    transition: all 0.3s cubic-bezier(0.33, 0.08, 0.3, 1);
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+
+    &.opened {
+      pointer-events: unset;
+      opacity: 1;
+    }
+
+    @media screen and (min-width: 768px) {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    nav {
+      .content {
+        /* padding: 0 5%; */
+        .wrap {
+          .pipe {
+            display: flex;
+          }
+        }
+      }
+    }
+  }
+
+  /* Switch de tema: luna en claro (pasa a oscuro), sol en oscuro. */
+  .theme-btn__icon {
+    display: flex;
+  }
+  nav .theme-btn__icon--sun {
+    display: none;
+  }
+  nav.dark .theme-btn__icon--sun {
+    display: flex;
+  }
+  nav.dark .theme-btn__icon--moon {
+    display: none;
+  }
+
+  .logged-in {
+    color: var(--color);
+    border: 1px solid var(--color-secondary);
+
+    &:hover {
+      background-color: #74747446;
+    }
+  }
+
+  /* Los iconos son el default (deslogueado, y también logueado sin nombre en
+     el token). Las iniciales las destapa .has-initials, que el script pone en
+     la raíz del dropdown — el único ancestro común del botón y del panel. */
+  .user-btn__icon,
+  .account__avatar-icon {
+    display: flex;
+  }
+
+  .user-btn__initials,
+  .account__avatar-initials {
+    display: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .user-btn__initials {
+    font-size: 13px;
+  }
+
+  .account__avatar-initials {
+    font-size: 22px;
+  }
+
+  /* `.has-initials` la lleva la raíz del DropdownMenu, que es markup de OTRO
+     componente y por lo tanto tiene otro hash de scope: sin `:global()` Astro
+     le pega el hash de este archivo y la regla no matchea nunca. El hash cae
+     igual sobre el último selector, que sí es markup propio. */
+  :global(.has-initials) .user-btn__icon,
+  :global(.has-initials) .account__avatar-icon {
+    display: none;
+  }
+
+  :global(.has-initials) .user-btn__initials,
+  :global(.has-initials) .account__avatar-initials {
+    display: block;
+  }
+
+  /* ── Menú "Más" (desborde de la barra) ───────────────────────────────────
+     El trigger imita a un .desktop-nav-item para que se lea como un link más
+     de la barra; el chevron gira cuando el dropdown está abierto. */
+  .nav-more__btn {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 400;
+    white-space: nowrap;
+    color: var(--color-secondary);
+    border-radius: var(--radius-pill);
+    transition: color 0.2s ease, background-color 0.2s ease;
+
+    &:hover,
+    &[aria-expanded="true"] {
+      color: var(--color);
+      background-color: var(--hover-layer);
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
+
+  .nav-more__chevron {
+    display: flex;
+    transition: transform 0.2s ease;
+  }
+
+  .nav-more__btn[aria-expanded="true"] .nav-more__chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav-more__list {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-1, 4px);
+
+    a {
+      all: unset;
+      cursor: pointer;
+      display: block;
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 4px;
+      color: var(--font-color-100);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:hover {
+        background-color: var(--hover-layer);
+      }
+
+      &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: -2px;
+      }
+
+      &.is-hidden {
+        display: none;
+      }
+    }
+  }
+
+  /* ── Menú de cuenta ──────────────────────────────────────────────────────
+     Vive dentro del <nav>, así que hereda su subárbol de tokens y acompaña el
+     toggle de tema del scroll sin reglas propias de light/dark. */
+  .account {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .account__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+  }
+
+  /* Mismo criterio que el logo del nav: los dos SVG coexisten y se muestra el
+     que lee bien sobre la superficie del tema activo. */
+  nav .account__brand--for-dark {
+    display: none;
+  }
+  nav.dark .account__brand--for-light {
+    display: none;
+  }
+  nav.dark .account__brand--for-dark {
+    display: inline-block;
+  }
+
+  .account__brand-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    /* Empuja "Cerrar sesión" al borde opuesto. */
+    margin-right: auto;
+  }
+
+  .account__signout {
+    all: unset;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--color-secondary);
+    border-radius: var(--radius-pill);
+    padding: 4px 8px;
+
+    &:hover {
+      color: var(--color);
+      background-color: var(--hover-layer);
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
+
+  .account__body {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+  }
+
+  .account__avatar {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gs-200);
+    color: var(--color-secondary);
+  }
+
+  .account__id {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    /* Centra el bloque de identidad contra el avatar. */
+    padding-top: var(--space-1);
+  }
+
+  .account__name,
+  .account__email {
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    /* Un <p> vacío no debe reservar alto: el token puede no traer nombre. */
+    &:empty {
+      display: none;
+    }
+  }
+
+  .account__name {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .account__email {
+    font-size: 13px;
+    color: var(--color-secondary);
+  }
+
+  .account__link {
+    margin-top: var(--space-2);
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
+</style>

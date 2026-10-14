@@ -1,0 +1,25 @@
+---
+/**
+ * Cabecera de una página de componente: breadcrumb + título + bajada.
+ * Los estilos salen de `styles/perfumeui-docs.css` (global de la sección).
+ */
+interface Props {
+  /** Familia del componente dentro del árbol del sidebar. */
+  family?: string;
+  name: string;
+  lead: string;
+}
+
+const { family = "Primitivas", name, lead } = Astro.props;
+---
+
+<nav class="pui-breadcrumb" aria-label="Ubicación">
+  <span>Componentes</span>
+  <span class="pui-breadcrumb__sep">/</span>
+  <span>{family}</span>
+  <span class="pui-breadcrumb__sep">/</span>
+  <span class="pui-breadcrumb__current">{name}</span>
+</nav>
+
+<h1 class="pui-title">{name}</h1>
+<p class="pui-lead">{lead}</p>

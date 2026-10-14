@@ -1,0 +1,39 @@
+---
+/**
+ * Tabla de props de un componente. Las filas se declaran en la página, leídas
+ * de la `interface Props` del componente real — si cambia la primitiva, esta
+ * tabla se actualiza a mano (no hay introspección de tipos en build).
+ */
+export interface PropRow {
+  name: string;
+  type: string;
+  default: string;
+  body: string;
+}
+
+interface Props {
+  rows: PropRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<div class="pui-props">
+  <div class="pui-props__head">
+    <span>Prop</span>
+    <span>Tipo</span>
+    <span>Default</span>
+  </div>
+  {
+    rows.map((row) => (
+      <div class="pui-props__row">
+        <span class="pui-mono">{row.name}</span>
+        <div>
+          <span class="pui-mono pui-mono--accent">{row.type}</span>
+          <p class="pui-props__desc">{row.body}</p>
+        </div>
+        <span class="pui-mono pui-mono--faint">{row.default}</span>
+      </div>
+    ))
+  }
+</div>

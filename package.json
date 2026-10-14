@@ -1,0 +1,13 @@
+{
+  "name": "perfumeui-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter perfumeui-docs dev",
+    "build": "pnpm --filter perfumeui-docs build",
+    "preview": "pnpm --filter perfumeui-docs preview",
+    "check": "pnpm --filter perfumeui-docs check",
+    "new:component": "node scripts/new-component.mjs"
+  },
+  "packageManager": "pnpm@11.23.0"
+}

@@ -1,0 +1,157 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import HeroTextContent from "@servaltek/perfumeui/components/ui/HeroTextContent.astro";
+
+const donavelleLogo = {
+  src: "https://storage.servaltek.com/public/resources/donavelle/d98e96b04a92bc5e746552e5e12532b32cb4e0b09b5d25248b7b1d75a668e4c8.png",
+  srcOnDark: "https://storage.servaltek.com/public/resources/donavelle/0cbb109c8e64a6aa0957ce62f4998fdb8d98ec021e69595ecf1c692c6ffc09fd.png",
+  height: "20px",
+  alt: "Donavelle",
+};
+
+const usage = `<HeroTextContent
+  tone="dark"
+  badge="Servaltek"
+  title="Diseñamos, desarrollamos y distribuimos software."
+  body="Productos digitales de punta a punta."
+  cta={{ label: "Ver proyectos", href: "#proyectos" }}
+  secondaryCta={{ label: "Contacto", href: "#contacto" }}
+  headingLevel={2}
+/>`;
+
+const props = [
+  { name: "tone", type: '"dark" | "light"', default: '"light"', body: "Color del TEXTO, no del fondo. dark = texto oscuro sobre fondo claro." },
+  { name: "align", type: '"start" | "center"', default: '"start"', body: "center centra el bloque y el texto, con tamaños fluidos." },
+  { name: "kicker", type: "string", default: "—", body: "Volanta plana, en mayúsculas espaciadas. Alternativa al badge." },
+  { name: "badge", type: "string", default: "—", body: "Pastilla translúcida arriba del título." },
+  { name: "logo", type: "HeroLogo", default: "—", body: "{ src, srcOnDark?, alt, height? }. Reemplaza al badge; si viene, el badge no se muestra." },
+  { name: "title", type: "string", default: "—", body: "Título. 34px en mobile, 50px desde 1200px; text-wrap: balance." },
+  { name: "body", type: "string", default: "—", body: "Bajada. Va en --fg-muted, salvo en align=center, que va en tinta plena." },
+  { name: "cta", type: "CtaLink", default: "—", body: "{ label, href }. Button primary lg." },
+  { name: "secondaryCta", type: "CtaLink", default: "—", body: "{ label, href }. Button ghost lg." },
+  { name: "headingLevel", type: "1 | 2", default: "1", body: "h1 o h2. En una página con varios heroes, solo el primero lleva 1." },
+];
+---
+
+<PerfumeUILayout
+  title="HeroTextContent"
+  description="El bloque de texto que comparten todos los heroes: badge o logo, título, bajada y CTAs."
+>
+  <DocsHeader
+    family="Heroes"
+    name="HeroTextContent"
+    lead="El bloque de texto de todos los heroes. StaticHero y HeroSlide no tienen texto propio: lo delegan acá, y lo renderizan dos veces, una para desktop y otra para mobile."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Uso</h2>
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--light">
+        <HeroTextContent
+          tone="dark"
+          badge="Servaltek"
+          title="Diseñamos, desarrollamos y distribuimos software."
+          body="Productos digitales de punta a punta: desde la idea hasta que llegan a las personas que los usan."
+          cta={{ label: "Ver proyectos", href: "#proyectos" }}
+          secondaryCta={{ label: "Contacto", href: "#contacto" }}
+          headingLevel={2}
+        />
+      </div>
+    </div>
+    <pre class="pui-code">{usage}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">tone nombra la tinta, no el fondo</h2>
+    <p class="pui-block__body">
+      Es la parte que más confunde. Los tokens compartidos se nombran por
+      superficie, así que el componente invierte el valor:
+      <span class="pui-mono">tone="dark"</span> pone
+      <span class="pui-mono">data-wtl-theme="light"</span> y al revés. Con eso
+      <span class="pui-mono">--fg</span>, <span class="pui-mono">--fg-muted</span>
+      y el ghost del botón salen bien sin reglas propias.
+    </p>
+    <div class="pui-grid pui-grid--wide">
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--light">
+          <HeroTextContent tone="dark" kicker={'tone="dark"'} title="Texto oscuro" body="Sobre una superficie clara." headingLevel={2} />
+        </div>
+        <div class="pui-preview__foot">
+          <p class="pui-preview__caption">data-wtl-theme="light"</p>
+        </div>
+      </div>
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--dark">
+          <HeroTextContent tone="light" kicker={'tone="light"'} title="Texto claro" body="Sobre una superficie oscura o una foto." headingLevel={2} />
+        </div>
+        <div class="pui-preview__foot">
+          <p class="pui-preview__caption">data-wtl-theme="dark"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Badge, kicker o logo</h2>
+    <p class="pui-block__body">
+      Lo que va arriba del título. <span class="pui-mono">logo</span> tiene
+      prioridad sobre <span class="pui-mono">badge</span>. Con
+      <span class="pui-mono">tone="light"</span> usa
+      <span class="pui-mono">logo.srcOnDark</span> si existe.
+    </p>
+    <div class="pui-grid">
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--light">
+          <HeroTextContent tone="dark" badge="Nuevo" title="Badge" headingLevel={2} />
+        </div>
+      </div>
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--light">
+          <HeroTextContent tone="dark" kicker="Servaltek" title="Kicker" headingLevel={2} />
+        </div>
+      </div>
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--dark">
+          <HeroTextContent tone="light" logo={donavelleLogo} badge="(se ignora)" title="Logo" headingLevel={2} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Centrado</h2>
+    <p class="pui-block__body">
+      <span class="pui-mono">align="center"</span> es para heroes donde el
+      texto va sobre un panel propio y no sobre una foto. La bajada pasa a
+      tinta plena y más grande, y los botones se miden por su contenido.
+    </p>
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--soft">
+        <HeroTextContent
+          tone="dark"
+          align="center"
+          title="Una cuenta para todo Servaltek"
+          body="Witlens, Fluxenture y Donavelle con el mismo usuario."
+          cta={{ label: "Crear cuenta", href: "#" }}
+          headingLevel={2}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Layout responsive</h2>
+    <ul class="pui-list">
+      <li>Los CTAs van apilados y a todo el ancho por debajo de 640px; desde ahí, en fila.</li>
+      <li>Desde 1085px el bloque ocupa como máximo el 40% del ancho, para dejar la foto libre. Centrado, hasta 680px.</li>
+      <li>El título pasa de 34px a 50px desde 1200px.</li>
+    </ul>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+</PerfumeUILayout>

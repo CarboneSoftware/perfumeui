@@ -1,0 +1,352 @@
+---
+/**
+ * Carousel of heroes. Every direct child of the default slot is a slide, so it
+ * takes `HeroSlide`, `ui/StaticHero` or any mix of them. Pass `headingLevel={1}`
+ * only to the first slide so the page keeps a single h1.
+ *
+ * - Scroll-snap track: swipe and trackpad work natively; the buttons and dots
+ *   just scroll it.
+ * - Autoplay every `interval` ms. Pauses on hover/focus, while the tab is
+ *   hidden, and with the pause button (WCAG 2.2.2). Off entirely with
+ *   prefers-reduced-motion.
+ * - Off-screen slides are `inert`, so keyboard focus never lands on a
+ *   hidden CTA.
+ * - `height` (desktop, >=1085px) and `mobileHeight` fix the track height; every
+ *   slide gets `height: 100%` and clips what overflows, so heroes of different
+ *   sizes line up and the controls stay on the same spot. Any CSS length works
+ *   (`"600px"`, `"clamp(540px, 40vw, 640px)"`, `"80svh"`). Without them the
+ *   track is as tall as its tallest slide. A slide should let its media part
+ *   flex to fill the height (StaticHero and HeroSlide already do).
+ */
+import { ChevronLeft, ChevronRight, Pause, Play } from "@lucide/astro";
+
+interface Props {
+  label?: string;
+  interval?: number;
+  /** Track height from 1085px up. Any CSS length. */
+  height?: string;
+  /** Track height below 1085px. Any CSS length. */
+  mobileHeight?: string;
+}
+
+const { label = "Destacados", interval = 7000, height, mobileHeight } = Astro.props;
+---
+
+<section
+  class:list={[
+    "carousel",
+    { "carousel--sized": height, "carousel--sized-mobile": mobileHeight },
+  ]}
+  style={{ "--carousel-height": height, "--carousel-height-mobile": mobileHeight }}
+  aria-roledescription="carrusel"
+  aria-label={label}
+  data-carousel
+  data-interval={interval}
+>
+  <div class="carousel__track" data-track>
+    <slot />
+  </div>
+
+  <div class="carousel__controls container">
+    <div class="carousel__bar">
+      <button type="button" class="ctrl" data-toggle aria-label="Pausar">
+        <span class="ctrl__icon ctrl__icon--pause"><Pause size={16} /></span>
+        <span class="ctrl__icon ctrl__icon--play"><Play size={16} /></span>
+      </button>
+      <div class="carousel__dots" data-dots></div>
+      <button type="button" class="ctrl" data-prev aria-label="Anterior">
+        <ChevronLeft size={18} />
+      </button>
+      <button type="button" class="ctrl" data-next aria-label="Siguiente">
+        <ChevronRight size={18} />
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>("[data-track]")!;
+    const slides = Array.from(track.children).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+    const dotsWrap = root.querySelector<HTMLElement>("[data-dots]")!;
+    const toggle = root.querySelector<HTMLButtonElement>("[data-toggle]")!;
+    const interval = Number(root.dataset.interval) || 7000;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (slides.length === 0) return;
+
+    let index = 0;
+
+    slides.forEach((slide, i) => {
+      slide.setAttribute("role", "group");
+      slide.setAttribute("aria-roledescription", "diapositiva");
+      slide.setAttribute("aria-label", `${i + 1} de ${slides.length}`);
+    });
+
+    const dots = slides.map((_, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "carousel__dot";
+      dot.setAttribute("aria-label", `Ir a la diapositiva ${i + 1}`);
+      dot.addEventListener("click", () => {
+        goTo(i);
+        restart();
+      });
+      dotsWrap.appendChild(dot);
+      return dot;
+    });
+
+    const render = (i: number) => {
+      index = i;
+      slides.forEach((s, n) => {
+        const active = n === i;
+        s.classList.toggle("is-active", active);
+        s.inert = !active;
+      });
+      dots.forEach((d, n) => {
+        if (n === i) d.setAttribute("aria-current", "true");
+        else d.removeAttribute("aria-current");
+      });
+    };
+
+    const goTo = (i: number) => {
+      const next = (i + slides.length) % slides.length;
+      track.scrollTo({
+        left: slides[next].offsetLeft - track.offsetLeft,
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+      render(next);
+    };
+
+    // The track is the source of truth: swipes and snaps update the index.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && e.intersectionRatio > 0.6) {
+            render(slides.indexOf(e.target as HTMLElement));
+          }
+        }
+      },
+      { root: track, threshold: [0.6] },
+    );
+    slides.forEach((s) => io.observe(s));
+
+    root.querySelector("[data-prev]")?.addEventListener("click", () => {
+      goTo(index - 1);
+      restart();
+    });
+    root.querySelector("[data-next]")?.addEventListener("click", () => {
+      goTo(index + 1);
+      restart();
+    });
+
+    // ── Autoplay ───────────────────────────────────────────────────────
+    let timer: number | undefined;
+    let userPaused = reducedMotion;
+    let hovered = false;
+    let focused = false;
+
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const start = () => {
+      stop();
+      if (userPaused || hovered || focused || document.hidden) return;
+      timer = window.setInterval(() => goTo(index + 1), interval);
+    };
+    const restart = () => start();
+
+    const syncToggle = () => {
+      root.classList.toggle("is-paused", userPaused);
+      toggle.setAttribute("aria-label", userPaused ? "Reproducir" : "Pausar");
+    };
+
+    toggle.addEventListener("click", () => {
+      userPaused = !userPaused;
+      syncToggle();
+      start();
+    });
+    root.addEventListener("mouseenter", () => {
+      hovered = true;
+      stop();
+    });
+    root.addEventListener("mouseleave", () => {
+      hovered = false;
+      start();
+    });
+    root.addEventListener("focusin", () => {
+      focused = true;
+      stop();
+    });
+    root.addEventListener("focusout", (e) => {
+      if (!root.contains(e.relatedTarget as Node)) {
+        focused = false;
+        start();
+      }
+    });
+    document.addEventListener("visibilitychange", start);
+
+    render(0);
+    syncToggle();
+    start();
+  });
+</script>
+
+<style>
+  .carousel {
+    position: relative;
+  }
+
+  .carousel__track {
+    display: flex;
+    align-items: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Slide sizing lives here, not in each slide component, so any hero works. */
+  .carousel__track > :global(*) {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100%;
+  }
+
+  /* Fixed height: the track sets it, slides fill it and clip the excess. */
+  @media (max-width: 1084.98px) {
+    .carousel--sized-mobile .carousel__track {
+      height: var(--carousel-height-mobile);
+    }
+
+    .carousel--sized-mobile .carousel__track > :global(*) {
+      overflow: hidden;
+    }
+  }
+
+  @media (min-width: 1085px) {
+    .carousel--sized .carousel__track {
+      height: var(--carousel-height);
+    }
+
+    .carousel--sized .carousel__track > :global(*) {
+      overflow: hidden;
+    }
+  }
+
+  /* Mobile: controls sit under the slide text. Desktop: over the stage,
+     bottom-left, aligned with the text column. */
+  .carousel__controls {
+    padding-top: var(--space-5);
+    z-index: 2;
+  }
+
+  .carousel__bar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--surface-subtle);
+  }
+
+  @media (min-width: 1085px) {
+    .carousel__controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: var(--space-5);
+      padding-top: 0;
+      pointer-events: none;
+    }
+
+    .carousel__bar {
+      pointer-events: auto;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  .ctrl {
+    all: unset;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--ink);
+    transition: background-color var(--t-base) ease;
+  }
+
+  .ctrl:hover {
+    background: var(--hover-layer);
+  }
+
+  .ctrl:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .ctrl__icon {
+    display: flex;
+  }
+
+  .ctrl__icon--play,
+  .carousel.is-paused .ctrl__icon--pause {
+    display: none;
+  }
+
+  .carousel.is-paused .ctrl__icon--play {
+    display: flex;
+  }
+
+  .carousel__dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-inline: var(--space-1);
+  }
+
+  .carousel__dots :global(.carousel__dot) {
+    all: unset;
+    cursor: pointer;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--gs-500);
+    transition:
+      width var(--t-base) ease,
+      background-color var(--t-base) ease;
+  }
+
+  .carousel__dots :global(.carousel__dot[aria-current="true"]) {
+    width: 24px;
+    background: var(--accent);
+  }
+
+  .carousel__dots :global(.carousel__dot:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  
+  @media only screen and (min-width: 1921px) {
+    .carousel {
+      max-width: 1920px;
+      margin: auto;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+  }
+</style>

@@ -1,0 +1,227 @@
+---
+/**
+ * Shell del sitio de docs: el AppNavbar real (el mismo componente que usa
+ * la landing) + sidebar de navegación pegada al borde izquierdo + contenido +
+ * footer. Sidebar y modo claro/oscuro iguales a los de la guía de
+ * Fluxenture (flux-landing): el switch vive en el AppNavbar (`themeToggle`)
+ * y la elección se guarda en localStorage["wtl-theme"].
+ */
+import BaseLayout from "./BaseLayout.astro";
+import AppNavbar from "@servaltek/perfumeui/components/ui/AppNavbar.astro";
+import DocsSidebar from "@/components/docs/DocsSidebar.astro";
+import DocsFooter from "@/components/docs/DocsFooter.astro";
+import { perfumeUINavItems } from "@/data/perfumeui-nav";
+import "../styles/perfumeui-docs.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "PerfumeUI, el sistema de diseño de Servaltek: tokens, primitivas y secciones.",
+} = Astro.props;
+---
+
+<BaseLayout title={`${title} · PerfumeUI`} description={description}>
+  <!-- Tema inicial antes del primer pintado (evita el flash). Sin elección
+       guardada arranca en claro. Mismo script que el Layout de Fluxenture. -->
+  <script is:inline slot="head">
+    (() => {
+      let theme;
+      try {
+        theme = localStorage.getItem("wtl-theme");
+      } catch {}
+      if (theme !== "light" && theme !== "dark") {
+        theme = "light";
+      }
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.dataset.wtlTheme = theme;
+    })();
+  </script>
+
+  <AppNavbar
+    title="PerfumeUI"
+    navItems={perfumeUINavItems}
+    theme="light"
+    position="sticky"
+    maxWidth="100%"
+    themeToggle
+    borderBottom 
+  />
+
+  <div class="pui-shell">
+    <div class="pui-shell__body">
+      <aside class="pui-sidebar" aria-label="Navegación de PerfumeUI">
+        <DocsSidebar />
+      </aside>
+
+      <details class="pui-mobile-nav">
+        <summary>Navegación de PerfumeUI</summary>
+        <div class="pui-mobile-nav__panel">
+          <DocsSidebar />
+        </div>
+      </details>
+
+      <main class="pui-content">
+        <slot />
+      </main>
+    </div>
+
+    <DocsFooter />
+  </div>
+</BaseLayout>
+
+<script>
+  // Los ejemplos son de muestra: sus links (CTAs de los heroes, logos,
+  // TextLink) no navegan. Los botones que no son links (controles del
+  // carrusel, chips del playground) siguen funcionando.
+  document.addEventListener("click", (e) => {
+    const link = (e.target as HTMLElement).closest("a");
+    if (link?.closest(".pui-preview")) e.preventDefault();
+  });
+
+  // Al elegir una página en el desplegable de celular, cerrarlo.
+  const mobileNav = document.querySelector<HTMLDetailsElement>(".pui-mobile-nav");
+  mobileNav?.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).closest("a")) mobileNav.open = false;
+  });
+
+  // Scrollbar del sidebar de escritorio: oculta por defecto, aparece
+  // mientras se scrollea y se desvanece a los 800ms de inactividad — el
+  // mismo comportamiento "overlay" que ya tienen los navegadores mobile,
+  // pero Windows/desktop no lo aplica solo con CSS.
+  const sidebar = document.querySelector<HTMLElement>(".pui-sidebar");
+  let hideTimer = 0;
+
+  sidebar?.addEventListener(
+    "scroll",
+    () => {
+      sidebar.classList.add("is-scrolling");
+      window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        sidebar.classList.remove("is-scrolling");
+      }, 800);
+    },
+    { passive: true },
+  );
+</script>
+
+<style>
+  .pui-shell {
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  /* Ancho completo: la sidebar va pegada al borde izquierdo de la ventana y
+     el contenido se centra en el espacio que queda. */
+  .pui-shell__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pui-sidebar {
+    display: none;
+    background: var(--navbar-bg);
+  }
+
+  .pui-mobile-nav {
+    border-bottom: 1px solid var(--line);
+    margin: 0 24px;
+  }
+
+  .pui-mobile-nav summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .pui-mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .pui-mobile-nav summary::after {
+    content: "›";
+    display: inline-block;
+    margin-left: 8px;
+    transform: rotate(90deg);
+    transition: transform 0.15s ease;
+  }
+
+  .pui-mobile-nav[open] summary::after {
+    transform: rotate(-90deg);
+  }
+
+  .pui-mobile-nav__panel {
+    padding: 4px 4px 24px;
+  }
+
+  .pui-content {
+    min-width: 0;
+    width: 100%;
+    max-width: calc(var(--content-max) - 250px);
+    margin-inline: auto;
+    box-sizing: border-box;
+    padding: 32px 24px 96px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .pui-content {
+      padding: 40px 56px 96px;
+    }
+  }
+
+  @media screen and (min-width: 900px) {
+    .pui-shell__body {
+      grid-template-columns: 250px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .pui-mobile-nav {
+      display: none;
+    }
+
+    .pui-sidebar {
+      display: block;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 36px 20px 80px 28px;
+      border-right: 1px solid var(--line);
+
+      /* Firefox: sin auto-hide nativo, pero al menos queda fina y suave. */
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+      transition: scrollbar-color 0.3s ease;
+    }
+
+    .pui-sidebar.is-scrolling {
+      scrollbar-color: var(--line) transparent;
+    }
+
+    /* Chrome/Edge/Safari desktop: mismo efecto vía pseudo-elementos. */
+    .pui-sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .pui-sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .pui-sidebar::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      border-radius: var(--radius-pill);
+      transition: background-color 0.3s ease;
+    }
+
+    .pui-sidebar.is-scrolling::-webkit-scrollbar-thumb {
+      background-color: var(--line);
+    }
+  }
+</style>

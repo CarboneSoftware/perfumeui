@@ -1,0 +1,241 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
+import Button from "@servaltek/perfumeui/components/ui/Button.astro";
+
+const icons = [
+  {
+    name: "chevron",
+    label: "Ver más",
+    body: "El default. Un chevron tipográfico que crece con el texto — el adorno de casi todos los links del sistema.",
+  },
+  {
+    name: "arrow",
+    label: "Ir al detalle",
+    body: "Flecha de Lucide a 16px. Para el link que cierra un bloque largo y necesita algo más de peso.",
+  },
+  {
+    name: "none",
+    label: "Ver todo",
+    body: "Sin adorno. Cuando el link va dentro de una frase o pegado a otro control.",
+  },
+] as const;
+
+const props = [
+  {
+    name: "href",
+    type: "string",
+    default: "requerido",
+    body: "A dónde va. Es la única prop obligatoria: TextLink siempre renderiza un <a>.",
+  },
+  {
+    name: "icon",
+    type: '"chevron" | "arrow" | "none"',
+    default: '"chevron"',
+    body: "Adorno al final del label. chevron es un carácter tipográfico; arrow es un ícono de Lucide.",
+  },
+  {
+    name: "tone",
+    type: '"light" | "dark"',
+    default: '"light"',
+    body: "light = acento sobre fondo claro. dark = acento suave sobre fondo oscuro, porque el acento pleno pierde contraste.",
+  },
+  {
+    name: "size",
+    type: '"sm" | "md"',
+    default: '"md"',
+    body: "sm queda fijo en 15px. md sube a 16px desde 768px.",
+  },
+];
+---
+
+<PerfumeUILayout
+  title="TextLink"
+  description="El link de texto en acento de PerfumeUI: el CTA que acompaña sin competir con el botón."
+>
+  <DocsHeader
+    name="TextLink"
+    lead="Todo link secundario del sistema pasa por acá. Es el CTA que acompaña al botón sin competirle: mismo acento, sin caja, sin peso."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Adornos</h2>
+    <p class="pui-block__body">
+      El adorno no es decoración: dice qué tipo de salida es. El chevron lleva
+      a más de lo mismo (un listado, una grilla). La flecha lleva a otra cosa
+      (un detalle, otra pantalla).
+    </p>
+
+    <div class="pui-grid">
+      {
+        icons.map((i) => (
+          <div class="pui-preview">
+            <div class="pui-preview__stage pui-preview__stage--light">
+              <TextLink href="#" icon={i.name}>
+                {i.label}
+              </TextLink>
+            </div>
+            <div class="pui-preview__foot">
+              <span class="pui-mono">icon={i.name}</span>
+              <p class="pui-preview__caption">{i.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Tono</h2>
+    <p class="pui-block__body">
+      Sobre fondo oscuro el acento pleno no llega al contraste que pide el
+      texto chico, así que <span class="pui-mono">tone=dark</span> lo cambia por
+      <span class="pui-mono">--accent-soft</span> y lleva el hover a blanco. Es
+      la misma decisión que toman todas las primitivas al cruzar a una
+      superficie oscura.
+    </p>
+
+    <div class="pui-grid">
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--light">
+          <TextLink href="#" tone="light">Ver más</TextLink>
+        </div>
+        <div class="pui-preview__foot">
+          <span class="pui-mono">tone=light</span>
+          <p class="pui-preview__caption">Sobre superficie clara.</p>
+        </div>
+      </div>
+
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--dark">
+          <TextLink href="#" tone="dark">Ver más</TextLink>
+        </div>
+        <div class="pui-preview__foot">
+          <span class="pui-mono">tone=dark</span>
+          <p class="pui-preview__caption">
+            Sobre <span class="pui-mono">--surface-dark</span> o sobre foto.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Tamaños</h2>
+    <p class="pui-block__body">
+      Dos tallas y nada más. La diferencia aparece recién en desktop: en mobile
+      las dos miden 15px.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--light size-row">
+        <div class="size-item">
+          <TextLink href="#" size="sm">Ver más</TextLink>
+          <span class="pui-mono pui-mono--faint">sm · 15px fijo</span>
+        </div>
+        <div class="size-item">
+          <TextLink href="#" size="md">Ver más</TextLink>
+          <span class="pui-mono pui-mono--faint">md · 15 → 16px</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Hacé / No hagas</h2>
+    <p class="pui-block__body">
+      TextLink y Button no son intercambiables: son dos niveles de la misma
+      jerarquía.
+    </p>
+
+    <div class="pui-dodont">
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media pair">
+          <Button as="span" variant="primary" size="sm">Continuar</Button>
+          <TextLink href="#">Ver más</TextLink>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Un botón para la acción principal y un TextLink al lado para la
+          alternativa. La jerarquía se lee sin leer.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media pair">
+          <Button as="span" variant="primary" size="sm">Continuar</Button>
+          <Button as="span" variant="outline" size="sm">Ver más</Button>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Dos botones para dos acciones de peso distinto. Si todo grita, no hay
+          principal.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media pui-dodont__media--dark">
+          <TextLink href="#" tone="dark">Ver más</TextLink>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Pasar <span class="pui-mono">tone=dark</span> al cruzar a una
+          superficie oscura — el componente no lo detecta solo.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media pui-dodont__media--dark">
+          <a class="fake-link" href="#">Ver más ›</a>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Un <span class="pui-mono">&lt;a&gt;</span> suelto con el acento
+          hardcodeado. Al mover la paleta, este se queda atrás.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  .size-row {
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .pair {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* A propósito fuera del sistema: el acento literal, sin token ni
+     transición. Es el ejemplo de "No hagas". */
+  .fake-link {
+    font-size: 15px;
+    font-weight: 500;
+    color: #c9a227;
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  // Los links de ejemplo son de utilería: muestran el componente, no navegan.
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#"]').forEach((a) => {
+    a.addEventListener("click", (e) => e.preventDefault());
+  });
+</script>

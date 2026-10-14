@@ -1,0 +1,331 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import CardScroller from "@servaltek/perfumeui/components/ui/CardScroller.astro";
+
+/**
+ * Cards de utilería. El scroller no trae card propia — la primitiva Card
+ * todavía no vive en el repo — así que la página arma tres celdas mínimas
+ * con la clase `.card`, que es la que el carril usa para el snap y el
+ * ancho (`:global(.card)` en CardScroller).
+ */
+const cards = [
+  { src: "/pics/lau2-ph.png", title: "Card 01", meta: "Etiqueta" },
+  { src: "/pics/tile-a.png", title: "Card 02", meta: "Etiqueta" },
+  { src: "/pics/tile-b.png", title: "Card 03", meta: "Etiqueta" },
+];
+
+const props = [
+  { name: "title", type: "string", default: "—", body: "Si viene, el carril monta un SectionHeading arriba (size=md, gap=sm). Si falta, no hay cabecera." },
+  { name: "kicker", type: "string", default: "—", body: "Antetítulo de esa cabecera. Se ignora sin title." },
+  { name: "link", type: "CtaLink", default: "—", body: "Link a la derecha del título, dentro de la cabecera. También se ignora sin title." },
+  { name: "infinite", type: "boolean", default: "false", body: "Bucle: clona la tira y envuelve el scroll, así nunca se llega a un extremo. Desactiva el snap." },
+];
+---
+
+<PerfumeUILayout
+  title="CardScroller"
+  description="El carril horizontal de PerfumeUI: snap, flechas y bucle infinito opcional. Las cards llegan por slot."
+>
+  <DocsHeader
+    name="CardScroller"
+    lead="Un carril horizontal con snap y flechas. El scroller aporta el layout y el control; las cards llegan por slot, así el mismo carril sirve para fotos, tarjetas o precios."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Básico</h2>
+    <p class="pui-block__body">
+      Con <span class="pui-mono">title</span> el carril monta arriba un
+      <span class="pui-mono">SectionHeading</span> ya configurado
+      (<span class="pui-mono">size=md</span>,
+      <span class="pui-mono">gap=sm</span>). La primera card alinea con el
+      título y las demás sangran hasta el borde derecho: el corte a mitad de
+      card es lo que avisa que hay más.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--flush">
+        <CardScroller
+          kicker="Antetítulo"
+          title="Título del carril"
+          link={{ label: "Ver todos", href: "#" }}
+        >
+          {
+            cards.map((c) => (
+              <article class="card">
+                <img src={c.src} alt="" loading="lazy" />
+                <div class="card__body">
+                  <h3 class="card__title">{c.title}</h3>
+                  <span class="card__meta">{c.meta}</span>
+                </div>
+              </article>
+            ))
+          }
+        </CardScroller>
+      </div>
+      <div class="pui-preview__foot">
+        <span class="pui-mono">title · kicker · link</span>
+        <p class="pui-preview__caption">
+          Arrastrá el carril o usá las flechas. El snap frena cada card
+          alineada con el título.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Sin cabecera</h2>
+    <p class="pui-block__body">
+      Sin <span class="pui-mono">title</span> el carril es solo la tira y las
+      flechas. Es la forma de usarlo abajo de un
+      <span class="pui-mono">SectionHeading</span> propio, o dentro de un bloque
+      que ya tiene su título.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--flush">
+        <CardScroller>
+          {
+            cards.map((c) => (
+              <article class="card card--bare">
+                <img src={c.src} alt="" loading="lazy" />
+              </article>
+            ))
+          }
+        </CardScroller>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Bucle infinito</h2>
+    <p class="pui-block__body">
+      Con <span class="pui-mono">infinite</span> el carril clona la tira y
+      envuelve el scroll: nunca se llega a un extremo y las flechas nunca se
+      apagan. El snap se desactiva a propósito — en un bucle no hay un
+      «principio» al que anclar, y el snap pelea con la corrección de scroll que
+      hace el wrap.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--flush">
+        <CardScroller title="Carril en bucle" infinite>
+          {
+            cards.map((c) => (
+              <article class="card">
+                <img src={c.src} alt="" loading="lazy" />
+                <div class="card__body">
+                  <h3 class="card__title">{c.title}</h3>
+                  <span class="card__meta">{c.meta}</span>
+                </div>
+              </article>
+            ))
+          }
+        </CardScroller>
+      </div>
+      <div class="pui-preview__foot">
+        <span class="pui-mono">infinite</span>
+        <p class="pui-preview__caption">
+          En modo bucle las imágenes se piden por adelantado: sin ancho medido
+          no se puede calcular la vuelta.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">El contrato del slot</h2>
+    <p class="pui-block__body">
+      El carril no trae card propia: espera hijos con la clase
+      <span class="pui-mono">.card</span>, que es a la que le aplica
+      <span class="pui-mono">flex: 0 0 auto</span> y
+      <span class="pui-mono">scroll-snap-align: start</span>. Las cards no
+      llevan ancho fijo — cada una la define su contenido (en la práctica, el
+      ratio de su foto), y el carril mide ese ancho para saber cuánto avanzar.
+    </p>
+
+    <div class="pui-grid">
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--soft contract">
+          <code class="snippet">
+            &lt;CardScroller title="..."&gt;<br />
+            &nbsp;&nbsp;&lt;article class="card"&gt;…&lt;/article&gt;<br />
+            &nbsp;&nbsp;&lt;article class="card"&gt;…&lt;/article&gt;<br />
+            &lt;/CardScroller&gt;
+          </code>
+        </div>
+        <div class="pui-preview__foot">
+          <p class="pui-preview__caption">
+            Cualquier etiqueta sirve mientras tenga <span class="pui-mono">.card</span>.
+          </p>
+        </div>
+      </div>
+
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--soft contract">
+          <ul class="checklist">
+            <li>Ancho: lo pone la card, no el carril.</li>
+            <li>Alto: parejo entre cards, o el snap salta.</li>
+            <li>Cantidad: en modo bucle, al menos 3.</li>
+            <li>Fotos: siempre con <span class="pui-mono">loading=lazy</span>.</li>
+          </ul>
+        </div>
+        <div class="pui-preview__foot">
+          <p class="pui-preview__caption">Lo que el carril espera de sus hijos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Hacé / No hagas</h2>
+
+    <div class="pui-dodont">
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet">&lt;Section space="flush" bleed&gt;</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Montarlo dentro de una Section a sangre. El carril ya se alinea solo
+          con <span class="pui-mono">--gutter</span>: si le agregás otro
+          contenedor con padding, se desalinea del resto de la página.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet snippet--bad"
+            >&lt;div class="mi-grilla"&gt;&lt;CardScroller /&gt;&lt;/div&gt;</code
+          >
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Meterlo en un contenedor angosto. Pierde el sangrado a la derecha y
+          con él la pista de que hay más cards.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet">title="Título del carril"</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Usar la cabecera del propio carril. Sale de SectionHeading, así que
+          respeta la escala del sistema sin que la página elija nada.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet snippet--bad">infinite · 2 cards</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Bucle con dos cards. La vuelta mide menos que la pantalla y el wrap
+          se nota como un salto.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  /* Cards de utilería de esta página. La primitiva Card todavía no existe:
+     acá solo importa que tengan la clase `.card` que el carril usa. */
+  .card {
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+    display: block;
+  }
+
+  .card--bare img {
+    height: 140px;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .card__meta {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  /* ---- Contrato ---- */
+  .contract {
+    padding: 32px 24px;
+  }
+
+  .checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+
+  .checklist li {
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .checklist li::before {
+    content: "·";
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .snippet {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink);
+    background: var(--surface);
+    border-radius: var(--radius-input);
+    padding: 14px 16px;
+  }
+
+  .snippet--bad {
+    color: var(--ink-muted);
+    text-align: center;
+  }
+</style>
+
+<script>
+  // El link de la cabecera de ejemplo es de utilería: no navega.
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#"]').forEach((a) => {
+    a.addEventListener("click", (e) => e.preventDefault());
+  });
+</script>

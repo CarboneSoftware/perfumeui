@@ -1,0 +1,42 @@
+---
+---
+
+<footer class="pui-footer">
+  <div class="pui-footer__row">
+    <span class="pui-footer__left">PerfumeUI · El sistema de diseño de Servaltek</span>
+    <span class="pui-footer__right">Documentación interna</span>
+  </div>
+</footer>
+
+<style>
+  .pui-footer {
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    padding: 40px 24px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .pui-footer {
+      padding: 40px 56px;
+    }
+  }
+
+  .pui-footer__row {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    justify-content: space-between;
+  }
+
+  .pui-footer__left {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .pui-footer__right {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+</style>

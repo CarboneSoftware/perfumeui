@@ -1,0 +1,174 @@
+---
+/**
+ * Cáscara estándar de sección: fondo + ritmo vertical + contenedor centrado.
+ *
+ * Toda sección de página se envuelve acá. Los componentes de `sections/` solo
+ * aportan su contenido: el fondo, el padding y el ancho máximo salen de estas
+ * props, así el ritmo de la página es el mismo en todas.
+ */
+import type { Surface } from "../types";
+
+interface Props {
+  id?: string;
+  /** Fondo de la sección. */
+  surface?: Surface;
+  /** Ancho del contenido centrado. */
+  width?: "default" | "narrow" | "full";
+  /** Ritmo vertical. `flush` = sin padding (bandas a sangre). */
+  space?: "default" | "tight" | "flush";
+  /** Sin contenedor interno: el slot ocupa todo el ancho. */
+  bleed?: boolean;
+  /** En desktop ocupa el alto de la pantalla, con el contenido centrado. */
+  fill?: boolean;
+  /** Línea divisoria de 1px arriba y/o abajo. */
+  divider?: "none" | "top" | "bottom" | "both";
+  as?: "section" | "header" | "footer" | "div";
+  class?: string;
+  label?: string;
+}
+
+const {
+  id,
+  surface = "white",
+  width = "default",
+  space = "default",
+  bleed = false,
+  fill = false,
+  divider = "none",
+  as: Tag = "section",
+  class: className,
+  label,
+} = Astro.props;
+---
+
+<Tag
+  id={id}
+  aria-label={label}
+  class:list={[
+    "section",
+    `section--${surface}`,
+    `section--space-${space}`,
+    `section--divider-${divider}`,
+    { "section--fill": fill },
+    className,
+  ]}
+>
+  {
+    bleed ? (
+      <slot />
+    ) : (
+      <div class:list={["section__inner", `section__inner--${width}`]}>
+        <slot />
+      </div>
+    )
+  }
+</Tag>
+
+<style lang="scss">
+  .section {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ---- Ritmo vertical ---- */
+  .section--space-default {
+    padding-block: var(--section-py);
+
+    @media screen and (min-width: 1085px) {
+      padding-block: var(--section-py-lg);
+    }
+  }
+
+  .section--space-tight {
+    padding-block: var(--section-py-sm);
+
+    @media screen and (min-width: 1085px) {
+      padding-block: var(--section-py-sm-lg);
+    }
+  }
+
+  .section--space-flush {
+    padding-block: 0;
+  }
+
+  /* Pausa narrativa: la sección ocupa la pantalla y centra su contenido. */
+  .section--fill {
+    @media screen and (min-width: 1085px) {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+
+  /* ---- Divisorias ---- */
+  .section--divider-top,
+  .section--divider-both {
+    border-top: 1px solid var(--line);
+  }
+
+  .section--divider-bottom,
+  .section--divider-both {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section--dark.section--divider-top,
+  .section--dark.section--divider-both {
+    border-top-color: var(--line-on-dark);
+  }
+
+  .section--dark.section--divider-bottom,
+  .section--dark.section--divider-both {
+    border-bottom-color: var(--line-on-dark);
+  }
+
+  /* ---- Fondos ---- */
+  .section--white {
+    background: var(--surface);
+  }
+
+  .section--subtle {
+    background: var(--surface-subtle);
+  }
+
+  .section--muted {
+    background: var(--surface-muted);
+  }
+
+  .section--alt {
+    background: var(--surface-alt);
+  }
+
+  .section--dark {
+    background: var(--surface-dark);
+    color: var(--ink-on-dark);
+  }
+
+  .section--none {
+    background: transparent;
+  }
+
+  /* ---- Contenedor ---- */
+  .section__inner {
+    width: 100%;
+    margin: 0 auto;
+    padding-inline: var(--section-px);
+    box-sizing: border-box;
+
+    @media screen and (min-width: 768px) {
+      padding-inline: var(--section-px-lg);
+    }
+  }
+
+  .section__inner--default {
+    max-width: var(--content-max);
+  }
+
+  .section__inner--narrow {
+    max-width: var(--content-narrow);
+  }
+
+  .section__inner--full {
+    max-width: none;
+  }
+</style>

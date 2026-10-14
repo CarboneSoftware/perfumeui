@@ -1,0 +1,126 @@
+---
+/**
+ * Contenido del sidebar de navegación de PerfumeUI. Se renderiza dos veces
+ * desde PerfumeUILayout: fijo en desktop y dentro del drawer en mobile —
+ * este componente solo aporta la lista, no el contenedor sticky/drawer.
+ */
+import { perfumeUINav } from "@/data/perfumeui-nav";
+
+// Sin barra final, así "/tokens" y "/tokens/" marcan igual.
+const strip = (path: string) => path.replace(/\/+$/, "") || "/";
+const current = strip(Astro.url.pathname);
+---
+
+<div class="pui-sidebar-nav">
+  {
+    perfumeUINav.map((group) => (
+      <div class="pui-sidebar-group">
+        <div class="pui-sidebar-group__label">{group.label}</div>
+        <div class="pui-sidebar-group__items">
+          {group.items.map((item) =>
+            item.href ? (
+              <a
+                class="pui-sidebar-item"
+                href={item.href}
+                aria-current={strip(item.href) === current ? "page" : undefined}
+              >
+                {item.name}
+              </a>
+            ) : (
+              <span class="pui-sidebar-item pui-sidebar-item--soon">
+                {item.name}
+              </span>
+            ),
+          )}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  /* Mismo diseño que el DocsSidebar de la guía de Fluxenture
+     (flux-landing/src/components/guide/DocsSidebar.astro). */
+  .pui-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pui-sidebar-group {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pui-sidebar-group__label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .pui-sidebar-group__items {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding-left: 14px;
+    margin-left: 1px;
+  }
+
+  .pui-sidebar-item {
+    all: unset;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--ink-muted);
+    border-radius: 6px;
+    padding: 9px 12px;
+    margin: -6px -12px;
+    box-sizing: border-box;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .pui-sidebar-item:hover {
+    color: var(--ink);
+  }
+
+  .pui-sidebar-item:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .pui-sidebar-item[aria-current="page"] {
+    background: var(--aside-item-hover);
+    color: var(--ink);
+    font-weight: 500;
+
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      left: -10px;
+      top: 20%;
+      bottom: 0;
+      width: 4px;
+      height: 60%;
+      background-color: var(--accent);
+      border-radius: 2px;
+    }
+  }
+
+  .pui-sidebar-item--soon {
+    cursor: default;
+    opacity: 0.55;
+  }
+
+  .pui-sidebar-item--soon:hover {
+    color: var(--ink-muted);
+  }
+</style>

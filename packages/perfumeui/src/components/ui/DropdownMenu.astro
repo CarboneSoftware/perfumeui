@@ -1,0 +1,164 @@
+---
+/**
+ * DropdownMenu — panel flotante anclado a un trigger.
+ *
+ * El trigger va en el slot `trigger` y lo aporta quien usa el componente (un
+ * botón, un link, un avatar); tiene que llevar `data-dropdown-trigger`. El
+ * contenido del panel va en el slot por defecto. El componente no opina sobre
+ * qué hay adentro: sólo la caja, la posición y el comportamiento de apertura.
+ *
+ * El panel se posiciona contra la raíz `.dropdown` (position: relative), no
+ * contra un ancestro lejano. Eso lo hace inmune al `backdrop-filter` del nav,
+ * que convierte a ese elemento en contenedor de sus hijos posicionados y ya
+ * obligó al drawer a vivir fuera del <nav>.
+ *
+ * Progressive enhancement: si el trigger es un <a href>, sin JS el click
+ * navega normalmente. El listener recién entonces hace preventDefault.
+ *
+ * `data-dropdown-disabled` en la raíz desactiva la apertura sin desmontar
+ * nada, y sin llamar a preventDefault — así el consumidor puede dejar su
+ * propio handler a cargo del click (AppNavbar lo usa para que, deslogueado,
+ * el botón siga disparando el login en vez de abrir un menú vacío).
+ */
+interface Props {
+  /** Contra qué borde del trigger se alinea el panel. */
+  align?: "start" | "end";
+  /** Fuerza el set de tokens del panel. Omitido, hereda el del subárbol. */
+  theme?: "light" | "dark";
+  /** Ancho del panel. */
+  width?: string;
+  /** Arranca desactivado (el consumidor lo habilita en runtime). */
+  disabled?: boolean;
+  id?: string;
+}
+
+const {
+  align = "end",
+  theme,
+  width = "300px",
+  disabled = false,
+  id = `dropdown-${Math.random().toString(36).slice(2, 8)}`,
+} = Astro.props;
+---
+
+<div
+  class="dropdown"
+  data-dropdown
+  data-align={align}
+  data-dropdown-disabled={disabled ? "" : undefined}
+>
+  <slot name="trigger" />
+
+  <div
+    class="dropdown__panel"
+    data-dropdown-panel
+    id={id}
+    data-wtl-theme={theme}
+    role="menu"
+    style={`--dropdown-w: ${width};`}
+    hidden
+  >
+    <slot />
+  </div>
+</div>
+
+<script>
+  // Un solo script para todas las instancias: Astro deduplica y hoistea los
+  // <script> de componente, así que corre una vez y hay que cablear cada raíz.
+  document.querySelectorAll<HTMLElement>("[data-dropdown]").forEach((root) => {
+    const trigger = root.querySelector<HTMLElement>("[data-dropdown-trigger]");
+    const panel = root.querySelector<HTMLElement>("[data-dropdown-panel]");
+    if (!trigger || !panel) return;
+
+    trigger.setAttribute("aria-haspopup", "menu");
+    trigger.setAttribute("aria-expanded", "false");
+    if (panel.id) trigger.setAttribute("aria-controls", panel.id);
+
+    // Estado propio en vez de leer `panel.hidden`: el atributo está tipado
+    // `boolean | "until-found"`, así que no sirve como booleano de lectura.
+    let open = false;
+    const setOpen = (next: boolean) => {
+      open = next;
+      panel.hidden = !next;
+      root.classList.toggle("is-open", next);
+      trigger.setAttribute("aria-expanded", String(next));
+    };
+
+    trigger.addEventListener("click", (e) => {
+      if (root.hasAttribute("data-dropdown-disabled")) return;
+      e.preventDefault();
+      setOpen(!open);
+    });
+
+    // Click afuera. El click del propio trigger burbujea hasta acá, pero cae
+    // dentro de `root`, así que no se cierra apenas se abrió.
+    document.addEventListener("click", (e) => {
+      if (open && !root.contains(e.target as Node)) setOpen(false);
+    });
+
+    // Elegir una opción cierra el menú (navegue o no).
+    panel.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a, button")) setOpen(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && open) {
+        setOpen(false);
+        trigger.focus();
+      }
+    });
+  });
+</script>
+
+<style>
+  .dropdown {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .dropdown__panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    width: var(--dropdown-w, 300px);
+    /* En mobile el trigger está pegado al borde derecho: sin este tope el
+       panel se sale de la pantalla y aparece scroll horizontal. */
+    max-width: calc(100vw - 24px);
+    box-sizing: border-box;
+    z-index: 30;
+
+    background: var(--gs-100);
+    color: var(--font-color-100);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.116);
+    box-shadow:
+      0 0 2px rgba(0, 0, 0, 0.12),
+      0 4px 8px rgba(0, 0, 0, 0.14);
+
+    animation: dropdown-in var(--t-fast, 0.15s) var(--ease-out, ease);
+  }
+
+  .dropdown[data-align="end"] .dropdown__panel {
+    right: 0;
+  }
+
+  .dropdown[data-align="start"] .dropdown__panel {
+    left: 0;
+  }
+
+  @keyframes dropdown-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dropdown__panel {
+      animation: none;
+    }
+  }
+</style>

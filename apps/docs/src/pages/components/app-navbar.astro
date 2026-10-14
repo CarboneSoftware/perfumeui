@@ -1,0 +1,292 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+
+const usage = `---
+import AppNavbar from "@servaltek/perfumeui/components/ui/AppNavbar.astro";
+
+const navItems = [
+  { label: "Inicio", url: "/" },
+  { label: "Servicios", url: "#servicios" },
+  { label: "Contacto", url: "#contacto" },
+];
+---
+
+<AppNavbar navItems={navItems} />`;
+
+const anatomy = `<nav data-scroll-states data-section-states>   ← barra sticky de 56px
+  .content
+    .wrap  (logo + links)        flex: 1, min-width: 0
+      a.logo → logotype light/dark (+ pipe + title)
+      .desktop-nav
+        .desktop-nav-list → .desktop-nav-item × N
+        .nav-more → DropdownMenu "Más"
+    .wrap  (acciones)            flex: none
+      button[data-theme-toggle]  (si themeToggle)
+      DropdownMenu#account-menu → a.user-btn + panel .account
+      button.menu-btn            (solo < 768px)
+</nav>
+<aside id="drawer">   ← menú mobile, hermano del nav
+<button id="filter">  ← fondo translúcido que cierra el drawer`;
+
+const states = `<AppNavbar
+  navItems={navItems}
+  theme="dark"
+  backgroundColor="transparent"
+  position="fixed"
+  scrollStates={[
+    // Pasado el 80% del alto de la pantalla, el nav pasa a claro.
+    { at: "80vh", add: "light", remove: "dark" },
+  ]}
+  sectionStates={[
+    // Mientras #precios esté debajo del nav, vuelve a oscuro.
+    { selector: "#precios", add: "dark", remove: "light" },
+  ]}
+/>`;
+
+const behaviors = [
+  {
+    title: "1 · Sesión (SSO de Servaltek)",
+    body: "checkSession() de lib/auth prueba la sesión guardada en la pestaña y, si no hay, un signinSilent contra Keycloak. Sin sesión, el ícono de cuenta dispara login(). Con sesión, habilita el dropdown y llena nombre, mail e iniciales (.has-initials en la raíz del dropdown). Si algo falla, el ícono queda como deslogueado: nunca muestra el error.",
+  },
+  {
+    title: "2 · Drawer mobile",
+    body: "setDrawer(open) pone o saca .opened en nav, drawer y filter, y bloquea el scroll del body. Se cierra con ESC, con click en el fondo (#filter) o con click en cualquier link del drawer. Por debajo de 768px es la única navegación.",
+  },
+  {
+    title: "3 · Menú \"Más\"",
+    body: "Un ResizeObserver mide los links de la barra y, si no entran, pasa al dropdown \"Más\" los que sobran, de derecha a izquierda y en orden. Se recalcula con document.fonts.ready porque el ancho depende de la fuente cargada.",
+  },
+  {
+    title: "4 · Botón de tema",
+    body: "Solo con themeToggle. applyTheme escribe data-wtl-theme y data-theme en <html>, flipea las clases del nav, del drawer y del filter, y guarda la elección en localStorage[\"wtl-theme\"]. Un script inline lee <html data-wtl-theme> antes del primer pintado para que no parpadee.",
+  },
+  {
+    title: "5 · scrollStates",
+    body: "Clases que se agregan o se sacan según scrollY. at y until aceptan px, \"Nvh\" o \"N%\" del rango scrolleable. Se reevalúa en scroll y en resize.",
+  },
+  {
+    title: "6 · sectionStates",
+    body: "Clases activas mientras un selector cruza la línea inferior del nav. Es más robusto que scrollStates con vh cuando el umbral depende del contenido.",
+  },
+];
+
+const props = [
+  { name: "navItems", type: "{ label: string; url: string }[]", default: "—", body: "Links de la barra, del drawer y del menú \"Más\". Los mismos items en los tres lugares." },
+  { name: "title", type: "string", default: "—", body: "Texto al lado del logo, separado por una barra vertical. Ej: \"PerfumeUI\", \"Developer\"." },
+  { name: "theme", type: '"light" | "dark"', default: '"light"', body: "Tema inicial. Va como clase y como data-wtl-theme en nav, drawer y filter." },
+  { name: "backgroundColor", type: "string", default: "—", body: "Color de fondo inline del nav y del drawer. Sin él, usa --navbar-bg del tema." },
+  { name: "position", type: '"sticky" | "fixed" | …', default: '"sticky"', body: "Posición CSS del nav. fixed para heroes que van por debajo del navbar." },
+  { name: "maxWidth", type: "string", default: '"var(--content-max)"', body: "Ancho máximo del contenido interno." },
+  { name: "scrollStates", type: "ScrollState[]", default: "[]", body: "{ at, until?, add?, remove? }. Clases según la posición de scroll." },
+  { name: "sectionStates", type: "SectionState[]", default: "[]", body: "{ selector, add?, remove? }. Clases mientras una sección cruza el nav." },
+  { name: "themeToggle", type: "boolean", default: "false", body: "Muestra el botón claro/oscuro. servaltek.com no lo usa." },
+  { name: "borderBottom", type: "boolean", default: "false", body: "Hairline de 1px abajo del nav, en --border del tema (cambia sola con claro/oscuro). El alto total sigue en 56px." },
+];
+
+const deps = [
+  ["lib/auth.ts", "login, logout y checkSession (oidc-client-ts contra auth.servaltek.com). Cada proyecto tiene su propio client_id y sus redirect URIs."],
+  ["ui/DropdownMenu.astro", "El menú \"Más\" y el menú de cuenta."],
+  ["global.css → .icon-btn", "Los botones redondos de 40px (tema, cuenta, hamburguesa)."],
+  ["public/res/stek-logotype-light.png y -dark.png", "Los dos logos. Se muestra uno u otro según la clase de tema del nav."],
+  ["PUBLIC_APP_URL", "href del ícono de cuenta. Si falta, usa app.witlens.studio."],
+  ["perfumeui-tokens.scss", "--navbar-bg, --scrim, --font-color-*, --gs-*, --hover-layer, --radius-pill, --space-*."],
+];
+
+const widths = [
+  { label: "100%", value: "100%" },
+  { label: "1024", value: "1024px" },
+  { label: "820", value: "820px" },
+  { label: "375", value: "375px" },
+];
+---
+
+<PerfumeUILayout
+  title="AppNavbar"
+  description="El navbar de los sitios de Servaltek: logo, links con desborde, cuenta SSO, drawer mobile y estados por scroll."
+>
+  <DocsHeader
+    family="Navegación"
+    name="AppNavbar"
+    lead="La barra de arriba de todos los sitios de Servaltek. Casi todo el comportamiento vive en el cliente: sesión SSO, drawer, desborde de links, tema y estados que cambian con el scroll."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">En vivo</h2>
+    <p class="pui-block__body">
+      El navbar de arriba de esta página es el componente real. Abajo hay otra
+      instancia en un marco aparte, con ocho links, <span class="pui-mono">themeToggle</span>
+      y un <span class="pui-mono">sectionStates</span>. Cambiá el ancho para ver
+      el menú "Más" y el drawer, y scrolleá adentro del marco. Los links y el
+      ícono de cuenta del demo no hacen nada, para que el marco no se vaya de
+      la página ni dispare el login.
+    </p>
+
+    <div class="pui-frame-controls" data-frame-widths>
+      {
+        widths.map((w, i) => (
+          <button
+            type="button"
+            class="pui-chip"
+            data-width={w.value}
+            aria-pressed={i === 0 ? "true" : "false"}
+          >
+            {w.label}
+          </button>
+        ))
+      }
+    </div>
+    <iframe
+      class="pui-frame"
+      id="navbar-frame"
+      src="/demo/app-navbar"
+      title="Demo del AppNavbar"
+      loading="lazy"></iframe>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Uso</h2>
+    <pre class="pui-code">{usage}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Anatomía</h2>
+    <p class="pui-block__body">
+      El componente genera tres elementos hermanos, no uno. El drawer va
+      fuera del <span class="pui-mono">&lt;nav&gt;</span> a propósito: el nav
+      tiene <span class="pui-mono">backdrop-filter</span>, y eso haría que un
+      <span class="pui-mono">position: fixed</span> adentro se posicione contra
+      el nav y no contra la ventana.
+    </p>
+    <pre class="pui-code">{anatomy}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Comportamiento</h2>
+    <p class="pui-block__body">
+      Un solo <span class="pui-mono">&lt;script&gt;</span> con seis partes
+      independientes. Todas buscan sus elementos en el documento, no dentro del
+      componente.
+    </p>
+    <div class="pui-grid pui-grid--wide">
+      {
+        behaviors.map((b) => (
+          <div class="pui-card">
+            <p class="pui-card__title">{b.title}</p>
+            <p class="pui-card__text">{b.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Estados por scroll</h2>
+    <p class="pui-block__body">
+      Cada estado agrega una clase mientras está activo y saca otra mientras
+      no lo está. Las clases se copian a nav, drawer y filter, y después
+      <span class="pui-mono">syncTheme()</span> vuelve a escribir
+      <span class="pui-mono">data-wtl-theme</span> según si quedó
+      <span class="pui-mono">.dark</span>. Por eso
+      <span class="pui-mono">add: "dark", remove: "light"</span> alcanza para
+      cambiar todos los tokens del navbar.
+    </p>
+    <pre class="pui-code">{states}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Tema</h2>
+    <p class="pui-block__body">
+      Nav, drawer y filter llevan cada uno su propio
+      <span class="pui-mono">data-wtl-theme</span>, que trae el set de tokens
+      para ese subárbol. El CSS del componente solo define alias
+      (<span class="pui-mono">--color</span>, <span class="pui-mono">--background</span>,
+      <span class="pui-mono">--navbar-color</span>, <span class="pui-mono">--traslucid</span>)
+      sobre esos tokens: no hay colores literales ni un bloque
+      <span class="pui-mono">.dark</span>. Los dos logos y los dos íconos del
+      botón de tema están siempre en el DOM; el CSS muestra uno u otro según
+      <span class="pui-mono">nav.dark</span>, así el cambio no parpadea.
+    </p>
+    <p class="pui-block__body">
+      Para que el tema elegido con <span class="pui-mono">themeToggle</span>
+      sobreviva a una recarga, el layout tiene que poner
+      <span class="pui-mono">data-wtl-theme</span> en
+      <span class="pui-mono">&lt;html&gt;</span> desde
+      <span class="pui-mono">localStorage["wtl-theme"]</span> en el
+      <span class="pui-mono">&lt;head&gt;</span>. El BaseLayout de este sitio
+      todavía no lo hace.
+    </p>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Dependencias</h2>
+    <p class="pui-block__body">
+      Lo que el componente necesita del proyecto que lo usa.
+    </p>
+    <ul class="pui-list">
+      {
+        deps.map(([name, body]) => (
+          <li>
+            <span class="pui-mono">{name}</span>: {body}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Hacé / No hagas</h2>
+    <div class="pui-dodont">
+      <div class="pui-dodont__card">
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Un solo AppNavbar por página, como primer elemento del body. Para
+          mostrar otro (como en esta página), usá un iframe.
+        </p>
+      </div>
+      <div class="pui-dodont__card">
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Dos navbars en la misma página, ni otro <span class="pui-mono">&lt;nav&gt;</span>
+          antes que él: el script usa <span class="pui-mono">#drawer</span>,
+          <span class="pui-mono">#filter</span> y el primer
+          <span class="pui-mono">nav</span> del documento.
+        </p>
+      </div>
+      <div class="pui-dodont__card">
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Usá <span class="pui-mono">sectionStates</span> cuando el cambio
+          depende de una sección concreta (una banda oscura, el hero).
+        </p>
+      </div>
+      <div class="pui-dodont__card">
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Calcular a mano en <span class="pui-mono">vh</span> dónde empieza
+          una sección: cambia con el alto de la pantalla y con el contenido.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<script>
+  const frame = document.getElementById("navbar-frame") as HTMLIFrameElement | null;
+  const group = document.querySelector<HTMLElement>("[data-frame-widths]");
+
+  group?.addEventListener("click", (e) => {
+    const chip = (e.target as HTMLElement).closest<HTMLButtonElement>(".pui-chip");
+    if (!chip || !frame) return;
+    group.querySelectorAll(".pui-chip").forEach((c) =>
+      c.setAttribute("aria-pressed", String(c === chip)),
+    );
+    frame.style.width = chip.dataset.width ?? "100%";
+  });
+</script>

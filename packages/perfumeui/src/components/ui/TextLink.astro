@@ -1,0 +1,70 @@
+---
+/**
+ * Link de texto en color de acento, con chevron o flecha opcional.
+ * Todo link secundario ("Ver más ›") pasa por acá.
+ */
+import { ArrowRight } from "@lucide/astro";
+import type { Tone } from "../types";
+
+interface Props {
+  href: string;
+  /** Adorno al final del label. */
+  icon?: "chevron" | "arrow" | "none";
+  tone?: Tone;
+  size?: "sm" | "md";
+}
+
+const { href, icon = "chevron", tone = "light", size = "md" } = Astro.props;
+---
+
+<a
+  class:list={["text-link", `text-link--${tone}`, `text-link--${size}`]}
+  href={href}
+>
+  <slot />
+  {icon === "chevron" && <span aria-hidden="true">›</span>}
+  {icon === "arrow" && <ArrowRight size={16} />}
+</a>
+
+<style lang="scss">
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--t-base) ease;
+
+    &:hover {
+      color: var(--accent-hover);
+    }
+
+    span {
+      font-size: 1.2em;
+      line-height: 1;
+    }
+  }
+
+  .text-link--sm {
+    font-size: 15px;
+  }
+
+  .text-link--md {
+    font-size: 15px;
+
+    @media screen and (min-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  /* Sobre fondo oscuro el acento pierde contraste: usamos su versión suave. */
+  .text-link--dark {
+    color: var(--accent-soft);
+
+    &:hover {
+      color: var(--ink-on-dark);
+    }
+  }
+</style>

@@ -1,0 +1,146 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import DemoScene from "@/components/docs/DemoScene.astro";
+import HeroSlide from "@servaltek/perfumeui/components/hero/HeroSlide.astro";
+
+const usage = `---
+import HeroSlide from "@servaltek/perfumeui/components/hero/HeroSlide.astro";
+import HubVisual from "@servaltek/perfumeui/components/hero/visuals/HubVisual.astro";
+---
+
+<HeroSlide
+  stage="blue"
+  badge="Plataforma"
+  title="Una cuenta para todo Servaltek"
+  body="Witlens, Fluxenture y Donavelle con el mismo usuario."
+  cta={{ label: "Crear cuenta", href: "/registro" }}
+  headingLevel={1}
+>
+  <HubVisual slot="visual" />
+</HeroSlide>`;
+
+const anatomy = `<div class="hero-slide hero-slide--{stage}">
+  .hero-slide__stage                    gradiente; 320px mobile, clamp(540px, 40vw, 640px) desktop
+    .hero-slide__visual  aria-hidden    <slot name="visual" />
+    .hero-slide__desktop.container → HeroTextContent tone="dark"   ≥ 1085px
+  .hero-slide__mobile.container    → HeroTextContent tone="dark"   < 1085px, debajo del stage
+</div>`;
+
+const stages = [
+  { name: "blue", title: "blue", body: "El default. Azul de marca." },
+  { name: "periwinkle", title: "periwinkle", body: "Azul lavanda." },
+  { name: "sky", title: "sky", body: "Celeste." },
+] as const;
+
+const props = [
+  { name: "title", type: "string", default: "requerido", body: "Título del hero." },
+  { name: "stage", type: '"blue" | "periwinkle" | "sky"', default: '"blue"', body: "Gradiente del fondo. Los tres son de la misma familia de azules." },
+  { name: "badge", type: "string", default: "—", body: "Pastilla arriba del título." },
+  { name: "body", type: "string", default: "—", body: "Bajada." },
+  { name: "cta · secondaryCta", type: "CtaLink", default: "—", body: "{ label, href }. Primary y ghost." },
+  { name: "headingLevel", type: "1 | 2", default: "1", body: "En un carrusel, solo la primera slide lleva 1." },
+  { name: "slot visual", type: "slot", default: "—", body: "Lo que va en el stage. Se marca aria-hidden: tiene que ser decorativo." },
+];
+---
+
+<PerfumeUILayout
+  title="HeroSlide"
+  description="Hero con fondo de gradiente azul y una escena HTML en lugar de una foto."
+>
+  <DocsHeader
+    family="Heroes"
+    name="HeroSlide"
+    lead="El hero del carrusel de la home de Servaltek. Mismo layout que StaticHero, pero el fondo es un gradiente azul y en lugar de una foto lleva una escena HTML en el slot visual."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Ejemplo</h2>
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--flush">
+        <HeroSlide
+          stage="blue"
+          badge="Plataforma"
+          title="Una cuenta para todo Servaltek"
+          body="Witlens, Fluxenture y Donavelle con el mismo usuario y la misma infraestructura."
+          cta={{ label: "Crear cuenta", href: "#" }}
+          secondaryCta={{ label: "Ver proyectos", href: "#" }}
+          headingLevel={2}
+        >
+          <DemoScene
+            slot="visual"
+            title="Tu cuenta"
+            subtitle="Un acceso, todos los productos"
+            pill="Entrar"
+            float={{ title: "Sesión iniciada", body: "en 3 productos" }}
+          />
+        </HeroSlide>
+      </div>
+    </div>
+    <pre class="pui-code">{usage}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Anatomía</h2>
+    <p class="pui-block__body">
+      Igual que StaticHero: el texto va dos veces, encima del stage en desktop
+      y debajo en mobile. Acá las dos copias van siempre en
+      <span class="pui-mono">tone="dark"</span>, porque el gradiente es claro.
+    </p>
+    <pre class="pui-code">{anatomy}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Stage</h2>
+    <div class="pui-grid">
+      {
+        stages.map((s) => (
+          <div class="pui-preview">
+            <div class="pui-preview__stage pui-preview__stage--flush stage-thumb">
+              <HeroSlide stage={s.name} title={s.title} headingLevel={2} />
+            </div>
+            <div class="pui-preview__foot">
+              <span class="pui-mono">{s.name}</span>
+              <p class="pui-preview__caption">{s.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">La escena (slot visual)</h2>
+    <p class="pui-block__body">
+      La escena se arma con las primitivas de
+      <span class="pui-mono">styles/hero-scene.css</span>, que HeroSlide importa:
+      <span class="pui-mono">.scene</span>, <span class="pui-mono">.scene__slab</span>,
+      <span class="pui-mono">.scene-window</span>, <span class="pui-mono">.scene-float</span>,
+      <span class="pui-mono">.scene-pill</span> y <span class="pui-mono">.scene-tile</span>.
+    </p>
+    <ul class="pui-list">
+      <li>Todo se mide en <span class="pui-mono">cqw</span> (container query units): la misma escena escala igual en la banda mobile y en el stage de desktop.</li>
+      <li>En desktop, el visual ocupa la mitad derecha (<span class="pui-mono">min(50%, 780px)</span>); en mobile, todo el stage.</li>
+      <li>Cuando HeroCarousel marca la slide con <span class="pui-mono">.is-active</span>, la escena hace su animación de entrada. Fuera de un carrusel no hay animación. Con <span class="pui-mono">prefers-reduced-motion</span>, tampoco.</li>
+      <li>En servaltek.com las escenas reales son <span class="pui-mono">HubVisual</span>, <span class="pui-mono">ProjectsVisual</span> y <span class="pui-mono">TechVisual</span>, que leen los datos del sitio. La de esta página es un ejemplo de documentación.</li>
+    </ul>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+</PerfumeUILayout>
+
+<style>
+  /* Miniaturas: solo el gradiente del stage, sin las copias del texto. */
+  .stage-thumb :global(.hero-slide__stage) {
+    height: 180px;
+  }
+
+  .stage-thumb :global(.hero-slide__mobile),
+  .stage-thumb :global(.hero-slide__desktop) {
+    display: none;
+  }
+</style>

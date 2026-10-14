@@ -1,0 +1,396 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import SectionHeading from "@servaltek/perfumeui/components/ui/SectionHeading.astro";
+import Section from "@servaltek/perfumeui/components/ui/Section.astro";
+
+const sizes = [
+  {
+    name: "sm",
+    scale: "24 → 30px",
+    title: "Título chico",
+    body: "Para la pregunta de un FAQ o el título de una tarjeta grande.",
+  },
+  {
+    name: "md",
+    scale: "30 → 46px",
+    title: "Título de sección",
+    body: "La talla de trabajo: el título de cualquier sección de página.",
+  },
+  {
+    name: "lg",
+    scale: "34 → 68px",
+    title: "Una declaración.",
+    body: "Declaración. Una por página, para el bloque que tiene que frenar el scroll.",
+  },
+  {
+    name: "xl",
+    scale: "36 → 64px",
+    title: "Título de página",
+    body: "Cabecera de página: el H1 que abre, arriba de todo.",
+  },
+];
+
+const props = [
+  { name: "title", type: "string", default: "requerido", body: "El título. Es la única prop obligatoria." },
+  { name: "kicker", type: "string", default: "—", body: "Antetítulo en mayúsculas con tracking abierto. Ubica el bloque; no repite el título." },
+  { name: "body", type: "string", default: "—", body: "La bajada. Topeada en 60ch (64ch en lg y xl) para que la línea no se estire." },
+  { name: "size", type: '"sm" | "md" | "lg" | "xl"', default: '"md"', body: "La escala tipográfica de los títulos vive acá y solo acá." },
+  { name: "align", type: '"start" | "center"', default: '"start"', body: "center centra el bloque entero, incluido el kicker y la bajada." },
+  { name: "as", type: '"h1" | "h2" | "h3"', default: '"h2"', body: "Nivel semántico del título. Independiente de size: un h2 puede ser xl." },
+  { name: "tone", type: '"light" | "dark"', default: '"light"', body: "dark pasa las tres piezas a las tintas sobre oscuro, incluido el link." },
+  { name: "link", type: "CtaLink", default: "—", body: "Link secundario. Con align=start se va a la derecha del título, en la misma línea." },
+  { name: "gap", type: '"none" | "sm" | "md"', default: '"md"', body: "Separación con el contenido que sigue. Es margin-bottom del propio bloque." },
+  { name: "maxWidth", type: "string", default: "—", body: "Tope del bloque de texto (ej: 60ch, 900px). Solo cuando el default corta mal." },
+];
+---
+
+<PerfumeUILayout
+  title="SectionHeading"
+  description="La cabecera de sección de PerfumeUI: kicker, título, bajada y link, con la única escala tipográfica del sistema."
+>
+  <DocsHeader
+    name="SectionHeading"
+    lead="Kicker, título, bajada y link opcional. Es la única fuente de la escala tipográfica de los títulos: si un título necesita otro tamaño, se agrega una talla acá, no un clamp() suelto en la sección."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Anatomía</h2>
+    <p class="pui-block__body">
+      Cuatro piezas, todas opcionales menos el título. El orden nunca cambia.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--light anatomy">
+        <div class="anatomy__demo">
+          <SectionHeading
+            kicker="Antetítulo"
+            title="Título de sección"
+            body="La bajada: una o dos líneas que ubican el bloque antes de que empiece el contenido."
+            link={{ label: "Ver más", href: "#" }}
+            size="md"
+            gap="none"
+          />
+        </div>
+        <ul class="anatomy__legend">
+          <li><span class="dot dot--kicker"></span> kicker · 13px, tracking .18em</li>
+          <li><span class="dot dot--title"></span> title · escala de size</li>
+          <li><span class="dot dot--body"></span> body · 17px, tope 60ch</li>
+          <li><span class="dot dot--link"></span> link · un TextLink</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Escala</h2>
+    <p class="pui-block__body">
+      Cuatro tallas, todas fluidas: cada una es un
+      <span class="pui-mono">clamp()</span> entre su valor de mobile y el de
+      desktop. Elegí por rol en la página, no por cuántos píxeles querés hoy.
+    </p>
+
+    <div class="pui-stack">
+      {
+        sizes.map((s) => (
+          <div class="pui-preview">
+            <div class="pui-preview__stage pui-preview__stage--light block-stage">
+              <SectionHeading
+                title={s.title}
+                size={s.name as any}
+                as="h3"
+                gap="none"
+              />
+            </div>
+            <div class="pui-preview__foot">
+              <span class="pui-mono">size={s.name} · {s.scale}</span>
+              <p class="pui-preview__caption">{s.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Alineación</h2>
+    <p class="pui-block__body">
+      <span class="pui-mono">start</span> es el default y el que más se usa: el
+      texto arranca donde arranca el contenido. <span class="pui-mono">center</span>
+      es para el bloque que se lee como una pausa, no como el encabezado de una
+      lista.
+    </p>
+
+    <div class="pui-grid pui-grid--wide">
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--light block-stage">
+          <SectionHeading
+            kicker="Antetítulo"
+            title="Título de sección"
+            body="La bajada: una o dos líneas que ubican el bloque."
+            align="start"
+            as="h3"
+            gap="none"
+          />
+        </div>
+        <div class="pui-preview__foot">
+          <span class="pui-mono">align=start</span>
+        </div>
+      </div>
+
+      <div class="pui-preview">
+        <div class="pui-preview__stage pui-preview__stage--light block-stage">
+          <SectionHeading
+            kicker="Antetítulo"
+            title="Título de sección"
+            body="La bajada: una o dos líneas que ubican el bloque."
+            align="center"
+            as="h3"
+            gap="none"
+          />
+        </div>
+        <div class="pui-preview__foot">
+          <span class="pui-mono">align=center</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Con link</h2>
+    <p class="pui-block__body">
+      Pasar <span class="pui-mono">link</span> parte la cabecera en dos: el
+      texto a la izquierda y un <span class="pui-mono">TextLink</span> alineado
+      con la base del título. Abajo de 640px el link baja solo. Es el patrón de
+      «título de sección → Ver todos».
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--light block-stage">
+        <SectionHeading
+          kicker="Antetítulo"
+          title="Título de sección"
+          link={{ label: "Ver todos", href: "#" }}
+          as="h3"
+          gap="none"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Sobre oscuro</h2>
+    <p class="pui-block__body">
+      <span class="pui-mono">tone=dark</span> cambia las tres tintas de una vez
+      — kicker, título y bajada — y le pasa el tono al link. La cabecera no
+      mira el fondo: se lo decís vos, igual que en Button y TextLink.
+    </p>
+
+    <div class="pui-preview">
+      <Section surface="dark" space="tight" width="full">
+        <SectionHeading
+          kicker="Antetítulo"
+          title="Título sobre oscuro"
+          body="La misma cabecera con las tres tintas invertidas y el link en su tono suave."
+          link={{ label: "Ver más", href: "#" }}
+          tone="dark"
+          as="h3"
+          gap="none"
+        />
+      </Section>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Separación</h2>
+    <p class="pui-block__body">
+      <span class="pui-mono">gap</span> es el aire entre la cabecera y lo que
+      viene abajo, y vive en la cabecera — no en el contenido. Así dos secciones
+      con el mismo <span class="pui-mono">gap</span> respiran igual aunque una
+      tenga una grilla y la otra un párrafo.
+    </p>
+
+    <div class="pui-grid">
+      {
+        [
+          { name: "none", value: "0" },
+          { name: "sm", value: "24 → 32px" },
+          { name: "md", value: "40 → 56px" },
+        ].map((g) => (
+          <div class="pui-preview">
+            <div class="pui-preview__stage pui-preview__stage--light gap-stage">
+              <SectionHeading
+                title="Título"
+                size="sm"
+                as="h3"
+                gap={g.name as any}
+              />
+              <div class="gap-stage__content">contenido</div>
+            </div>
+            <div class="pui-preview__foot">
+              <span class="pui-mono">gap={g.name}</span>
+              <p class="pui-preview__caption">{g.value}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Hacé / No hagas</h2>
+
+    <div class="pui-dodont">
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet">&lt;SectionHeading as="h2" size="lg" /&gt;</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Separar semántica de escala. <span class="pui-mono">as</span> es para
+          el lector de pantalla; <span class="pui-mono">size</span>, para el ojo.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet snippet--bad"
+            >&lt;h2 style="font-size: clamp(32px, 4vw, 48px)"&gt;</code
+          >
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Un <span class="pui-mono">clamp()</span> suelto en la sección. Es una
+          quinta talla que nadie decidió y que nadie va a mantener.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet">kicker="Antetítulo"</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Un kicker que ubica el bloque dentro de la página: dice dónde estás,
+          no qué dice el título.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet snippet--bad">kicker="Título de sección"</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Un kicker que repite el título en minúscula. Ocupa una línea y no
+          agrega información.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  .block-stage {
+    display: block;
+    padding: 40px 32px;
+  }
+
+  /* ---- Anatomía ---- */
+  .anatomy {
+    display: grid;
+    gap: 32px;
+    padding: 40px 32px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media screen and (min-width: 860px) {
+    .anatomy {
+      grid-template-columns: minmax(0, 1fr) 220px;
+      align-items: center;
+    }
+  }
+
+  .anatomy__legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  .anatomy__legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    background: var(--ink-muted);
+  }
+
+  .dot--kicker {
+    background: var(--ink-soft);
+  }
+
+  .dot--title {
+    background: var(--ink);
+  }
+
+  .dot--link {
+    background: var(--accent);
+  }
+
+  /* ---- Gap ---- */
+  .gap-stage {
+    display: block;
+    padding: 32px 24px;
+  }
+
+  .gap-stage__content {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-input);
+    padding: 14px;
+    text-align: center;
+  }
+
+  /* ---- Snippets ---- */
+  .snippet {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border-radius: var(--radius-input);
+    padding: 12px 14px;
+    text-align: center;
+  }
+
+  .snippet--bad {
+    color: var(--ink-muted);
+  }
+</style>
+
+<script>
+  // Los links de las cabeceras de ejemplo son de utilería.
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#"]').forEach((a) => {
+    a.addEventListener("click", (e) => e.preventDefault());
+  });
+</script>

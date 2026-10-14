@@ -1,0 +1,426 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+
+const accents = [
+  { name: "--accent", hex: "#2563eb" },
+  { name: "--accent-hover", hex: "#1d4ed8" },
+  { name: "--accent-light", hex: "#509cff" },
+  { name: "--accent-ink", hex: "#ffffff" },
+];
+
+const lightRamp = [
+  "#ffffff",
+  "#f7f7f7",
+  "#ececec",
+  "#dfdfdf",
+  "#c5c5c5",
+  "#9b9b9b",
+  "#7a7a7a",
+  "#5f5f5f",
+  "#333333",
+  "#111111",
+];
+
+const darkRamp = [
+  "#000000",
+  "#131313",
+  "#1c1c1c",
+  "#282828",
+  "#383838",
+  "#484848",
+  "#585858",
+  "#686868",
+  "#787878",
+  "#f5f5f5",
+];
+
+const rampSteps = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+
+const typeScale = [
+  {
+    token: "xl",
+    label: "Cabecera de página",
+    spec: "clamp(36px, 5vw, 64px) / 600, 1.05, -0.03em",
+    sizeCss: "clamp(24px, 4vw, 40px)",
+  },
+  {
+    token: "lg",
+    label: "Declaración",
+    spec: "clamp(34px, 4.6vw, 68px) / 600, 1.05, -0.03em",
+    sizeCss: "clamp(24px, 3.8vw, 38px)",
+  },
+  {
+    token: "md",
+    label: "Título de sección",
+    spec: "clamp(30px, 4vw, 46px) / 600, 1.1, -0.02em",
+    sizeCss: "clamp(22px, 3vw, 32px)",
+  },
+  {
+    token: "sm",
+    label: "Pregunta de FAQ",
+    spec: "clamp(24px, 2.6vw, 30px) / 600, 1.1, -0.02em",
+    sizeCss: "clamp(20px, 2.4vw, 26px)",
+  },
+];
+
+const radii = [
+  { name: "--radius-input", value: "10px" },
+  { name: "--radius-card", value: "18px" },
+  { name: "--radius-media", value: "20px" },
+  { name: "--radius-pill", value: "999px" },
+];
+
+const spaces = [
+  { name: "--space-1", value: "4px" },
+  { name: "--space-2", value: "8px" },
+  { name: "--space-3", value: "12px" },
+  { name: "--space-4", value: "16px" },
+  { name: "--space-5", value: "24px" },
+  { name: "--space-6", value: "32px" },
+  { name: "--space-7", value: "48px" },
+];
+
+const maxSpace = 48;
+---
+
+<PerfumeUILayout
+  title="Tokens"
+  description="Color, tipografía, forma y espacio de PerfumeUI — un solo archivo canónico para todos los productos de Servaltek."
+>
+  <nav class="breadcrumb" aria-label="Ubicación">
+    <span>Fundamentos</span>
+    <span class="breadcrumb__sep">/</span>
+    <span class="breadcrumb__current">Tokens</span>
+  </nav>
+
+  <h1 class="page-title">Tokens</h1>
+  <p class="page-lead">
+    Color, tipografía, forma y espacio. Un solo archivo canónico, para que
+    nadie cruce de un producto de Servaltek a otro y vea una segunda marca.
+  </p>
+
+  <section class="block">
+    <h2 class="block__title">Acento</h2>
+    <p class="block__body">Idéntico en los dos temas.</p>
+    <div class="swatch-grid">
+      {
+        accents.map((token) => (
+          <div class="swatch-card">
+            <div class="swatch-card__media" style={`background:${token.hex}`} />
+            <div class="swatch-card__body">
+              <span class="mono">{token.name}</span>
+              <span class="mono mono--faint">{token.hex}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Rampa neutra</h2>
+    <p class="block__body">
+      100 es la superficie base, 1000 el extremo de máximo contraste. El
+      tema oscuro invierte la luminosidad, no los roles.
+    </p>
+
+    <div class="ramp ramp--light">
+      <div class="ramp__strip">
+        {lightRamp.map((hex) => <span style={`background:${hex}`} />)}
+      </div>
+      <div class="ramp__labels ramp__labels--light">
+        {rampSteps.map((step) => <span>{step}</span>)}
+      </div>
+    </div>
+
+    <div class="ramp ramp--dark">
+      <div class="ramp__strip">
+        {darkRamp.map((hex) => <span style={`background:${hex}`} />)}
+      </div>
+      <div class="ramp__labels ramp__labels--dark">
+        {rampSteps.map((step) => <span>{step}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Escala tipográfica</h2>
+    <p class="block__body">
+      Vive entera en SectionHeading. Un título que necesita otro tamaño
+      agrega una talla ahí, no un <span class="mono">clamp()</span> suelto en
+      la sección.
+    </p>
+
+    <div class="type-list">
+      {
+        typeScale.map((row) => (
+          <div class="type-row">
+            <span class="type-row__sample" style={`font-size:${row.sizeCss}`}>
+              {row.label}
+            </span>
+            <span class="mono mono--faint">{row.token} · {row.spec}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Forma</h2>
+    <p class="block__body">Cuatro radios y nada más. El botón usa el pill.</p>
+
+    <div class="shape-grid">
+      {
+        radii.map((r) => (
+          <div class="shape-card">
+            <span
+              class="shape-card__box"
+              style={`border-radius:${r.value === "999px" ? "999px" : r.value}`}
+            />
+            <span class="mono">{r.name}</span>
+            <span class="mono mono--faint">{r.value}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Espacio</h2>
+    <p class="block__body">Base 4px, siete pasos.</p>
+
+    <div class="space-box">
+      {
+        spaces.map((s) => (
+          <div class="space-row">
+            <span class="mono space-row__name">{s.name}</span>
+            <span
+              class="space-row__bar"
+              style={`width:${(parseInt(s.value) / maxSpace) * 100}%`}
+            />
+            <span class="mono mono--faint">{s.value}</span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  .breadcrumb {
+    padding-top: 40px;
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .breadcrumb__sep {
+    margin: 0 6px;
+    color: var(--line);
+  }
+
+  .breadcrumb__current {
+    color: var(--ink);
+  }
+
+  .page-title {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--ink);
+    margin: 0 0 20px;
+  }
+
+  .page-lead {
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    max-width: 60ch;
+    margin: 0 0 64px;
+  }
+
+  .block {
+    margin-bottom: 80px;
+  }
+
+  .block__title {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+
+  .block__body {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 0 28px;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .mono--faint {
+    color: var(--ink-muted);
+    font-size: 12px;
+  }
+
+  /* ---- Acento ---- */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 20px;
+  }
+
+  .swatch-card {
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .swatch-card__media {
+    height: 90px;
+    /* --accent-ink es #ffffff — sin este borde se funde con --surface en
+       tema claro, que también resuelve casi blanco (mismo hallazgo que la
+       rampa neutra de abajo). */
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .swatch-card__body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ---- Rampa ---- */
+  .ramp {
+    margin-bottom: 16px;
+  }
+
+  .ramp__strip {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .ramp__strip span {
+    height: 64px;
+  }
+
+  .ramp--light .ramp__strip {
+    border: 1px solid var(--line);
+  }
+
+  .ramp__labels {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding-top: 8px;
+  }
+
+  .ramp__labels span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .ramp__labels--light span {
+    color: var(--ink-muted);
+  }
+
+  .ramp__labels--dark span {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .ramp--dark .ramp__labels {
+    background: #1d1d1f;
+    border-radius: 0 0 8px 8px;
+    padding-bottom: 8px;
+  }
+
+  /* ---- Tipografía ---- */
+  .type-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .type-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+    padding: 26px 4px;
+    border-top: 1px solid var(--line);
+  }
+
+  .type-row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .type-row__sample {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  /* ---- Forma ---- */
+  .shape-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 20px;
+  }
+
+  .shape-card {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .shape-card__box {
+    flex: none;
+    box-sizing: border-box;
+    width: 72px;
+    height: 72px;
+    background: var(--stage, var(--surface));
+    border: 1.5px solid var(--accent);
+  }
+
+  /* ---- Espacio ---- */
+  .space-box {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .space-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .space-row__name {
+    flex: none;
+    width: 84px;
+  }
+
+  .space-row__bar {
+    height: 14px;
+    border-radius: 4px;
+    background: var(--accent);
+  }
+</style>

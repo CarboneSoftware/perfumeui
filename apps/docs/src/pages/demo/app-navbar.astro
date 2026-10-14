@@ -1,0 +1,126 @@
+---
+/**
+ * Página de demo del AppNavbar, pensada para verse dentro del <iframe> de
+ * /components/app-navbar. Va aparte porque el navbar usa IDs
+ * globales (#drawer, #filter) y `document.querySelector("nav")`: no puede
+ * convivir con el navbar de la propia página de docs.
+ */
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import AppNavbar from "@servaltek/perfumeui/components/ui/AppNavbar.astro";
+
+// Muchos items a propósito: en anchos intermedios no entran y pasan al "Más".
+const navItems = [
+  { label: "Inicio", url: "#inicio" },
+  { label: "Productos", url: "#productos" },
+  { label: "Servicios", url: "#servicios" },
+  { label: "Proyectos", url: "#proyectos" },
+  { label: "Equipo", url: "#equipo" },
+  { label: "Prensa", url: "#prensa" },
+  { label: "Carreras", url: "#carreras" },
+  { label: "Contacto", url: "#contacto" },
+];
+---
+
+<BaseLayout title="Demo AppNavbar · PerfumeUI" description="Demo del AppNavbar." noindex>
+  <AppNavbar
+    title="Demo"
+    navItems={navItems}
+    theme="light"
+    themeToggle
+    sectionStates={[{ selector: "#demo-dark", add: "dark", remove: "light" }]}
+  />
+
+  <main>
+    <section class="demo demo--light" id="inicio">
+      <p class="demo__tag">Sección clara</p>
+      <h1>Scrolleá hasta la banda oscura</h1>
+      <p>
+        El navbar arranca en <code>theme="light"</code>. Cuando la sección
+        <code>#demo-dark</code> cruza su línea inferior, <code>sectionStates</code>
+        le agrega <code>dark</code> y le saca <code>light</code>.
+      </p>
+      <p>Achicá el marco para ver el menú "Más" y, por debajo de 768px, el drawer.</p>
+    </section>
+
+    <section class="demo demo--dark" id="demo-dark" data-wtl-theme="dark">
+      <p class="demo__tag">#demo-dark</p>
+      <h2>Banda oscura</h2>
+      <p>Mientras esta sección esté debajo del navbar, el navbar va en oscuro.</p>
+    </section>
+
+    <section class="demo demo--light" id="contacto">
+      <p class="demo__tag">Sección clara</p>
+      <h2>De vuelta a claro</h2>
+      <p>Al salir de la banda, el estado se revierte solo.</p>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // Demo, no navegación: ningún link sale de la página (logo, items de la
+  // barra, del drawer y del "Más"). El handler propio del drawer igual corre,
+  // así que tocar un link lo cierra como en el sitio real.
+  document.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).closest("a")) e.preventDefault();
+  });
+
+  // El ícono de cuenta y "Cerrar sesión" disparan login()/logout() contra
+  // Keycloak desde sus propios listeners: se cortan en captura, antes de que
+  // lleguen al elemento.
+  window.addEventListener(
+    "click",
+    (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest(".user-btn, .account__signout")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    { capture: true },
+  );
+</script>
+
+<style>
+  .demo {
+    min-height: 90vh;
+    padding: 64px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .demo:last-child {
+    min-height: 140vh;
+  }
+
+  .demo--dark {
+    max-width: none;
+    background: var(--surface-dark);
+    color: var(--ink-on-dark);
+    padding-inline: max(24px, calc((100% - 720px) / 2));
+  }
+
+  .demo h1,
+  .demo h2 {
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .demo__tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .demo code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+</style>

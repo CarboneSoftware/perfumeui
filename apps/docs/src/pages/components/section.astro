@@ -1,0 +1,430 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import Section from "@servaltek/perfumeui/components/ui/Section.astro";
+import SectionHeading from "@servaltek/perfumeui/components/ui/SectionHeading.astro";
+
+const surfaces = [
+  { name: "white", token: "--surface", body: "El default. La superficie base de la página." },
+  { name: "subtle", token: "--surface-subtle", body: "Un paso más abajo en la rampa. Separa dos bloques seguidos sin línea." },
+  { name: "muted", token: "--surface-muted", body: "Para el bloque que tiene que pesar: FAQ, precios, formulario." },
+  { name: "alt", token: "--surface-alt", body: "El gris más profundo antes del oscuro. Se usa poco, a propósito." },
+  { name: "dark", token: "--surface-dark", body: "Invierte la tinta: el contenido de adentro hereda --ink-on-dark." },
+  { name: "none", token: "transparente", body: "No pinta nada. Hereda el fondo de lo que la contiene." },
+];
+
+const spaces = [
+  { name: "default", value: "64px → 96px", body: "El ritmo estándar de la página." },
+  { name: "tight", value: "40px → 64px", body: "Para bloques encadenados que leen como uno solo." },
+  { name: "flush", value: "0", body: "Sin padding: bandas a sangre, heroes, medios de borde a borde." },
+];
+
+const props = [
+  { name: "id", type: "string", default: "—", body: "Ancla para el scroll y para los sectionStates del AppNavbar." },
+  { name: "surface", type: '"white" | "subtle" | "muted" | "alt" | "dark" | "none"', default: '"white"', body: "Fondo de la sección, del más claro al más oscuro." },
+  { name: "width", type: '"default" | "narrow" | "full"', default: '"default"', body: "Ancho del contenido centrado: --content-max (1600px), --content-narrow (860px) o sin tope." },
+  { name: "space", type: '"default" | "tight" | "flush"', default: '"default"', body: "Ritmo vertical. flush = sin padding, para bandas a sangre." },
+  { name: "bleed", type: "boolean", default: "false", body: "Saca el contenedor interno: el slot ocupa todo el ancho, sin padding lateral." },
+  { name: "fill", type: "boolean", default: "false", body: "Desde 1085px la sección ocupa el alto de la pantalla y centra su contenido." },
+  { name: "divider", type: '"none" | "top" | "bottom" | "both"', default: '"none"', body: "Línea de 1px. Sobre surface=dark cambia sola a --line-on-dark." },
+  { name: "as", type: '"section" | "header" | "footer" | "div"', default: '"section"', body: "La etiqueta que se renderiza. Cambia la semántica, no el estilo." },
+  { name: "class", type: "string", default: "—", body: "Clase extra sobre .section, para posicionarla desde el padre." },
+  { name: "label", type: "string", default: "—", body: "aria-label, cuando la sección no tiene un título visible que la nombre." },
+];
+---
+
+<PerfumeUILayout
+  title="Section"
+  description="La cáscara de sección de PerfumeUI: fondo, ritmo vertical y contenedor centrado, una sola vez."
+>
+  <DocsHeader
+    name="Section"
+    lead="Toda sección de página se envuelve acá. Los bloques de contenido solo aportan lo que va adentro: el fondo, el padding y el ancho máximo salen de estas props, así el ritmo es el mismo en todas."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Anatomía</h2>
+    <p class="pui-block__body">
+      Dos capas y nada más. La externa pinta el fondo y marca el ritmo
+      vertical; la interna centra el contenido y le pone el padding lateral.
+      Con <span class="pui-mono">bleed</span> la interna desaparece.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--soft anatomy">
+        <div class="anatomy__outer">
+          <span class="anatomy__tag">.section — fondo + padding-block</span>
+          <div class="anatomy__inner">
+            <span class="anatomy__tag anatomy__tag--inner">
+              .section__inner — max-width + padding-inline
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Fondos</h2>
+    <p class="pui-block__body">
+      Seis superficies, de la más clara a la más oscura. Ninguna es un color
+      literal: todas salen de la rampa neutra, así que mover la paleta las
+      mueve a todas juntas. <span class="pui-mono">dark</span> además invierte
+      la tinta del contenido.
+    </p>
+
+    <div class="pui-preview">
+      {
+        surfaces.map((s) => (
+          <Section surface={s.name as any} space="tight" width="full">
+            <div class="surface-row">
+              <span class="surface-row__name">surface={s.name}</span>
+              <span class="surface-row__body">{s.body}</span>
+              <span class="surface-row__token">{s.token}</span>
+            </div>
+          </Section>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Ancho</h2>
+    <p class="pui-block__body">
+      El contenido se centra dentro de un tope. <span class="pui-mono">default</span>
+      usa <span class="pui-mono">--content-max</span>, el ancho de app;
+      <span class="pui-mono">narrow</span> usa
+      <span class="pui-mono">--content-narrow</span>, pensado para texto
+      corrido; <span class="pui-mono">full</span> no pone tope pero mantiene el
+      padding lateral.
+    </p>
+
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--soft widths">
+        <div class="width-row">
+          <span class="width-row__label pui-mono">default</span>
+          <span class="width-row__bar" style="width: 100%"></span>
+          <span class="width-row__value pui-mono pui-mono--faint">1600px</span>
+        </div>
+        <div class="width-row">
+          <span class="width-row__label pui-mono">narrow</span>
+          <span class="width-row__bar" style="width: 54%"></span>
+          <span class="width-row__value pui-mono pui-mono--faint">860px</span>
+        </div>
+        <div class="width-row">
+          <span class="width-row__label pui-mono">full</span>
+          <span class="width-row__bar width-row__bar--open" style="width: 100%"></span>
+          <span class="width-row__value pui-mono pui-mono--faint">sin tope</span>
+        </div>
+      </div>
+      <div class="pui-preview__foot">
+        <p class="pui-preview__caption">
+          Proporciones relativas entre topes. El padding lateral
+          (<span class="pui-mono">--section-px</span>, 20 → 56px) se aplica en
+          los tres casos.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Ritmo vertical</h2>
+    <p class="pui-block__body">
+      Tres pasos, cada uno con su valor de mobile y de desktop. La página no
+      define márgenes entre secciones: el aire lo pone cada sección con su
+      propio <span class="pui-mono">padding-block</span>.
+    </p>
+
+    <div class="pui-grid">
+      {
+        spaces.map((s) => (
+          <div class="pui-preview">
+            <div class="pui-preview__stage pui-preview__stage--soft space-demo">
+              <div class={`space-demo__box space-demo__box--${s.name}`}>
+                <span class="space-demo__content">contenido</span>
+              </div>
+            </div>
+            <div class="pui-preview__foot">
+              <span class="pui-mono">space={s.name}</span>
+              <p class="pui-preview__caption">{s.value} — {s.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Divisorias</h2>
+    <p class="pui-block__body">
+      Una línea de 1px arriba, abajo o en los dos bordes. Cuando la sección es
+      oscura, la línea cambia sola a <span class="pui-mono">--line-on-dark</span>:
+      no hay que acordarse.
+    </p>
+
+    <div class="pui-preview">
+      <Section surface="white" space="tight" width="full" divider="bottom">
+        <span class="divider-demo">divider=bottom · surface=white</span>
+      </Section>
+      <Section surface="subtle" space="tight" width="full" divider="bottom">
+        <span class="divider-demo">divider=bottom · surface=subtle</span>
+      </Section>
+      <Section surface="dark" space="tight" width="full" divider="top">
+        <span class="divider-demo divider-demo--dark">
+          divider=top · surface=dark
+        </span>
+      </Section>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">En uso</h2>
+    <p class="pui-block__body">
+      Section casi nunca va sola: el par
+      <span class="pui-mono">Section</span> +
+      <span class="pui-mono">SectionHeading</span> es el esqueleto de cualquier
+      bloque de página.
+    </p>
+
+    <div class="pui-preview">
+      <Section surface="subtle" space="tight" width="full">
+        <SectionHeading
+          kicker="Antetítulo"
+          title="Título de sección"
+          body="La bajada: una o dos líneas que ubican el bloque antes de que empiece el contenido."
+          size="md"
+          gap="none"
+        />
+      </Section>
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Hacé / No hagas</h2>
+
+    <div class="pui-dodont">
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet"
+            >&lt;Section surface="subtle" space="tight"&gt;</code
+          >
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Elegir el fondo y el ritmo por prop. Son seis fondos y tres ritmos: si
+          hace falta un séptimo, se agrega acá, no en la página.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet snippet--bad"
+            >&lt;section style="padding: 80px 0; background: #f5f5f5"&gt;</code
+          >
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Padding y fondo a mano. Es el camino más corto a que dos secciones
+          tengan 80 y 84px de aire sin que nadie lo haya decidido.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet">&lt;Section space="flush" bleed&gt;</code>
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Para un hero o un carril a sangre: sin padding vertical y sin
+          contenedor interno. Sigue siendo una Section.
+        </p>
+      </div>
+
+      <div class="pui-dodont__card">
+        <div class="pui-dodont__media">
+          <code class="snippet snippet--bad"
+            >&lt;Section class="mi-seccion--sin-padding"&gt;</code
+          >
+        </div>
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Anular el ritmo con una clase desde afuera. Si el caso es legítimo, la
+          prop <span class="pui-mono">space</span> ya lo cubre.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  /* ---- Anatomía ---- */
+  .anatomy {
+    padding: 32px;
+  }
+
+  .anatomy__outer {
+    width: 100%;
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius-input);
+    padding: 28px 20px;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .anatomy__inner {
+    border: 1px dashed var(--ink-muted);
+    border-radius: var(--radius-input);
+    height: 88px;
+    margin-inline: 8%;
+    position: relative;
+  }
+
+  .anatomy__tag {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  .anatomy__tag--inner {
+    color: var(--ink-muted);
+  }
+
+  /* ---- Fondos ---- */
+  .surface-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .surface-row__name {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    min-width: 140px;
+  }
+
+  .surface-row__body {
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.7;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .surface-row__token {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    opacity: 0.55;
+  }
+
+  /* ---- Ancho ---- */
+  .widths {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    padding: 40px 32px;
+  }
+
+  .width-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .width-row__label {
+    width: 72px;
+    flex: 0 0 auto;
+  }
+
+  .width-row__bar {
+    height: 14px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    max-width: calc(100% - 160px);
+  }
+
+  .width-row__bar--open {
+    background: repeating-linear-gradient(
+      90deg,
+      var(--accent) 0 10px,
+      transparent 10px 18px
+    );
+  }
+
+  .width-row__value {
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+
+  /* ---- Ritmo ---- */
+  .space-demo {
+    padding: 24px;
+  }
+
+  .space-demo__box {
+    width: 100%;
+    background: var(--surface);
+    border-radius: var(--radius-input);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Los tres valores de --section-py-* a escala real de mobile. */
+  .space-demo__box--default {
+    padding-block: 64px;
+  }
+
+  .space-demo__box--tight {
+    padding-block: 40px;
+  }
+
+  .space-demo__box--flush {
+    padding-block: 0;
+  }
+
+  .space-demo__content {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-input);
+    padding: 10px 18px;
+  }
+
+  /* ---- Divisorias ---- */
+  .divider-demo {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .divider-demo--dark {
+    color: var(--ink-on-dark-muted);
+  }
+
+  /* ---- Snippets ---- */
+  .snippet {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border-radius: var(--radius-input);
+    padding: 12px 14px;
+    text-align: center;
+  }
+
+  .snippet--bad {
+    color: var(--ink-muted);
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import StaticHero from "@servaltek/perfumeui/components/ui/StaticHero.astro";
+
+// Las mismas imágenes del hero de Donavelle en servaltek.com.
+const donavelleSources = [
+  {
+    srcset:
+      "https://storage.servaltek.com/public/resources/shared/dc457b15853cb467878d587200fa9b7c3617b320daa603f138a09a11005f7ec7.jpg",
+    media: "(min-width: 1085px)",
+  },
+  {
+    srcset:
+      "https://storage.servaltek.com/public/resources/donavelle/92123d19685b99dd8f8e7442e0d65d3adee75cdc09a715cb9a2392de1b95403a.png",
+    media: "(min-width: 640px)",
+  },
+];
+const donavelleFallback =
+  "https://storage.servaltek.com/public/resources/donavelle/7e0d8574737401828caaac09e000da9022b59b404134480890a304d823f68597.png";
+const donavelleLogo = {
+  src: "https://storage.servaltek.com/public/resources/donavelle/d98e96b04a92bc5e746552e5e12532b32cb4e0b09b5d25248b7b1d75a668e4c8.png",
+  srcOnDark: "https://storage.servaltek.com/public/resources/donavelle/0cbb109c8e64a6aa0957ce62f4998fdb8d98ec021e69595ecf1c692c6ffc09fd.png",
+  height: "20px",
+  alt: "Donavelle",
+};
+
+const usage = `<StaticHero
+  imageSources={[
+    { srcset: "/img/hero-wide.jpg", media: "(min-width: 1085px)" },
+    { srcset: "/img/hero-tablet.png", media: "(min-width: 640px)" },
+  ]}
+  imageFallback="/img/hero-mobile.png"
+  imageAlt=""
+  tone="dark"
+  logo={{ src: "/logo.png", srcOnDark: "/logo-white.png", alt: "Donavelle", height: "20px" }}
+  title="El timbre de tu casa en tu celular"
+  body="Sin cables, sin baterías, totalmente gratis."
+  cta={{ label: "Descargar ahora", href: "#download" }}
+/>`;
+
+const anatomy = `<section class="hero">
+  <picture> → <source> × N + <img>      foto, flex: 1 (absorbe el alto)
+  .hero__scrim                          solo desktop, si scrim
+  .hero__desktop  → HeroTextContent tone={tone}    ≥ 1085px, encima de la foto
+  .hero__mobile   → HeroTextContent tone="dark"    < 1085px, debajo, sobre --surface
+</section>`;
+
+const props = [
+  { name: "imageFallback", type: "string", default: "requerido", body: "src del <img>. Es la imagen de mobile: los <source> cubren los anchos mayores." },
+  { name: "imageSources", type: "ImageSource[]", default: "[]", body: "{ srcset, media? }. Van en orden, de la media query más ancha a la más angosta." },
+  { name: "imageAlt", type: "string", default: '""', body: "Vacío por defecto: la foto es decorativa y el texto ya está en el DOM." },
+  { name: "tone", type: '"dark" | "light"', default: '"light"', body: "Tinta del texto sobre la foto, solo en desktop. En mobile siempre es dark." },
+  { name: "scrim", type: "boolean", default: "true", body: "Capa entre la foto y el texto en desktop. Hoy sus gradientes están comentados: no pinta nada." },
+  { name: "badge · logo · title · body · cta · secondaryCta · headingLevel", type: "—", default: "—", body: "Pasan tal cual a HeroTextContent. Ver su página." },
+];
+---
+
+<PerfumeUILayout
+  title="StaticHero"
+  description="Hero de foto fija: el texto va sobre la imagen en desktop y debajo en mobile."
+>
+  <DocsHeader
+    family="Heroes"
+    name="StaticHero"
+    lead="Hero con una foto de fondo. En desktop el texto va encima de la imagen; en mobile va debajo, sobre un panel claro, para que la foto no tenga que cargar con la legibilidad."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Ejemplo</h2>
+    <p class="pui-block__body">
+      El hero de Donavelle de servaltek.com. El cambio de layout depende del
+      ancho de la ventana, no del de esta columna: achicá el navegador por
+      debajo de 1085px para ver la versión mobile.
+    </p>
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--flush">
+        <StaticHero
+          imageSources={donavelleSources}
+          imageFallback={donavelleFallback}
+          tone="dark"
+          logo={donavelleLogo}
+          title="El timbre de tu casa en tu celular"
+          body="Sin cables, sin baterías, totalmente gratis. Solo pega un QR en tu puerta."
+          cta={{ label: "Descargar ahora", href: "https://donavelle.com/#download" }}
+          secondaryCta={{ label: "Ver más", href: "https://donavelle.com/" }}
+          headingLevel={2}
+        />
+      </div>
+    </div>
+    <pre class="pui-code">{usage}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Anatomía</h2>
+    <p class="pui-block__body">
+      El texto se renderiza dos veces y el CSS muestra una sola copia según el
+      ancho. La oculta va con <span class="pui-mono">display: none</span>, así
+      que los lectores de pantalla y el teclado ven una sola; en el HTML, en
+      cambio, el título aparece dos veces.
+    </p>
+    <pre class="pui-code">{anatomy}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Cómo se comporta el alto</h2>
+    <ul class="pui-list">
+      <li><strong>Suelto:</strong> el alto lo da la foto (en desktop) o la foto más el texto (en mobile).</li>
+      <li><strong>Dentro de HeroCarousel con alto fijo:</strong> la foto tiene <span class="pui-mono">flex: 1; min-height: 0</span>, así que se achica o se estira y el texto mantiene su tamaño.</li>
+      <li>La foto usa <span class="pui-mono">object-fit: cover</span> anclada a la derecha: el recorte se come el lado izquierdo, que es donde va el texto.</li>
+    </ul>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Hacé / No hagas</h2>
+    <div class="pui-dodont">
+      <div class="pui-dodont__card">
+        <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
+        <p class="pui-dodont__text">
+          Fotos con el lado izquierdo despejado, y el <span class="pui-mono">tone</span>
+          que contraste con esa zona.
+        </p>
+      </div>
+      <div class="pui-dodont__card">
+        <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
+        <p class="pui-dodont__text">
+          Confiar en <span class="pui-mono">scrim</span> para que el texto se
+          lea: hoy no pinta ningún degradado.
+        </p>
+      </div>
+    </div>
+  </section>
+</PerfumeUILayout>

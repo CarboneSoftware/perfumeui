@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "perfumeui-docs",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "perfumeui-docs", "dev", "--port", "4330"],
+      "port": 4330
+    },
+    {
+      "name": "perfumeui-docs-preview",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "perfumeui-docs", "preview", "--port", "4331"],
+      "port": 4331
+    }
+  ]
+}

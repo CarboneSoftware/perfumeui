@@ -1,0 +1,262 @@
+---
+/**
+ * Bloque de texto de los heroes con foto (`StaticHero`, `BannerHero`).
+ * Se renderiza dos veces por hero: sobre la foto en desktop, debajo en mobile.
+ */
+import type { Align, CtaLink, HeroLogo, Tone } from "../types";
+import Button from "../ui/Button.astro";
+
+interface Props {
+  /** `dark` = tinta oscura sobre fondo claro. `light` = al revés. */
+  tone?: Tone;
+  /** Alineación del bloque entero: `start` (default) o `center`. */
+  align?: Align;
+  /** Volanta plana, en versalitas. Alternativa al `badge` en pastilla. */
+  kicker?: string;
+  badge?: string;
+  /** Logo en lugar del badge. Si viene, el badge no se muestra. */
+  logo?: HeroLogo;
+  title?: string;
+  body?: string;
+  cta?: CtaLink;
+  secondaryCta?: CtaLink;
+  /**
+   * Nivel del título. `1` por defecto; en un carrusel solo el primer hero
+   * lleva `h1`, el resto `h2`, para que la página tenga un único h1.
+   */
+  headingLevel?: 1 | 2;
+}
+
+const {
+  tone = "light",
+  align = "start",
+  kicker,
+  badge,
+  logo,
+  title,
+  body,
+  cta,
+  secondaryCta,
+  headingLevel = 1,
+} = Astro.props;
+
+const Heading = headingLevel === 1 ? "h1" : "h2";
+
+// OJO con la inversión: acá `tone` nombra la TINTA, no la superficie —
+// `tone="dark"` es texto oscuro, o sea una superficie clara (la franja blanca
+// del hero mobile). Los tokens compartidos nombran la superficie, así que el
+// mapeo va cruzado.
+const surface = tone === "dark" ? "light" : "dark";
+
+const logoSrc = logo && (surface === "dark" && logo.srcOnDark ? logo.srcOnDark : logo.src);
+---
+
+<div
+  class:list={["hero-text", `hero-text--${tone}`, `hero-text--${align}`]}
+  data-wtl-theme={surface}
+>
+  {kicker && <span class="hero-text__kicker">{kicker}</span>}
+  {
+    logo ? (
+      <img
+        class="hero-text__logo"
+        src={logoSrc}
+        alt={logo.alt}
+        style={{ "--logo-height": logo.height }}
+        decoding="async"
+      />
+    ) : (
+      badge && <span class="hero-text__badge">{badge}</span>
+    )
+  }
+  {title && <Heading class="hero-text__title">{title}</Heading>}
+  {body && <p class="hero-text__body">{body}</p>}
+
+  {
+    (cta || secondaryCta) && (
+      <div class="hero-text__actions">
+        {cta && (
+          <Button href={cta.href} variant="primary" size="lg">
+            {cta.label}
+          </Button>
+        )}
+        {secondaryCta && (
+          <Button
+            href={secondaryCta.href}
+            variant="ghost"
+            size="lg"
+          >
+            {secondaryCta.label}
+          </Button>
+        )}
+      </div>
+    )
+  }
+</div>
+
+<style lang="scss">
+  .hero-text {
+    /* `--fg` / `--fg-muted` / `--border` los aporta el tema compartido vía
+       `data-wtl-theme`. Acá solo quedan los tokens propios del badge. */
+    --badge-fg: rgba(0, 0, 0, 0.616);
+    --badge-bg: var(--hover-layer);
+    --badge-border: var(--border);
+    --badge-dot: #4ade80;
+
+    max-width: 620px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+
+  /* Sobre superficie clara el punto verde necesita más peso para contrastar. */
+  .hero-text--dark {
+    --badge-dot: #16a34a;
+  }
+
+  /* Variante centrada: el bloque se centra en vez de apoyarse contra el borde
+     izquierdo. La usa `GradientHero`, donde el texto va sobre un panel propio
+     y no sobre la foto: el alto del panel lo fija este bloque, así que el
+     tamaño puede ser fluido puro sin miedo a desbordar nada. */
+  .hero-text--center {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+    gap: clamp(0.75rem, 1.6vw, 1.35rem);
+
+    /* Acá la bajada es una frase corta, no un párrafo: entra en un renglón o
+       dos, así que va grande y en tinta plena —sobre el celeste del gradiente
+       el blanco al 62% de `--fg-muted` se leía flojo. */
+    .hero-text__body {
+      width: 100%;
+      font-size: clamp(1.05rem, 1.7vw, 1.5rem);
+      line-height: 1.35;
+      color: var(--fg);
+    }
+
+    /* Los botones se miden por su contenido en vez de estirarse al ancho de la
+       columna, que es lo que hace el layout apilado de mobile por defecto. */
+    .hero-text__actions {
+      justify-content: center;
+      align-items: center;
+      width: auto;
+      margin-top: 0.25rem;
+    }
+  }
+
+  .hero-text__kicker {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .hero-text--center .hero-text__title {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .hero-text__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    font-size: clamp(0.78rem, 1.1vw, 0.9rem);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    border-radius: var(--radius-pill);
+    color: var(--badge-fg);
+    background: var(--badge-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .hero-text__logo {
+    display: block;
+    height: var(--logo-height, 40px);
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .hero-text__badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--badge-dot);
+    box-shadow: 0 0 0 0 var(--badge-dot);
+    animation: pulse 2.4s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--badge-dot) 60%, transparent);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 6px transparent;
+    }
+  }
+
+  .hero-text__title {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+    color: var(--fg);
+  }
+
+  .hero-text__body {
+    margin: 0;
+    width: 80%;
+    max-width: 56ch;
+    font-size: clamp(0.9rem, 0.4vw + 0.8rem, 1.05rem);
+    line-height: 1.6;
+    text-wrap: pretty;
+    color: var(--fg-muted);
+  }
+
+  .hero-text__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  @media screen and (min-width: 640px) {
+    .hero-text__actions {
+      flex-direction: row;
+      align-items: center;
+      width: auto;
+    }
+  }
+
+  @media screen and (min-width: 1085px) {
+    .hero-text {
+      max-width: 40%;
+    }
+
+    /* Centrado el texto no compite con la foto, pero con este cuerpo una
+       medida más ancha daría renglones largos de leer. */
+    .hero-text--center {
+      max-width: 680px;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .hero-text__title {
+      font-size: 50px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-text__badge-dot {
+      animation: none;
+    }
+  }
+</style>

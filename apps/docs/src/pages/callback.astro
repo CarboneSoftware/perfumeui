@@ -1,0 +1,17 @@
+---
+// esta página no necesita nada server-side, es solo el punto de retorno
+---
+
+<script>
+    import { userManager } from "@servaltek/perfumeui/lib/auth";
+
+    userManager
+        .signinRedirectCallback()
+        .then(() => window.location.replace("/"))
+        .catch((err) => {
+            console.error(err);
+            window.location.replace("/?error=login_failed");
+        });
+</script>
+<p>Iniciando sesión...</p>
+|

@@ -1,0 +1,72 @@
+---
+import "@servaltek/perfumeui/styles/perfumeui-tokens.scss";
+import "@servaltek/perfumeui/styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  /**
+   * Imagen para compartir (og:image / twitter:image). Relativa a /public o
+   * absoluta. Default: el isotipo — placeholder cuadrado hasta que haya un
+   * banner de marca dedicado de 1200×630.
+   */
+  image?: string;
+  /** Para páginas que no deben indexarse (borradores, páginas internas). */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  image = "/icons/stek-logo@2x.png",
+  noindex = false,
+} = Astro.props;
+
+const siteName = "Servaltek";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageURL = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/icons/stek-logo@2x.png" />
+
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+    <meta name="theme-color" content="#2563eb" />
+    <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:image:width" content="302" />
+    <meta property="og:image:height" content="302" />
+
+    <!-- Twitter — "summary" (no "summary_large_image"): el placeholder es
+         cuadrado, no el 1.91:1 que espera la card grande. -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+
+    <!-- Scripts que tienen que correr antes del primer pintado (ej. el tema
+         guardado de PerfumeUI). -->
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

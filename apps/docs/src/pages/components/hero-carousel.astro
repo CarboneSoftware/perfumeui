@@ -1,0 +1,166 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import DocsHeader from "@/components/docs/DocsHeader.astro";
+import PropsTable from "@/components/docs/PropsTable.astro";
+import DemoScene from "@/components/docs/DemoScene.astro";
+import HeroCarousel from "@servaltek/perfumeui/components/hero/HeroCarousel.astro";
+import HeroSlide from "@servaltek/perfumeui/components/hero/HeroSlide.astro";
+import StaticHero from "@servaltek/perfumeui/components/ui/StaticHero.astro";
+
+const donavelleSources = [
+  {
+    srcset:
+      "https://storage.servaltek.com/public/resources/shared/dc457b15853cb467878d587200fa9b7c3617b320daa603f138a09a11005f7ec7.jpg",
+    media: "(min-width: 1085px)",
+  },
+  {
+    srcset:
+      "https://storage.servaltek.com/public/resources/donavelle/92123d19685b99dd8f8e7442e0d65d3adee75cdc09a715cb9a2392de1b95403a.png",
+    media: "(min-width: 640px)",
+  },
+];
+
+const usage = `<HeroCarousel height="clamp(540px, 40vw, 740px)" interval={7000}>
+  <HeroSlide stage="blue" title="…" headingLevel={1}>
+    <HubVisual slot="visual" />
+  </HeroSlide>
+  <HeroSlide stage="sky" title="…" headingLevel={2}>
+    <TechVisual slot="visual" />
+  </HeroSlide>
+  <StaticHero imageFallback="…" title="…" headingLevel={2} />
+</HeroCarousel>`;
+
+const behaviors = [
+  {
+    title: "Scroll-snap nativo",
+    body: "El track es un overflow-x con scroll-snap-type: x mandatory. Swipe, trackpad y rueda horizontal funcionan sin JS. Los botones y los puntos solo llaman a track.scrollTo().",
+  },
+  {
+    title: "El track manda",
+    body: "Un IntersectionObserver (umbral 0.6, con el track como root) detecta qué slide se ve y actualiza el índice, los puntos y .is-active. Así un swipe a mano y un click en un punto terminan en el mismo estado.",
+  },
+  {
+    title: "Slides inertes",
+    body: "Las slides que no se ven llevan inert: el Tab nunca cae en un CTA escondido. Cada slide recibe role=\"group\", aria-roledescription=\"diapositiva\" y aria-label \"N de M\".",
+  },
+  {
+    title: "Autoplay con pausa",
+    body: "Avanza cada interval ms. Se pausa con hover, con el foco adentro, con la pestaña oculta y con el botón de pausa (WCAG 2.2.2). Con prefers-reduced-motion arranca pausado y el scroll es instantáneo.",
+  },
+  {
+    title: "Alto fijo",
+    body: "height (≥ 1085px) y mobileHeight (< 1085px) fijan el alto del track. Cada slide toma height: 100% y recorta lo que sobra. Sin ellos, el track mide lo que su slide más alta.",
+  },
+  {
+    title: "Vuelta circular",
+    body: "goTo() usa módulo: después de la última slide vuelve a la primera, y \"Anterior\" en la primera va a la última.",
+  },
+];
+
+const props = [
+  { name: "label", type: "string", default: '"Destacados"', body: "aria-label del carrusel." },
+  { name: "interval", type: "number", default: "7000", body: "Milisegundos entre slides del autoplay." },
+  { name: "height", type: "string", default: "—", body: "Alto del track desde 1085px. Cualquier largo CSS: \"600px\", \"clamp(540px, 40vw, 640px)\", \"80svh\"." },
+  { name: "mobileHeight", type: "string", default: "—", body: "Alto del track por debajo de 1085px." },
+  { name: "slot (default)", type: "slot", default: "—", body: "Las slides. Cada hijo directo es una slide: HeroSlide, StaticHero o cualquier mezcla." },
+];
+---
+
+<PerfumeUILayout
+  title="HeroCarousel"
+  description="Carrusel de heroes con scroll-snap, autoplay accesible y slides de cualquier tipo."
+>
+  <DocsHeader
+    family="Heroes"
+    name="HeroCarousel"
+    lead="El carrusel de la home de Servaltek. Cada hijo directo es una slide, así que acepta HeroSlide, StaticHero o cualquier mezcla. El desplazamiento es CSS nativo; el JS solo agrega controles, autoplay y accesibilidad."
+  />
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Ejemplo</h2>
+    <p class="pui-block__body">
+      Tres HeroSlide y un StaticHero, con alto fijo. Pasá el mouse por encima
+      para pausar el autoplay.
+    </p>
+    <div class="pui-preview">
+      <div class="pui-preview__stage pui-preview__stage--flush">
+        <HeroCarousel label="Ejemplo de carrusel" height="clamp(480px, 36vw, 600px)">
+          <HeroSlide
+            stage="blue"
+            badge="Plataforma"
+            title="Una cuenta para todo Servaltek"
+            body="Witlens, Fluxenture y Donavelle con el mismo usuario."
+            cta={{ label: "Crear cuenta", href: "#" }}
+            headingLevel={2}
+          >
+            <DemoScene slot="visual" title="Tu cuenta" subtitle="Un acceso, todos los productos" pill="Entrar" />
+          </HeroSlide>
+          <HeroSlide
+            stage="periwinkle"
+            badge="Proyectos"
+            title="Productos que ya están en la calle"
+            body="Del diseño a la distribución, con el mismo equipo."
+            headingLevel={2}
+          >
+            <DemoScene slot="visual" title="Proyectos" subtitle="En producción" float={{ title: "3 productos", body: "en producción" }} />
+          </HeroSlide>
+          <HeroSlide
+            stage="sky"
+            badge="Stack"
+            title="La herramienta según el problema"
+            headingLevel={2}
+          >
+            <DemoScene slot="visual" title="Nuestro stack" subtitle="Web, mobile y escritorio" />
+          </HeroSlide>
+          <StaticHero
+            imageSources={donavelleSources}
+            imageFallback="https://storage.servaltek.com/public/resources/donavelle/7e0d8574737401828caaac09e000da9022b59b404134480890a304d823f68597.png"
+            tone="dark"
+            badge="Donavelle"
+            title="El timbre de tu casa en tu celular"
+            body="Sin cables, sin baterías, totalmente gratis."
+            headingLevel={2}
+          />
+        </HeroCarousel>
+      </div>
+    </div>
+    <pre class="pui-code">{usage}</pre>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Comportamiento</h2>
+    <div class="pui-grid pui-grid--wide">
+      {
+        behaviors.map((b) => (
+          <div class="pui-card">
+            <p class="pui-card__title">{b.title}</p>
+            <p class="pui-card__text">{b.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Las slides</h2>
+    <p class="pui-block__body">
+      El tamaño de cada slide lo define el carrusel, no la slide:
+      <span class="pui-mono">.carousel__track &gt; :global(*)</span> les da
+      <span class="pui-mono">flex: 0 0 100%</span>, el snap y
+      <span class="pui-mono">height: 100%</span>. Por eso cualquier hero sirve,
+      siempre que deje que su parte de imagen se estire para llenar el alto
+      (StaticHero y HeroSlide ya lo hacen).
+    </p>
+    <ul class="pui-list">
+      <li><strong>Un solo h1:</strong> pasale <span class="pui-mono">headingLevel={"{1}"}</span> solo a la primera slide; el resto, 2.</li>
+      <li><strong>Controles:</strong> en mobile van debajo del texto; desde 1085px flotan sobre el stage, abajo a la izquierda, alineados con la columna del texto (<span class="pui-mono">.container</span>).</li>
+      <li><strong>Pantallas de más de 1920px:</strong> el carrusel se limita a 1920px, centrado y con bordes redondeados.</li>
+      <li>El script recorre todos los <span class="pui-mono">[data-carousel]</span>: puede haber varios carruseles en la misma página.</li>
+    </ul>
+  </section>
+
+  <section class="pui-block">
+    <h2 class="pui-block__title">Props</h2>
+    <PropsTable rows={props} />
+  </section>
+</PerfumeUILayout>

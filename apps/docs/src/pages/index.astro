@@ -1,0 +1,514 @@
+---
+import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
+import Button from "@servaltek/perfumeui/components/ui/Button.astro";
+import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
+---
+
+<PerfumeUILayout
+  title="Introducción"
+  description="PerfumeUI es el sistema de diseño de Servaltek: los tokens, las primitivas y las secciones que usa en todo lo que construye."
+>
+  <section class="hero">
+    <p class="hero__kicker">El sistema de diseño de Servaltek</p>
+    <h1 class="hero__title">Un sistema, todos los productos.</h1>
+    <p class="hero__body">
+      Los tokens, las primitivas y las secciones que Servaltek usa en todo lo
+      que construye. Witlens fue el estreno: la landing, la app y las
+      galerías de evento salieron de acá. Nada se estiliza dos veces.
+    </p>
+    <div class="hero__actions">
+      <Button href="/components/button" variant="primary" size="md">
+        Ver componentes
+      </Button>
+      <TextLink href="/tokens" icon="chevron">
+        Explorar los fundamentos
+      </TextLink>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="block">
+    <h2 class="block__title">Fundamentos</h2>
+    <p class="block__body">
+      Ningún componente hardcodea un color, un padding ni un radio. Cambiar
+      la paleta mueve todos los productos a la vez.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card__media card__media--color">
+          <span class="swatch" style="background: var(--ink)"></span>
+          <span class="swatch" style="background: var(--accent)"></span>
+          <span class="swatch" style="background: var(--accent-light)"></span>
+          <span class="swatch" style="background: var(--line)"></span>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Color</h3>
+          <p class="card__text">
+            Acento, rampa neutra de diez pasos y las dos tintas.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__media card__media--type">
+          <span class="type-sample">Aa</span>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Tipografía</h3>
+          <p class="card__text">
+            Poppins y las cuatro tallas de título: sm, md, lg, xl.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__media card__media--shape">
+          <span class="shape shape--input"></span>
+          <span class="shape shape--card"></span>
+          <span class="shape shape--pill"></span>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Forma y espacio</h3>
+          <p class="card__text">
+            Radios 10 / 18 / 20 / pill y la escala de 4px.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="block__title">Componentes</h2>
+    <p class="block__body">
+      Veintiocho piezas en cinco familias. Antes de escribir CSS nuevo, se
+      busca acá.
+    </p>
+
+    <div class="feature-grid">
+      <a class="feature-card" href="/components/button">
+        <div class="feature-card__media">
+          <Button as="span" variant="primary" size="md">Primary</Button>
+          <Button as="span" variant="outline" size="md">Outline</Button>
+        </div>
+        <div class="feature-card__body">
+          <h3 class="feature-card__title">Primitivas</h3>
+          <p class="feature-card__list">
+            Button · TextLink · Section · SectionHeading · CardScroller
+          </p>
+          <span class="feature-card__cta">Ver las primitivas ›</span>
+        </div>
+      </a>
+
+      <div class="feature-card feature-card--static">
+        <div class="feature-card__media feature-card__media--photos">
+          <img src="/pics/lau2-ph.png" alt="" loading="lazy" />
+          <img src="/pics/tile-a.png" alt="" loading="lazy" />
+          <img src="/pics/tile-b.png" alt="" loading="lazy" />
+        </div>
+        <div class="feature-card__body">
+          <h3 class="feature-card__title">Heroes y Cards</h3>
+          <p class="feature-card__list">
+            StaticHero · CollageHero · BannerHero · HeroCarrousel · Card · HeroCard
+          </p>
+          <span class="feature-card__cta feature-card__cta--soon">Pronto</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-card-grid">
+      <div class="text-card">
+        <div class="text-card__head">
+          <span>Secciones</span>
+          <span class="text-card__count">15</span>
+        </div>
+        <p class="text-card__body">
+          Bandas de ancho completo, siempre dentro de Section.
+        </p>
+        <ul class="text-card__list">
+          <li>PageHeader</li>
+          <li>StepList</li>
+          <li>FeatureGrid</li>
+          <li>Faq</li>
+          <li>ServiceTiles</li>
+          <li>SplitFeature</li>
+          <li>Testimonials</li>
+          <li>TrustStrip</li>
+          <li>GalleryMosaic</li>
+          <li>PromoBanner</li>
+          <li>PhotoBanner</li>
+          <li>CtaSection</li>
+          <li>ManifestoSplit</li>
+          <li>VisionSection</li>
+          <li>TeamGrid</li>
+        </ul>
+      </div>
+
+      <div class="text-card">
+        <div class="text-card__head">
+          <span>Chrome</span>
+          <span class="text-card__count">2</span>
+        </div>
+        <p class="text-card__body">Lo que envuelve a toda página del sitio.</p>
+        <ul class="text-card__list">
+          <li>AppNavbar</li>
+          <li>Footer</li>
+        </ul>
+      </div>
+
+      <div class="text-card">
+        <div class="text-card__head">
+          <span>Patrones</span>
+          <span class="text-card__count">1</span>
+        </div>
+        <p class="text-card__body">
+          Las piezas ya combinadas en una página entera.
+        </p>
+        <ul class="text-card__list">
+          <li>Landing completa</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing-band">
+    <div class="closing-band__text">
+      <h2 class="closing-band__title">Un archivo canónico</h2>
+      <p class="closing-band__body">
+        Cada producto de Servaltek vendorea los tokens byte a byte desde
+        este repo — Witlens fue el primero en hacerlo.
+        <code>pnpm tokens:check</code> falla si alguien edita una copia en vez
+        del original.
+      </p>
+    </div>
+    <div class="closing-band__cta">
+      <Button href="/tokens" variant="light" size="md">
+        Ver los tokens
+      </Button>
+    </div>
+  </section>
+</PerfumeUILayout>
+
+<style>
+  .hero {
+    padding: 56px 0 48px;
+  }
+
+  .hero__kicker {
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink-muted);
+    margin: 0 0 20px;
+  }
+
+  .hero__title {
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    max-width: 16ch;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 0 0 28px;
+  }
+
+  .hero__body {
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    max-width: 58ch;
+    margin: 0 0 32px;
+  }
+
+  .hero__actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 8px 0 56px;
+  }
+
+  .block {
+    margin-bottom: 72px;
+  }
+
+  .block__title {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+
+  .block__body {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    overflow: hidden;
+    transition: background-color 0.2s ease;
+  }
+
+  .card:hover {
+    background: var(--surface-alt);
+  }
+
+  .card__media {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .card__media--color {
+    gap: 10px;
+    padding: 28px;
+  }
+
+  .swatch {
+    flex: 1;
+    align-self: stretch;
+    border-radius: 6px;
+  }
+
+  .card__media--type {
+    background: var(--stage, var(--surface));
+  }
+
+  .type-sample {
+    font-size: 72px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+
+  .card__media--shape {
+    gap: 16px;
+  }
+
+  .shape {
+    flex: none;
+    box-sizing: border-box;
+    width: 50px;
+    height: 50px;
+    background: var(--accent);
+  }
+
+  .shape--input {
+    border-radius: var(--radius-input);
+  }
+
+  .shape--card {
+    border-radius: var(--radius-card);
+  }
+
+  .shape--pill {
+    border-radius: var(--radius-pill);
+  }
+
+  .card__body {
+    padding: 22px 24px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .card__title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .card__text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .feature-card {
+    all: unset;
+    display: block;
+    box-sizing: border-box;
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  a.feature-card:hover {
+    background: var(--surface-alt);
+  }
+
+  .feature-card--static {
+    cursor: default;
+  }
+
+  .feature-card__media {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 24px;
+    background: var(--stage, var(--surface));
+  }
+
+  .feature-card__media--photos {
+    padding: 0;
+    gap: 2px;
+  }
+
+  .feature-card__media--photos img {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .feature-card__body {
+    padding: 22px 24px 26px;
+  }
+
+  .feature-card__title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+
+  .feature-card__list {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin: 0 0 14px;
+  }
+
+  .feature-card__cta {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .feature-card__cta--soon {
+    color: var(--ink-muted);
+    opacity: 0.6;
+  }
+
+  .text-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+  }
+
+  .text-card {
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    padding: 26px 26px 28px;
+    box-sizing: border-box;
+  }
+
+  .text-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .text-card__count {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-muted);
+  }
+
+  .text-card__body {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin: 0 0 14px;
+  }
+
+  .text-card__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-muted);
+    opacity: 0.7;
+  }
+
+  .closing-band {
+    border-radius: var(--radius-card);
+    background: var(--band-bg, #101114);
+    color: #ffffff;
+    padding: 48px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+
+  .closing-band__text {
+    max-width: 56ch;
+  }
+
+  .closing-band__title {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  .closing-band__body {
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+  }
+
+  .closing-band__body code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: #ffffff;
+  }
+
+  .closing-band__cta {
+    flex: none;
+  }
+</style>
