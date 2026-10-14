@@ -5,5 +5,5 @@ export default defineConfig({
   // Sitio 100% estático. Las rutas son archivos reales en src/pages/.
   output: 'static',
   // BaseLayout arma canonical y og:url absolutas con Astro.site.
-  site: 'https://perfumeui.servaltek.com',
+  site: 'https://perfume.servaltek.com',
 });
