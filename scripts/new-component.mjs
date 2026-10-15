@@ -4,8 +4,11 @@
 //   pnpm new:component Badge
 //   pnpm new:component PromoBanner --group Secciones
 //
+// Todos los componentes llevan el prefijo `Pf` (PfBadge, PfPromoBanner); se lo
+// agrega el script, así que se pasa el nombre sin prefijo. El slug de la página no lo lleva.
+//
 // Hace cuatro cosas:
-//   1. packages/perfumeui/src/components/ui/<Name>.astro  (esqueleto del componente)
+//   1. packages/perfumeui/src/components/ui/Pf<Name>.astro  (esqueleto del componente)
 //   2. packages/perfumeui/src/index.ts                    (agrega el export)
 //   3. apps/docs/src/pages/components/<slug>.astro        (página con el molde de TextLink)
 //   4. apps/docs/src/data/perfumeui-nav.ts                (agrega el ítem al sidebar)
@@ -19,16 +22,17 @@ const lib = join(root, 'packages/perfumeui/src');
 const docs = join(root, 'apps/docs/src');
 
 const args = process.argv.slice(2);
-const name = args.find((a) => !a.startsWith('--'));
+const baseName = args.find((a) => !a.startsWith('--'))?.replace(/^Pf(?=[A-Z])/, '');
 const groupFlag = args.indexOf('--group');
 const group = (groupFlag >= 0 ? args[groupFlag + 1] : undefined) ?? 'Primitivas';
 
-if (!name || !/^[A-Z][A-Za-z0-9]*$/.test(name)) {
+if (!baseName || !/^[A-Z][A-Za-z0-9]*$/.test(baseName)) {
   console.error('Uso: pnpm new:component <NombreEnPascalCase> [--group <Grupo del sidebar>]');
   process.exit(1);
 }
 
-const slug = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+const name = `Pf${baseName}`;
+const slug = baseName.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 const href = `/components/${slug}`;
 const componentPath = join(lib, 'components/ui', `${name}.astro`);
 const pagePath = join(docs, 'pages/components', `${slug}.astro`);
@@ -44,13 +48,13 @@ for (const p of [componentPath, pagePath]) {
     process.exit(1);
   }
 }
-if (index.includes(`default as ${name} }`) || nav.includes(`name: "${name}"`)) {
+if (index.includes(`default as ${name} }`) || nav.includes(`name: "${baseName}"`)) {
   console.error(`${name} ya está exportado en index.ts o listado en perfumeui-nav.ts.`);
   process.exit(1);
 }
 
 // ── 4 · sidebar ────────────────────────────────────────────────────────────
-const item = `{ name: "${name}", href: "${href}" }`;
+const item = `{ name: "${baseName}", href: "${href}" }`;
 const groupStart = nav.indexOf(`label: "${group}",`);
 if (groupStart >= 0) {
   // Agrega el ítem al final del array `items` de ese grupo.

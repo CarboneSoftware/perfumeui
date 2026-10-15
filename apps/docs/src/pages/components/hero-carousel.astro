@@ -3,9 +3,9 @@ import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
 import DemoScene from "@/components/docs/DemoScene.astro";
-import HeroCarousel from "@servaltek/perfumeui/components/hero/HeroCarousel.astro";
-import HeroSlide from "@servaltek/perfumeui/components/hero/HeroSlide.astro";
-import StaticHero from "@servaltek/perfumeui/components/ui/StaticHero.astro";
+import PfHeroCarousel from "@servaltek/perfumeui/components/hero/PfHeroCarousel.astro";
+import PfHeroSlide from "@servaltek/perfumeui/components/hero/PfHeroSlide.astro";
+import PfStaticHero from "@servaltek/perfumeui/components/ui/PfStaticHero.astro";
 
 const donavelleSources = [
   {
@@ -20,15 +20,15 @@ const donavelleSources = [
   },
 ];
 
-const usage = `<HeroCarousel height="clamp(540px, 40vw, 740px)" interval={7000}>
-  <HeroSlide stage="blue" title="…" headingLevel={1}>
+const usage = `<PfHeroCarousel height="clamp(540px, 40vw, 740px)" interval={7000}>
+  <PfHeroSlide stage="blue" title="…" headingLevel={1}>
     <HubVisual slot="visual" />
-  </HeroSlide>
-  <HeroSlide stage="sky" title="…" headingLevel={2}>
+  </PfHeroSlide>
+  <PfHeroSlide stage="sky" title="…" headingLevel={2}>
     <TechVisual slot="visual" />
-  </HeroSlide>
-  <StaticHero imageFallback="…" title="…" headingLevel={2} />
-</HeroCarousel>`;
+  </PfHeroSlide>
+  <PfStaticHero imageFallback="…" title="…" headingLevel={2} />
+</PfHeroCarousel>`;
 
 const behaviors = [
   {
@@ -67,12 +67,12 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="HeroCarousel"
+  title="PfHeroCarousel"
   description="Carrusel de heroes con scroll-snap, autoplay accesible y slides de cualquier tipo."
 >
   <DocsHeader
     family="Heroes"
-    name="HeroCarousel"
+    name="PfHeroCarousel"
     lead="El carrusel de la home de Servaltek. Cada hijo directo es una slide, así que acepta HeroSlide, StaticHero o cualquier mezcla. El desplazamiento es CSS nativo; el JS solo agrega controles, autoplay y accesibilidad."
   />
 
@@ -84,8 +84,8 @@ const props = [
     </p>
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--flush">
-        <HeroCarousel label="Ejemplo de carrusel" height="clamp(480px, 36vw, 600px)">
-          <HeroSlide
+        <PfHeroCarousel label="Ejemplo de carrusel" height="clamp(480px, 36vw, 600px)">
+          <PfHeroSlide
             stage="blue"
             badge="Plataforma"
             title="Una cuenta para todo Servaltek"
@@ -94,8 +94,8 @@ const props = [
             headingLevel={2}
           >
             <DemoScene slot="visual" title="Tu cuenta" subtitle="Un acceso, todos los productos" pill="Entrar" />
-          </HeroSlide>
-          <HeroSlide
+          </PfHeroSlide>
+          <PfHeroSlide
             stage="periwinkle"
             badge="Proyectos"
             title="Productos que ya están en la calle"
@@ -103,16 +103,16 @@ const props = [
             headingLevel={2}
           >
             <DemoScene slot="visual" title="Proyectos" subtitle="En producción" float={{ title: "3 productos", body: "en producción" }} />
-          </HeroSlide>
-          <HeroSlide
+          </PfHeroSlide>
+          <PfHeroSlide
             stage="sky"
             badge="Stack"
             title="La herramienta según el problema"
             headingLevel={2}
           >
             <DemoScene slot="visual" title="Nuestro stack" subtitle="Web, mobile y escritorio" />
-          </HeroSlide>
-          <StaticHero
+          </PfHeroSlide>
+          <PfStaticHero
             imageSources={donavelleSources}
             imageFallback="https://storage.servaltek.com/public/resources/donavelle/7e0d8574737401828caaac09e000da9022b59b404134480890a304d823f68597.png"
             tone="dark"
@@ -121,7 +121,7 @@ const props = [
             body="Sin cables, sin baterías, totalmente gratis."
             headingLevel={2}
           />
-        </HeroCarousel>
+        </PfHeroCarousel>
       </div>
     </div>
     <pre class="pui-code">{usage}</pre>

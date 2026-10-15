@@ -7,7 +7,7 @@
  */
 import "../../styles/hero-scene.css";
 import type { CtaLink } from "../types";
-import HeroTextContent from "../ui/HeroTextContent.astro";
+import PfHeroTextContent from "../ui/PfHeroTextContent.astro";
 
 interface Props {
   badge?: string;
@@ -31,12 +31,12 @@ const { stage = "blue", ...text } = Astro.props;
     </div>
 
     <div class="hero-slide__desktop container">
-      <HeroTextContent {...text} tone="dark" />
+      <PfHeroTextContent {...text} tone="dark" />
     </div>
   </div>
 
   <div class="hero-slide__mobile container">
-    <HeroTextContent {...text} tone="dark" />
+    <PfHeroTextContent {...text} tone="dark" />
   </div>
 </div>
 

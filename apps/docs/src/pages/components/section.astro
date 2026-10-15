@@ -2,8 +2,8 @@
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
-import Section from "@servaltek/perfumeui/components/ui/Section.astro";
-import SectionHeading from "@servaltek/perfumeui/components/ui/SectionHeading.astro";
+import PfSection from "@servaltek/perfumeui/components/ui/PfSection.astro";
+import PfSectionHeading from "@servaltek/perfumeui/components/ui/PfSectionHeading.astro";
 
 const surfaces = [
   { name: "white", token: "--surface", body: "El default. La superficie base de la página." },
@@ -21,7 +21,7 @@ const spaces = [
 ];
 
 const props = [
-  { name: "id", type: "string", default: "—", body: "Ancla para el scroll y para los sectionStates del AppNavbar." },
+  { name: "id", type: "string", default: "—", body: "Ancla para el scroll y para los sectionStates del PfNavbar." },
   { name: "surface", type: '"white" | "subtle" | "muted" | "alt" | "dark" | "none"', default: '"white"', body: "Fondo de la sección, del más claro al más oscuro." },
   { name: "width", type: '"default" | "narrow" | "full"', default: '"default"', body: "Ancho del contenido centrado: --content-max (1600px), --content-narrow (860px) o sin tope." },
   { name: "space", type: '"default" | "tight" | "flush"', default: '"default"', body: "Ritmo vertical. flush = sin padding, para bandas a sangre." },
@@ -35,11 +35,11 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="Section"
+  title="PfSection"
   description="La cáscara de sección de PerfumeUI: fondo, ritmo vertical y contenedor centrado, una sola vez."
 >
   <DocsHeader
-    name="Section"
+    name="PfSection"
     lead="Toda sección de página se envuelve acá. Los bloques de contenido solo aportan lo que va adentro: el fondo, el padding y el ancho máximo salen de estas props, así el ritmo es el mismo en todas."
   />
 
@@ -77,13 +77,13 @@ const props = [
     <div class="pui-preview">
       {
         surfaces.map((s) => (
-          <Section surface={s.name as any} space="tight" width="full">
+          <PfSection surface={s.name as any} space="tight" width="full">
             <div class="surface-row">
               <span class="surface-row__name">surface={s.name}</span>
               <span class="surface-row__body">{s.body}</span>
               <span class="surface-row__token">{s.token}</span>
             </div>
-          </Section>
+          </PfSection>
         ))
       }
     </div>
@@ -164,17 +164,17 @@ const props = [
     </p>
 
     <div class="pui-preview">
-      <Section surface="white" space="tight" width="full" divider="bottom">
+      <PfSection surface="white" space="tight" width="full" divider="bottom">
         <span class="divider-demo">divider=bottom · surface=white</span>
-      </Section>
-      <Section surface="subtle" space="tight" width="full" divider="bottom">
+      </PfSection>
+      <PfSection surface="subtle" space="tight" width="full" divider="bottom">
         <span class="divider-demo">divider=bottom · surface=subtle</span>
-      </Section>
-      <Section surface="dark" space="tight" width="full" divider="top">
+      </PfSection>
+      <PfSection surface="dark" space="tight" width="full" divider="top">
         <span class="divider-demo divider-demo--dark">
           divider=top · surface=dark
         </span>
-      </Section>
+      </PfSection>
     </div>
   </section>
 
@@ -188,15 +188,15 @@ const props = [
     </p>
 
     <div class="pui-preview">
-      <Section surface="subtle" space="tight" width="full">
-        <SectionHeading
+      <PfSection surface="subtle" space="tight" width="full">
+        <PfSectionHeading
           kicker="Antetítulo"
           title="Título de sección"
           body="La bajada: una o dos líneas que ubican el bloque antes de que empiece el contenido."
           size="md"
           gap="none"
         />
-      </Section>
+      </PfSection>
     </div>
   </section>
 
@@ -212,7 +212,7 @@ const props = [
       <div class="pui-dodont__card">
         <div class="pui-dodont__media">
           <code class="snippet"
-            >&lt;Section surface="subtle" space="tight"&gt;</code
+            >&lt;PfSection surface="subtle" space="tight"&gt;</code
           >
         </div>
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
@@ -237,7 +237,7 @@ const props = [
 
       <div class="pui-dodont__card">
         <div class="pui-dodont__media">
-          <code class="snippet">&lt;Section space="flush" bleed&gt;</code>
+          <code class="snippet">&lt;PfSection space="flush" bleed&gt;</code>
         </div>
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
         <p class="pui-dodont__text">
@@ -249,7 +249,7 @@ const props = [
       <div class="pui-dodont__card">
         <div class="pui-dodont__media">
           <code class="snippet snippet--bad"
-            >&lt;Section class="mi-seccion--sin-padding"&gt;</code
+            >&lt;PfSection class="mi-seccion--sin-padding"&gt;</code
           >
         </div>
         <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>

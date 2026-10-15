@@ -7,7 +7,7 @@
  * la sección.
  */
 import type { Align, CtaLink, HeadingSize, Tone } from "../types";
-import TextLink from "./TextLink.astro";
+import PfTextLink from "./PfTextLink.astro";
 
 interface Props {
   kicker?: string;
@@ -59,9 +59,9 @@ const {
   {
     link && (
       <div class="heading__link">
-        <TextLink href={link.href} tone={tone}>
+        <PfTextLink href={link.href} tone={tone}>
           {link.label}
-        </TextLink>
+        </PfTextLink>
       </div>
     )
   }

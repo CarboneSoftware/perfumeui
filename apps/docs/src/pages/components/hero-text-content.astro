@@ -2,7 +2,7 @@
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
-import HeroTextContent from "@servaltek/perfumeui/components/ui/HeroTextContent.astro";
+import PfHeroTextContent from "@servaltek/perfumeui/components/ui/PfHeroTextContent.astro";
 
 const donavelleLogo = {
   src: "https://storage.servaltek.com/public/resources/donavelle/d98e96b04a92bc5e746552e5e12532b32cb4e0b09b5d25248b7b1d75a668e4c8.png",
@@ -11,7 +11,7 @@ const donavelleLogo = {
   alt: "Donavelle",
 };
 
-const usage = `<HeroTextContent
+const usage = `<PfHeroTextContent
   tone="dark"
   badge="Servaltek"
   title="Diseñamos, desarrollamos y distribuimos software."
@@ -36,12 +36,12 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="HeroTextContent"
+  title="PfHeroTextContent"
   description="El bloque de texto que comparten todos los heroes: badge o logo, título, bajada y CTAs."
 >
   <DocsHeader
     family="Heroes"
-    name="HeroTextContent"
+    name="PfHeroTextContent"
     lead="El bloque de texto de todos los heroes. StaticHero y HeroSlide no tienen texto propio: lo delegan acá, y lo renderizan dos veces, una para desktop y otra para mobile."
   />
 
@@ -49,7 +49,7 @@ const props = [
     <h2 class="pui-block__title">Uso</h2>
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--light">
-        <HeroTextContent
+        <PfHeroTextContent
           tone="dark"
           badge="Servaltek"
           title="Diseñamos, desarrollamos y distribuimos software."
@@ -76,7 +76,7 @@ const props = [
     <div class="pui-grid pui-grid--wide">
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--light">
-          <HeroTextContent tone="dark" kicker={'tone="dark"'} title="Texto oscuro" body="Sobre una superficie clara." headingLevel={2} />
+          <PfHeroTextContent tone="dark" kicker={'tone="dark"'} title="Texto oscuro" body="Sobre una superficie clara." headingLevel={2} />
         </div>
         <div class="pui-preview__foot">
           <p class="pui-preview__caption">data-wtl-theme="light"</p>
@@ -84,7 +84,7 @@ const props = [
       </div>
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--dark">
-          <HeroTextContent tone="light" kicker={'tone="light"'} title="Texto claro" body="Sobre una superficie oscura o una foto." headingLevel={2} />
+          <PfHeroTextContent tone="light" kicker={'tone="light"'} title="Texto claro" body="Sobre una superficie oscura o una foto." headingLevel={2} />
         </div>
         <div class="pui-preview__foot">
           <p class="pui-preview__caption">data-wtl-theme="dark"</p>
@@ -104,17 +104,17 @@ const props = [
     <div class="pui-grid">
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--light">
-          <HeroTextContent tone="dark" badge="Nuevo" title="Badge" headingLevel={2} />
+          <PfHeroTextContent tone="dark" badge="Nuevo" title="Badge" headingLevel={2} />
         </div>
       </div>
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--light">
-          <HeroTextContent tone="dark" kicker="Servaltek" title="Kicker" headingLevel={2} />
+          <PfHeroTextContent tone="dark" kicker="Servaltek" title="Kicker" headingLevel={2} />
         </div>
       </div>
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--dark">
-          <HeroTextContent tone="light" logo={donavelleLogo} badge="(se ignora)" title="Logo" headingLevel={2} />
+          <PfHeroTextContent tone="light" logo={donavelleLogo} badge="(se ignora)" title="Logo" headingLevel={2} />
         </div>
       </div>
     </div>
@@ -129,7 +129,7 @@ const props = [
     </p>
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--soft">
-        <HeroTextContent
+        <PfHeroTextContent
           tone="dark"
           align="center"
           title="Una cuenta para todo Servaltek"

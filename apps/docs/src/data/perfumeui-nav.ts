@@ -33,7 +33,7 @@ export const perfumeUINav: NavGroup[] = [
   },
   {
     label: "Navegación",
-    items: [{ name: "AppNavbar", href: "/components/app-navbar" }],
+    items: [{ name: "Navbar", href: "/components/navbar" }],
   },
   {
     label: "Heroes",
@@ -47,8 +47,8 @@ export const perfumeUINav: NavGroup[] = [
 ];
 
 /**
- * navItems del AppNavbar real para la sección /perfumeui. Solo los dos
- * destinos que ya existen — AppNavbar no tiene noción de tab "pronto" (eso
+ * navItems del PfNavbar real para la sección /perfumeui. Solo los dos
+ * destinos que ya existen — PfNavbar no tiene noción de tab "pronto" (eso
  * vive en el árbol del sidebar de arriba), así que Patrones/Recursos no
  * aparecen acá todavía.
  */

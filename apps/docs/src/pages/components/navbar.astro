@@ -4,7 +4,7 @@ import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
 
 const usage = `---
-import AppNavbar from "@servaltek/perfumeui/components/ui/AppNavbar.astro";
+import PfNavbar from "@servaltek/perfumeui/components/ui/PfNavbar.astro";
 
 const navItems = [
   { label: "Inicio", url: "/" },
@@ -13,7 +13,7 @@ const navItems = [
 ];
 ---
 
-<AppNavbar navItems={navItems} />`;
+<PfNavbar navItems={navItems} />`;
 
 const anatomy = `<nav data-scroll-states data-section-states>   ← barra sticky de 56px
   .content
@@ -30,7 +30,7 @@ const anatomy = `<nav data-scroll-states data-section-states>   ← barra sticky
 <aside id="drawer">   ← menú mobile, hermano del nav
 <button id="filter">  ← fondo translúcido que cierra el drawer`;
 
-const states = `<AppNavbar
+const states = `<PfNavbar
   navItems={navItems}
   theme="dark"
   backgroundColor="transparent"
@@ -75,6 +75,8 @@ const behaviors = [
 const props = [
   { name: "navItems", type: "{ label: string; url: string }[]", default: "—", body: "Links de la barra, del drawer y del menú \"Más\". Los mismos items en los tres lugares." },
   { name: "title", type: "string", default: "—", body: "Texto al lado del logo, separado por una barra vertical. Ej: \"PerfumeUI\", \"Developer\"." },
+  { name: "logo", type: "{ light: string; dark?: string; alt?: string }", default: "logotipo de Servaltek", body: "Logo principal. light se muestra con el tema claro y dark con el oscuro; sin dark, se usa light en los dos. También va en el menú de cuenta." },
+  { name: "auth", type: "boolean", default: "true", body: "Botón de cuenta con el SSO de Servaltek. Con false no se renderiza ni se carga oidc-client-ts." },
   { name: "theme", type: '"light" | "dark"', default: '"light"', body: "Tema inicial. Va como clase y como data-wtl-theme en nav, drawer y filter." },
   { name: "backgroundColor", type: "string", default: "—", body: "Color de fondo inline del nav y del drawer. Sin él, usa --navbar-bg del tema." },
   { name: "position", type: '"sticky" | "fixed" | …', default: '"sticky"', body: "Posición CSS del nav. fixed para heroes que van por debajo del navbar." },
@@ -87,7 +89,7 @@ const props = [
 
 const deps = [
   ["lib/auth.ts", "login, logout y checkSession (oidc-client-ts contra auth.servaltek.com). Cada proyecto tiene su propio client_id y sus redirect URIs."],
-  ["ui/DropdownMenu.astro", "El menú \"Más\" y el menú de cuenta."],
+  ["ui/PfDropdownMenu.astro", "El menú \"Más\" y el menú de cuenta."],
   ["global.css → .icon-btn", "Los botones redondos de 40px (tema, cuenta, hamburguesa)."],
   ["public/res/stek-logotype-light.png y -dark.png", "Los dos logos. Se muestra uno u otro según la clase de tema del nav."],
   ["PUBLIC_APP_URL", "href del ícono de cuenta. Si falta, usa app.witlens.studio."],
@@ -103,12 +105,12 @@ const widths = [
 ---
 
 <PerfumeUILayout
-  title="AppNavbar"
+  title="PfNavbar"
   description="El navbar de los sitios de Servaltek: logo, links con desborde, cuenta SSO, drawer mobile y estados por scroll."
 >
   <DocsHeader
     family="Navegación"
-    name="AppNavbar"
+    name="PfNavbar"
     lead="La barra de arriba de todos los sitios de Servaltek. Casi todo el comportamiento vive en el cliente: sesión SSO, drawer, desborde de links, tema y estados que cambian con el scroll."
   />
 
@@ -140,8 +142,8 @@ const widths = [
     <iframe
       class="pui-frame"
       id="navbar-frame"
-      src="/demo/app-navbar"
-      title="Demo del AppNavbar"
+      src="/demo/navbar"
+      title="Demo del PfNavbar"
       loading="lazy"></iframe>
   </section>
 
@@ -246,7 +248,7 @@ const widths = [
       <div class="pui-dodont__card">
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
         <p class="pui-dodont__text">
-          Un solo AppNavbar por página, como primer elemento del body. Para
+          Un solo PfNavbar por página, como primer elemento del body. Para
           mostrar otro (como en esta página), usá un iframe.
         </p>
       </div>

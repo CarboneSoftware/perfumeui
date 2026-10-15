@@ -1,6 +1,6 @@
 ---
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
-import Button from "@servaltek/perfumeui/components/ui/Button.astro";
+import PfButton from "@servaltek/perfumeui/components/ui/PfButton.astro";
 
 const variants = [
   { name: "primary", stage: "light", label: "Primary", body: "Acento sólido. La acción principal, en cualquier fondo." },
@@ -26,7 +26,7 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="Button"
+  title="PfButton"
   description="La primitiva de botón de PerfumeUI: cinco variantes, tres tamaños, una regla — nunca escribas a mano un link con forma de píldora."
 >
   <nav class="breadcrumb" aria-label="Ubicación">
@@ -34,10 +34,10 @@ const props = [
     <span class="breadcrumb__sep">/</span>
     <span>Primitivas</span>
     <span class="breadcrumb__sep">/</span>
-    <span class="breadcrumb__current">Button</span>
+    <span class="breadcrumb__current">PfButton</span>
   </nav>
 
-  <h1 class="page-title">Button</h1>
+  <h1 class="page-title">PfButton</h1>
   <p class="page-lead">
     Todo CTA de un producto Servaltek pasa por acá. Cinco variantes, tres
     tamaños y una regla: nunca escribas a mano un link con forma de píldora.
@@ -45,7 +45,7 @@ const props = [
 
   <section class="playground">
     <div class="playground__stage" id="pui-stage" data-stage="light">
-      <Button id="pui-demo-btn" variant="primary" size="md">Primary</Button>
+      <PfButton id="pui-demo-btn" variant="primary" size="md">Primary</PfButton>
     </div>
 
     <div class="playground__controls">
@@ -101,9 +101,9 @@ const props = [
         variants.map((v) => (
           <div class="variant-card">
             <div class={`variant-card__stage variant-card__stage--${v.stage}`}>
-              <Button as="span" variant={v.name as any} size="md">
+              <PfButton as="span" variant={v.name as any} size="md">
                 {v.label}
-              </Button>
+              </PfButton>
             </div>
             <div class="variant-card__body">
               <span class="mono">{v.name}</span>
@@ -126,9 +126,9 @@ const props = [
       {
         sizes.map((s) => (
           <div class="size-item">
-            <Button as="span" variant="primary" size={s.name as any}>
+            <PfButton as="span" variant="primary" size={s.name as any}>
               {s.name}
-            </Button>
+            </PfButton>
             <span class="mono mono--faint">{s.name} · {s.spec}</span>
           </div>
         ))
@@ -168,7 +168,7 @@ const props = [
     <div class="dodont-grid">
       <div class="dodont-card">
         <div class="dodont-card__media dodont-card__media--photo-a">
-          <Button as="span" variant="light" size="sm">Light</Button>
+          <PfButton as="span" variant="light" size="sm">Light</PfButton>
         </div>
         <p class="dodont-card__label dodont-card__label--do">Hacé</p>
         <p class="dodont-card__text">
@@ -180,7 +180,7 @@ const props = [
 
       <div class="dodont-card">
         <div class="dodont-card__media dodont-card__media--photo-a">
-          <Button as="span" variant="outline" size="sm">Outline</Button>
+          <PfButton as="span" variant="outline" size="sm">Outline</PfButton>
         </div>
         <p class="dodont-card__label dodont-card__label--dont">No hagas</p>
         <p class="dodont-card__text">
@@ -191,7 +191,7 @@ const props = [
 
       <div class="dodont-card">
         <div class="dodont-card__media dodont-card__media--light">
-          <a class="dodont-noop-link" href="#"><Button as="span" variant="primary" size="sm">Continuar</Button></a>
+          <a class="dodont-noop-link" href="#"><PfButton as="span" variant="primary" size="sm">Continuar</PfButton></a>
         </div>
         <p class="dodont-card__label dodont-card__label--do">Hacé</p>
         <p class="dodont-card__text">

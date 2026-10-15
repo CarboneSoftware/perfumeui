@@ -3,14 +3,14 @@ import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
 import DemoScene from "@/components/docs/DemoScene.astro";
-import HeroSlide from "@servaltek/perfumeui/components/hero/HeroSlide.astro";
+import PfHeroSlide from "@servaltek/perfumeui/components/hero/PfHeroSlide.astro";
 
 const usage = `---
-import HeroSlide from "@servaltek/perfumeui/components/hero/HeroSlide.astro";
+import PfHeroSlide from "@servaltek/perfumeui/components/hero/PfHeroSlide.astro";
 import HubVisual from "@servaltek/perfumeui/components/hero/visuals/HubVisual.astro";
 ---
 
-<HeroSlide
+<PfHeroSlide
   stage="blue"
   badge="Plataforma"
   title="Una cuenta para todo Servaltek"
@@ -19,7 +19,7 @@ import HubVisual from "@servaltek/perfumeui/components/hero/visuals/HubVisual.as
   headingLevel={1}
 >
   <HubVisual slot="visual" />
-</HeroSlide>`;
+</PfHeroSlide>`;
 
 const anatomy = `<div class="hero-slide hero-slide--{stage}">
   .hero-slide__stage                    gradiente; 320px mobile, clamp(540px, 40vw, 640px) desktop
@@ -46,12 +46,12 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="HeroSlide"
+  title="PfHeroSlide"
   description="Hero con fondo de gradiente azul y una escena HTML en lugar de una foto."
 >
   <DocsHeader
     family="Heroes"
-    name="HeroSlide"
+    name="PfHeroSlide"
     lead="El hero del carrusel de la home de Servaltek. Mismo layout que StaticHero, pero el fondo es un gradiente azul y en lugar de una foto lleva una escena HTML en el slot visual."
   />
 
@@ -59,7 +59,7 @@ const props = [
     <h2 class="pui-block__title">Ejemplo</h2>
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--flush">
-        <HeroSlide
+        <PfHeroSlide
           stage="blue"
           badge="Plataforma"
           title="Una cuenta para todo Servaltek"
@@ -75,7 +75,7 @@ const props = [
             pill="Entrar"
             float={{ title: "Sesión iniciada", body: "en 3 productos" }}
           />
-        </HeroSlide>
+        </PfHeroSlide>
       </div>
     </div>
     <pre class="pui-code">{usage}</pre>
@@ -98,7 +98,7 @@ const props = [
         stages.map((s) => (
           <div class="pui-preview">
             <div class="pui-preview__stage pui-preview__stage--flush stage-thumb">
-              <HeroSlide stage={s.name} title={s.title} headingLevel={2} />
+              <PfHeroSlide stage={s.name} title={s.title} headingLevel={2} />
             </div>
             <div class="pui-preview__foot">
               <span class="pui-mono">{s.name}</span>

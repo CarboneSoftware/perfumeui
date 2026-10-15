@@ -28,7 +28,7 @@ html {
   color: var(--ink);
 }
 
-/* ---- Ajustes del AppNavbar en celulares angostos (de la guía de
+/* ---- Ajustes del PfNavbar en celulares angostos (de la guía de
    Fluxenture). Con el switch de tema son tres botones a la derecha. Los
    estilos del navbar son scoped, por eso el !important. ---- */
 nav .title-nav {

@@ -2,8 +2,8 @@
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
-import SectionHeading from "@servaltek/perfumeui/components/ui/SectionHeading.astro";
-import Section from "@servaltek/perfumeui/components/ui/Section.astro";
+import PfSectionHeading from "@servaltek/perfumeui/components/ui/PfSectionHeading.astro";
+import PfSection from "@servaltek/perfumeui/components/ui/PfSection.astro";
 
 const sizes = [
   {
@@ -47,11 +47,11 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="SectionHeading"
+  title="PfSectionHeading"
   description="La cabecera de sección de PerfumeUI: kicker, título, bajada y link, con la única escala tipográfica del sistema."
 >
   <DocsHeader
-    name="SectionHeading"
+    name="PfSectionHeading"
     lead="Kicker, título, bajada y link opcional. Es la única fuente de la escala tipográfica de los títulos: si un título necesita otro tamaño, se agrega una talla acá, no un clamp() suelto en la sección."
   />
 
@@ -64,7 +64,7 @@ const props = [
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--light anatomy">
         <div class="anatomy__demo">
-          <SectionHeading
+          <PfSectionHeading
             kicker="Antetítulo"
             title="Título de sección"
             body="La bajada: una o dos líneas que ubican el bloque antes de que empiece el contenido."
@@ -96,7 +96,7 @@ const props = [
         sizes.map((s) => (
           <div class="pui-preview">
             <div class="pui-preview__stage pui-preview__stage--light block-stage">
-              <SectionHeading
+              <PfSectionHeading
                 title={s.title}
                 size={s.name as any}
                 as="h3"
@@ -125,7 +125,7 @@ const props = [
     <div class="pui-grid pui-grid--wide">
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--light block-stage">
-          <SectionHeading
+          <PfSectionHeading
             kicker="Antetítulo"
             title="Título de sección"
             body="La bajada: una o dos líneas que ubican el bloque."
@@ -141,7 +141,7 @@ const props = [
 
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--light block-stage">
-          <SectionHeading
+          <PfSectionHeading
             kicker="Antetítulo"
             title="Título de sección"
             body="La bajada: una o dos líneas que ubican el bloque."
@@ -168,7 +168,7 @@ const props = [
 
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--light block-stage">
-        <SectionHeading
+        <PfSectionHeading
           kicker="Antetítulo"
           title="Título de sección"
           link={{ label: "Ver todos", href: "#" }}
@@ -188,8 +188,8 @@ const props = [
     </p>
 
     <div class="pui-preview">
-      <Section surface="dark" space="tight" width="full">
-        <SectionHeading
+      <PfSection surface="dark" space="tight" width="full">
+        <PfSectionHeading
           kicker="Antetítulo"
           title="Título sobre oscuro"
           body="La misma cabecera con las tres tintas invertidas y el link en su tono suave."
@@ -198,7 +198,7 @@ const props = [
           as="h3"
           gap="none"
         />
-      </Section>
+      </PfSection>
     </div>
   </section>
 
@@ -220,7 +220,7 @@ const props = [
         ].map((g) => (
           <div class="pui-preview">
             <div class="pui-preview__stage pui-preview__stage--light gap-stage">
-              <SectionHeading
+              <PfSectionHeading
                 title="Título"
                 size="sm"
                 as="h3"
@@ -249,7 +249,7 @@ const props = [
     <div class="pui-dodont">
       <div class="pui-dodont__card">
         <div class="pui-dodont__media">
-          <code class="snippet">&lt;SectionHeading as="h2" size="lg" /&gt;</code>
+          <code class="snippet">&lt;PfSectionHeading as="h2" size="lg" /&gt;</code>
         </div>
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
         <p class="pui-dodont__text">

@@ -1,7 +1,7 @@
 ---
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
-import Button from "@servaltek/perfumeui/components/ui/Button.astro";
-import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
+import PfButton from "@servaltek/perfumeui/components/ui/PfButton.astro";
+import PfTextLink from "@servaltek/perfumeui/components/ui/PfTextLink.astro";
 ---
 
 <PerfumeUILayout
@@ -17,12 +17,12 @@ import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
       galerías de evento salieron de acá. Nada se estiliza dos veces.
     </p>
     <div class="hero__actions">
-      <Button href="/components/button" variant="primary" size="md">
+      <PfButton href="/components/button" variant="primary" size="md">
         Ver componentes
-      </Button>
-      <TextLink href="/tokens" icon="chevron">
+      </PfButton>
+      <PfTextLink href="/tokens" icon="chevron">
         Explorar los fundamentos
-      </TextLink>
+      </PfTextLink>
     </div>
   </section>
 
@@ -89,8 +89,8 @@ import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
     <div class="feature-grid">
       <a class="feature-card" href="/components/button">
         <div class="feature-card__media">
-          <Button as="span" variant="primary" size="md">Primary</Button>
-          <Button as="span" variant="outline" size="md">Outline</Button>
+          <PfButton as="span" variant="primary" size="md">Primary</PfButton>
+          <PfButton as="span" variant="outline" size="md">Outline</PfButton>
         </div>
         <div class="feature-card__body">
           <h3 class="feature-card__title">Primitivas</h3>
@@ -152,7 +152,7 @@ import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
         </div>
         <p class="text-card__body">Lo que envuelve a toda página del sitio.</p>
         <ul class="text-card__list">
-          <li>AppNavbar</li>
+          <li>PfNavbar</li>
           <li>Footer</li>
         </ul>
       </div>
@@ -183,9 +183,9 @@ import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
       </p>
     </div>
     <div class="closing-band__cta">
-      <Button href="/tokens" variant="light" size="md">
+      <PfButton href="/tokens" variant="light" size="md">
         Ver los tokens
-      </Button>
+      </PfButton>
     </div>
   </section>
 </PerfumeUILayout>

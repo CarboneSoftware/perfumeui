@@ -2,7 +2,7 @@
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
-import CardScroller from "@servaltek/perfumeui/components/ui/CardScroller.astro";
+import PfCardScroller from "@servaltek/perfumeui/components/ui/PfCardScroller.astro";
 
 /**
  * Cards de utilería. El scroller no trae card propia — la primitiva Card
@@ -25,11 +25,11 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="CardScroller"
+  title="PfCardScroller"
   description="El carril horizontal de PerfumeUI: snap, flechas y bucle infinito opcional. Las cards llegan por slot."
 >
   <DocsHeader
-    name="CardScroller"
+    name="PfCardScroller"
     lead="Un carril horizontal con snap y flechas. El scroller aporta el layout y el control; las cards llegan por slot, así el mismo carril sirve para fotos, tarjetas o precios."
   />
 
@@ -46,7 +46,7 @@ const props = [
 
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--flush">
-        <CardScroller
+        <PfCardScroller
           kicker="Antetítulo"
           title="Título del carril"
           link={{ label: "Ver todos", href: "#" }}
@@ -62,7 +62,7 @@ const props = [
               </article>
             ))
           }
-        </CardScroller>
+        </PfCardScroller>
       </div>
       <div class="pui-preview__foot">
         <span class="pui-mono">title · kicker · link</span>
@@ -85,7 +85,7 @@ const props = [
 
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--flush">
-        <CardScroller>
+        <PfCardScroller>
           {
             cards.map((c) => (
               <article class="card card--bare">
@@ -93,7 +93,7 @@ const props = [
               </article>
             ))
           }
-        </CardScroller>
+        </PfCardScroller>
       </div>
     </div>
   </section>
@@ -110,7 +110,7 @@ const props = [
 
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--flush">
-        <CardScroller title="Carril en bucle" infinite>
+        <PfCardScroller title="Carril en bucle" infinite>
           {
             cards.map((c) => (
               <article class="card">
@@ -122,7 +122,7 @@ const props = [
               </article>
             ))
           }
-        </CardScroller>
+        </PfCardScroller>
       </div>
       <div class="pui-preview__foot">
         <span class="pui-mono">infinite</span>
@@ -149,10 +149,10 @@ const props = [
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--soft contract">
           <code class="snippet">
-            &lt;CardScroller title="..."&gt;<br />
+            &lt;PfCardScroller title="..."&gt;<br />
             &nbsp;&nbsp;&lt;article class="card"&gt;…&lt;/article&gt;<br />
             &nbsp;&nbsp;&lt;article class="card"&gt;…&lt;/article&gt;<br />
-            &lt;/CardScroller&gt;
+            &lt;/PfCardScroller&gt;
           </code>
         </div>
         <div class="pui-preview__foot">
@@ -189,7 +189,7 @@ const props = [
     <div class="pui-dodont">
       <div class="pui-dodont__card">
         <div class="pui-dodont__media">
-          <code class="snippet">&lt;Section space="flush" bleed&gt;</code>
+          <code class="snippet">&lt;PfSection space="flush" bleed&gt;</code>
         </div>
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
         <p class="pui-dodont__text">
@@ -202,7 +202,7 @@ const props = [
       <div class="pui-dodont__card">
         <div class="pui-dodont__media">
           <code class="snippet snippet--bad"
-            >&lt;div class="mi-grilla"&gt;&lt;CardScroller /&gt;&lt;/div&gt;</code
+            >&lt;div class="mi-grilla"&gt;&lt;PfCardScroller /&gt;&lt;/div&gt;</code
           >
         </div>
         <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>

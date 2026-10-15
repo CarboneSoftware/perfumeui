@@ -2,8 +2,8 @@
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
-import TextLink from "@servaltek/perfumeui/components/ui/TextLink.astro";
-import Button from "@servaltek/perfumeui/components/ui/Button.astro";
+import PfTextLink from "@servaltek/perfumeui/components/ui/PfTextLink.astro";
+import PfButton from "@servaltek/perfumeui/components/ui/PfButton.astro";
 
 const icons = [
   {
@@ -52,11 +52,11 @@ const props = [
 ---
 
 <PerfumeUILayout
-  title="TextLink"
+  title="PfTextLink"
   description="El link de texto en acento de PerfumeUI: el CTA que acompaña sin competir con el botón."
 >
   <DocsHeader
-    name="TextLink"
+    name="PfTextLink"
     lead="Todo link secundario del sistema pasa por acá. Es el CTA que acompaña al botón sin competirle: mismo acento, sin caja, sin peso."
   />
 
@@ -73,9 +73,9 @@ const props = [
         icons.map((i) => (
           <div class="pui-preview">
             <div class="pui-preview__stage pui-preview__stage--light">
-              <TextLink href="#" icon={i.name}>
+              <PfTextLink href="#" icon={i.name}>
                 {i.label}
-              </TextLink>
+              </PfTextLink>
             </div>
             <div class="pui-preview__foot">
               <span class="pui-mono">icon={i.name}</span>
@@ -100,7 +100,7 @@ const props = [
     <div class="pui-grid">
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--light">
-          <TextLink href="#" tone="light">Ver más</TextLink>
+          <PfTextLink href="#" tone="light">Ver más</PfTextLink>
         </div>
         <div class="pui-preview__foot">
           <span class="pui-mono">tone=light</span>
@@ -110,7 +110,7 @@ const props = [
 
       <div class="pui-preview">
         <div class="pui-preview__stage pui-preview__stage--dark">
-          <TextLink href="#" tone="dark">Ver más</TextLink>
+          <PfTextLink href="#" tone="dark">Ver más</PfTextLink>
         </div>
         <div class="pui-preview__foot">
           <span class="pui-mono">tone=dark</span>
@@ -132,11 +132,11 @@ const props = [
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--light size-row">
         <div class="size-item">
-          <TextLink href="#" size="sm">Ver más</TextLink>
+          <PfTextLink href="#" size="sm">Ver más</PfTextLink>
           <span class="pui-mono pui-mono--faint">sm · 15px fijo</span>
         </div>
         <div class="size-item">
-          <TextLink href="#" size="md">Ver más</TextLink>
+          <PfTextLink href="#" size="md">Ver más</PfTextLink>
           <span class="pui-mono pui-mono--faint">md · 15 → 16px</span>
         </div>
       </div>
@@ -158,8 +158,8 @@ const props = [
     <div class="pui-dodont">
       <div class="pui-dodont__card">
         <div class="pui-dodont__media pair">
-          <Button as="span" variant="primary" size="sm">Continuar</Button>
-          <TextLink href="#">Ver más</TextLink>
+          <PfButton as="span" variant="primary" size="sm">Continuar</PfButton>
+          <PfTextLink href="#">Ver más</PfTextLink>
         </div>
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
         <p class="pui-dodont__text">
@@ -170,8 +170,8 @@ const props = [
 
       <div class="pui-dodont__card">
         <div class="pui-dodont__media pair">
-          <Button as="span" variant="primary" size="sm">Continuar</Button>
-          <Button as="span" variant="outline" size="sm">Ver más</Button>
+          <PfButton as="span" variant="primary" size="sm">Continuar</PfButton>
+          <PfButton as="span" variant="outline" size="sm">Ver más</PfButton>
         </div>
         <p class="pui-dodont__label pui-dodont__label--dont">No hagas</p>
         <p class="pui-dodont__text">
@@ -182,7 +182,7 @@ const props = [
 
       <div class="pui-dodont__card">
         <div class="pui-dodont__media pui-dodont__media--dark">
-          <TextLink href="#" tone="dark">Ver más</TextLink>
+          <PfTextLink href="#" tone="dark">Ver más</PfTextLink>
         </div>
         <p class="pui-dodont__label pui-dodont__label--do">Hacé</p>
         <p class="pui-dodont__text">

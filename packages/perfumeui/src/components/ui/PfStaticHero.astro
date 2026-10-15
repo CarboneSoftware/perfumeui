@@ -4,7 +4,7 @@
  * (`.hero__desktop`) o debajo, sobre fondo blanco, en mobile (`.hero__mobile`).
  */
 import type { CtaLink, HeroLogo, ImageSource, Tone } from "../types";
-import HeroTextContent from "./HeroTextContent.astro";
+import PfHeroTextContent from "./PfHeroTextContent.astro";
 
 interface Props {
   imageSources?: ImageSource[];
@@ -27,7 +27,12 @@ interface Props {
   body?: string;
   cta?: CtaLink;
   secondaryCta?: CtaLink;
-  /** Dentro de `HeroCarousel`, solo el primer hero lleva `1`. */
+  /**
+   * Alto del hero, como valor CSS literal: `"650px"`, `"80vh"`, `"100%"`,
+   * `"calc(100dvh - 56px)"`. Sin valor, el alto lo define la foto.
+   */
+  height?: string;
+  /** Dentro de `PfHeroCarousel`, solo el primer hero lleva `1`. */
   headingLevel?: 1 | 2;
 }
 
@@ -37,11 +42,16 @@ const {
   imageAlt = "",
   tone = "light",
   scrim = true,
+  height,
   ...textProps
 } = Astro.props;
 ---
 
-<section class="hero" aria-label={textProps.title ?? "Introducción"}>
+<section
+  class="hero"
+  aria-label={textProps.title ?? "Introducción"}
+  style={height ? `height: ${height};` : undefined}
+>
   <picture>
     {imageSources.map((s) => <source srcset={s.srcset} media={s.media} />)}
     <img src={imageFallback} alt={imageAlt} />
@@ -50,13 +60,13 @@ const {
   {scrim && <div class:list={["hero__scrim", `hero__scrim--${tone}`]} aria-hidden="true" />}
 
   <div class="hero__desktop">
-    <HeroTextContent {...textProps} tone={tone} />
+    <PfHeroTextContent {...textProps} tone={tone} />
   </div>
 
   <div class="hero__mobile">
     <br>
     <div class="hero__mobile-panel">
-      <HeroTextContent {...textProps} tone="dark" />
+      <PfHeroTextContent {...textProps} tone="dark" />
     </div>
   </div>
 </section>

@@ -1,12 +1,12 @@
 ---
 /**
- * Página de demo del AppNavbar, pensada para verse dentro del <iframe> de
- * /components/app-navbar. Va aparte porque el navbar usa IDs
+ * Página de demo del PfNavbar, pensada para verse dentro del <iframe> de
+ * /components/navbar. Va aparte porque el navbar usa IDs
  * globales (#drawer, #filter) y `document.querySelector("nav")`: no puede
  * convivir con el navbar de la propia página de docs.
  */
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import AppNavbar from "@servaltek/perfumeui/components/ui/AppNavbar.astro";
+import PfNavbar from "@servaltek/perfumeui/components/ui/PfNavbar.astro";
 
 // Muchos items a propósito: en anchos intermedios no entran y pasan al "Más".
 const navItems = [
@@ -21,8 +21,8 @@ const navItems = [
 ];
 ---
 
-<BaseLayout title="Demo AppNavbar · PerfumeUI" description="Demo del AppNavbar." noindex>
-  <AppNavbar
+<BaseLayout title="Demo PfNavbar · PerfumeUI" description="Demo del PfNavbar." noindex>
+  <PfNavbar
     title="Demo"
     navItems={navItems}
     theme="light"

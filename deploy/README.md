@@ -34,7 +34,7 @@ En el realm `servaltek`:
    (viene así de fábrica). Es el que mete `realm_access.roles` en el access token, que es lo que mira
    oauth2-proxy.
 
-Además, el `AppNavbar` de los docs hace su propio login del lado del cliente con el client
+Además, el `PfNavbar` de los docs hace su propio login del lado del cliente con el client
 `servaltek-frontend` (`packages/perfumeui/src/lib/auth.ts`). Para que ande en el dominio nuevo, ese
 client tiene que tener:
 

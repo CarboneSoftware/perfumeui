@@ -1,7 +1,7 @@
 ---
 import { ChevronDown, Menu, Moon, Sun, UserRound } from "@lucide/astro";
-import Button from "./Button.astro";
-import DropdownMenu from "./DropdownMenu.astro";
+import PfButton from "./PfButton.astro";
+import PfDropdownMenu from "./PfDropdownMenu.astro";
 
 interface ScrollState {
   // number = px, "50vh" = 50% del alto del viewport,
@@ -12,6 +12,14 @@ interface ScrollState {
   until?: number | string;
   add?: string;
   remove?: string;
+}
+
+interface NavbarLogo {
+  // Logo para el tema claro (tinta oscura sobre fondo claro).
+  light: string;
+  // Logo para el tema oscuro. Si se omite, se usa `light` en los dos temas.
+  dark?: string;
+  alt?: string;
 }
 
 interface SectionState {
@@ -38,6 +46,11 @@ const {
   // Hairline de 1px abajo del nav (--border del tema). Off por defecto: la
   // landing lo usa sobre heroes a sangre, donde la línea sobra.
   borderBottom = false,
+  // Logo principal ({ light, dark?, alt? }). Por defecto, el logotipo de Servaltek.
+  logo = undefined as NavbarLogo | undefined,
+  // Botón de cuenta con el SSO de Servaltek. Con false no se renderiza ni se
+  // carga oidc-client-ts.
+  auth = true,
 } = Astro.props;
 
 // Public cotizador lives in the app (Fase 0 · D1) — a guest quotes without login, no domain change on
@@ -45,6 +58,10 @@ const {
 const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.witlens.studio/";
 // La guía puede publicarse bajo un subpath (GUIDE_BASE=/guia): logo y assets van relativos al base.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+
+const logoLight = logo?.light ?? `${base}res/stek-logotype-light.png`;
+const logoDark = logo ? (logo.dark ?? logo.light) : `${base}res/stek-logotype-dark.png`;
+const logoAlt = logo?.alt ?? "Logo";
 ---
 
 <nav
@@ -60,13 +77,13 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
         <div class="logotype">
           <img
             class="logo-img logo-img--for-light"
-            src={`${base}res/stek-logotype-light.png`}
-            alt="Logo"
+            src={logoLight}
+            alt={logoAlt}
           />
           <img
             class="logo-img logo-img--for-dark"
-            src={`${base}res/stek-logotype-dark.png`}
-            alt="Logo"
+            src={logoDark}
+            alt={logoAlt}
           />
           {
           title &&  
@@ -97,7 +114,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
              que no entran en la barra se pasan acá en vez de cortarse. El
              script decide cuáles; sin desborde el wrapper queda oculto. -->
         <div class="nav-more is-hidden">
-          <DropdownMenu align="end" width="220px" id="nav-more-menu">
+          <PfDropdownMenu align="end" width="220px" id="nav-more-menu">
             <button
               slot="trigger"
               type="button"
@@ -118,7 +135,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
                   ))
               }
             </div>
-          </DropdownMenu>
+          </PfDropdownMenu>
         </div>
       </div>
     </div>
@@ -138,7 +155,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
           </button>
         )
       }
-      <DropdownMenu align="end" width="320px" disabled id="account-menu">
+      {auth && (
+      <PfDropdownMenu align="end" width="320px" disabled id="account-menu">
         <a
           slot="trigger"
           class="icon-btn user-btn"
@@ -154,13 +172,13 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
           <div class="account__top">
             <img
               class="account__brand account__brand--for-light"
-              src={`${base}res/stek-logotype-light.png`}
+              src={logoLight}
               alt=""
               height="16"
             />
             <img
               class="account__brand account__brand--for-dark"
-              src={`${base}res/stek-logotype-dark.png`}
+              src={logoDark}
               alt=""
               height="16"
             />
@@ -182,7 +200,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
             </div>
           </div>
         </div>
-      </DropdownMenu>
+      </PfDropdownMenu>
+      )}
       <button
         class="icon-btn menu-btn"
         aria-expanded="false"
@@ -242,8 +261,6 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 }
 
 <script>
-  import { login, logout, checkSession } from "../../lib/auth";
-
   // Servaltek SSO (Keycloak, vía oidc-client-ts). checkSession prueba primero la
   // sesión guardada en esta pestaña y, si no hay o expiró, un signinSilent
   // (iframe invisible) que levanta una sesión ya iniciada en otra app del realm
@@ -253,6 +270,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   // sale mal acá (cookies de terceros bloqueadas, Keycloak caído) el ícono
   // simplemente queda en su comportamiento deslogueado de siempre — nunca vale
   // la pena mostrar el error en una página pública.
+  // Con `auth={false}` el botón no existe y oidc-client-ts ni se descarga: el
+  // módulo se importa recién acá.
   const userBtn = document.querySelector<HTMLAnchorElement>(".user-btn");
   const accountMenu = userBtn?.closest<HTMLElement>("[data-dropdown]");
   const initialsEl = document.querySelector<HTMLElement>(".user-btn__initials");
@@ -265,53 +284,59 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
     document.querySelector<HTMLButtonElement>(".account__signout");
   let isAuthenticated = false;
 
-  checkSession().then((user) => {
-    isAuthenticated = !!user;
-    userBtn?.classList.toggle("logged-in", isAuthenticated);
+  if (userBtn) {
+    const auth = import("../../lib/auth");
 
-    if (user) {
-      const { given_name, family_name, name, preferred_username, email } =
-        user.profile;
-      const fullName =
-        name ?? `${given_name ?? ""} ${family_name ?? ""}`.trim();
-      if (fullName) userBtn?.setAttribute("title", fullName);
-
-      // Con sesión el click abre el menú en vez de disparar el login.
-      accountMenu?.removeAttribute("data-dropdown-disabled");
-
-      // El menú se llena con lo que haya: si el token no trae nombre queda sólo
-      // el mail, y el bloque de identidad no se rompe porque los <p> vacíos no
-      // ocupan alto.
-      if (nameEl) nameEl.textContent = fullName;
-      if (emailEl) emailEl.textContent = email ?? "";
-
-      // Iniciales en vez del icono, en el botón y en el avatar del menú. El
-      // fallback al username/email cubre el token sin given_name / family_name;
-      // si no sale nada usable no se agrega .has-initials y quedan los iconos,
-      // mejor que un botón vacío.
-      const initials = (
-        `${given_name?.[0] ?? ""}${family_name?.[0] ?? ""}` ||
-        (preferred_username?.[0] ?? "") ||
-        (email?.[0] ?? "")
-      ).toUpperCase();
-      if (initials) {
-        if (initialsEl) initialsEl.textContent = initials;
-        if (avatarInitialsEl) avatarInitialsEl.textContent = initials;
-        // La clase va en la raíz del dropdown, que envuelve al trigger y al
-        // panel, así el mismo estado destapa las iniciales en los dos lugares.
-        accountMenu?.classList.add("has-initials");
+    userBtn.addEventListener("click", (e) => {
+      if (!isAuthenticated) {
+        e.preventDefault();
+        auth.then(({ login }) => login());
       }
+    });
 
-      signOutBtn?.addEventListener("click", () => logout());
-    }
-  });
+    signOutBtn?.addEventListener("click", () => {
+      auth.then(({ logout }) => logout());
+    });
 
-  userBtn?.addEventListener("click", (e) => {
-    if (!isAuthenticated) {
-      e.preventDefault();
-      login();
-    }
-  });
+    auth.then(({ checkSession }) => checkSession()).then((user) => {
+      isAuthenticated = !!user;
+      userBtn?.classList.toggle("logged-in", isAuthenticated);
+
+      if (user) {
+        const { given_name, family_name, name, preferred_username, email } =
+          user.profile;
+        const fullName =
+          name ?? `${given_name ?? ""} ${family_name ?? ""}`.trim();
+        if (fullName) userBtn?.setAttribute("title", fullName);
+
+        // Con sesión el click abre el menú en vez de disparar el login.
+        accountMenu?.removeAttribute("data-dropdown-disabled");
+
+        // El menú se llena con lo que haya: si el token no trae nombre queda sólo
+        // el mail, y el bloque de identidad no se rompe porque los <p> vacíos no
+        // ocupan alto.
+        if (nameEl) nameEl.textContent = fullName;
+        if (emailEl) emailEl.textContent = email ?? "";
+
+        // Iniciales en vez del icono, en el botón y en el avatar del menú. El
+        // fallback al username/email cubre el token sin given_name / family_name;
+        // si no sale nada usable no se agrega .has-initials y quedan los iconos,
+        // mejor que un botón vacío.
+        const initials = (
+          `${given_name?.[0] ?? ""}${family_name?.[0] ?? ""}` ||
+          (preferred_username?.[0] ?? "") ||
+          (email?.[0] ?? "")
+        ).toUpperCase();
+        if (initials) {
+          if (initialsEl) initialsEl.textContent = initials;
+          if (avatarInitialsEl) avatarInitialsEl.textContent = initials;
+          // La clase va en la raíz del dropdown, que envuelve al trigger y al
+          // panel, así el mismo estado destapa las iniciales en los dos lugares.
+          accountMenu?.classList.add("has-initials");
+        }
+      }
+    });
+  }
 
   const menuBtn = document.querySelector<HTMLButtonElement>(".menu-btn");
   const nav = document.querySelector<HTMLElement>("nav");

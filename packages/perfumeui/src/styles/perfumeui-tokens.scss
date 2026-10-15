@@ -81,7 +81,7 @@
   --t-base: 0.2s;
 
   /* ── Section rhythm (theme-independent) ─────────────────────────────────
-     Consumed by Section.astro/CardScroller.astro. `--gutter` is a single
+     Consumed by PfSection.astro/PfCardScroller.astro. `--gutter` is a single
      responsive value (no paired -lg token) since CardScroller has no
      breakpoint of its own to swap it at. */
   --section-py: 64px;

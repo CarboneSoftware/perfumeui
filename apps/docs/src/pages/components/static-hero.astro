@@ -2,7 +2,7 @@
 import PerfumeUILayout from "@/layouts/PerfumeUILayout.astro";
 import DocsHeader from "@/components/docs/DocsHeader.astro";
 import PropsTable from "@/components/docs/PropsTable.astro";
-import StaticHero from "@servaltek/perfumeui/components/ui/StaticHero.astro";
+import PfStaticHero from "@servaltek/perfumeui/components/ui/PfStaticHero.astro";
 
 // Las mismas imágenes del hero de Donavelle en servaltek.com.
 const donavelleSources = [
@@ -26,7 +26,7 @@ const donavelleLogo = {
   alt: "Donavelle",
 };
 
-const usage = `<StaticHero
+const usage = `<PfStaticHero
   imageSources={[
     { srcset: "/img/hero-wide.jpg", media: "(min-width: 1085px)" },
     { srcset: "/img/hero-tablet.png", media: "(min-width: 640px)" },
@@ -53,17 +53,18 @@ const props = [
   { name: "imageAlt", type: "string", default: '""', body: "Vacío por defecto: la foto es decorativa y el texto ya está en el DOM." },
   { name: "tone", type: '"dark" | "light"', default: '"light"', body: "Tinta del texto sobre la foto, solo en desktop. En mobile siempre es dark." },
   { name: "scrim", type: "boolean", default: "true", body: "Capa entre la foto y el texto en desktop. Hoy sus gradientes están comentados: no pinta nada." },
+  { name: "height", type: "string", default: "—", body: "Alto del hero como valor CSS literal: \"650px\", \"80vh\", \"100%\". Sin valor, lo define la foto; con alto fijo la foto se recorta (object-fit: cover)." },
   { name: "badge · logo · title · body · cta · secondaryCta · headingLevel", type: "—", default: "—", body: "Pasan tal cual a HeroTextContent. Ver su página." },
 ];
 ---
 
 <PerfumeUILayout
-  title="StaticHero"
+  title="PfStaticHero"
   description="Hero de foto fija: el texto va sobre la imagen en desktop y debajo en mobile."
 >
   <DocsHeader
     family="Heroes"
-    name="StaticHero"
+    name="PfStaticHero"
     lead="Hero con una foto de fondo. En desktop el texto va encima de la imagen; en mobile va debajo, sobre un panel claro, para que la foto no tenga que cargar con la legibilidad."
   />
 
@@ -76,7 +77,7 @@ const props = [
     </p>
     <div class="pui-preview">
       <div class="pui-preview__stage pui-preview__stage--flush">
-        <StaticHero
+        <PfStaticHero
           imageSources={donavelleSources}
           imageFallback={donavelleFallback}
           tone="dark"

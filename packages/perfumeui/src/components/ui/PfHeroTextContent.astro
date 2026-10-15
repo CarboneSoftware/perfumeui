@@ -1,10 +1,10 @@
 ---
 /**
- * Bloque de texto de los heroes con foto (`StaticHero`, `BannerHero`).
+ * Bloque de texto de los heroes con foto (`PfStaticHero`, `BannerHero`).
  * Se renderiza dos veces por hero: sobre la foto en desktop, debajo en mobile.
  */
 import type { Align, CtaLink, HeroLogo, Tone } from "../types";
-import Button from "../ui/Button.astro";
+import PfButton from "../ui/PfButton.astro";
 
 interface Props {
   /** `dark` = tinta oscura sobre fondo claro. `light` = al revés. */
@@ -76,19 +76,19 @@ const logoSrc = logo && (surface === "dark" && logo.srcOnDark ? logo.srcOnDark :
     (cta || secondaryCta) && (
       <div class="hero-text__actions">
         {cta && (
-          <Button href={cta.href} variant="primary" size="lg" {...cta.attrs}>
+          <PfButton href={cta.href} variant="primary" size="lg" {...cta.attrs}>
             {cta.label}
-          </Button>
+          </PfButton>
         )}
         {secondaryCta && (
-          <Button
+          <PfButton
             href={secondaryCta.href}
             variant="ghost"
             size="lg"
             {...secondaryCta.attrs}
           >
             {secondaryCta.label}
-          </Button>
+          </PfButton>
         )}
       </div>
     )

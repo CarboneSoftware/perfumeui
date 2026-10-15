@@ -9,14 +9,14 @@ de la landing de Servaltek (`F:\servaltek\landing\servaltek`), que era la versi�
 perfumeui/
 ├── packages/perfumeui/              @servaltek/perfumeui · la librería
 │   └── src/
-│       ├── components/ui/           AppNavbar, Button, CardScroller, DropdownMenu, HeroTextContent,
-│       │                            Section, SectionHeading, StaticHero, TextLink
-│       ├── components/hero/         HeroCarousel, HeroSlide
+│       ├── components/ui/           PfNavbar, PfButton, PfCardScroller, PfDropdownMenu, PfHeroTextContent,
+│       │                            PfSection, PfSectionHeading, PfStaticHero, PfTextLink
+│       ├── components/hero/         PfHeroCarousel, PfHeroSlide
 │       ├── components/types.ts      contratos compartidos (CtaLink, Surface, Tone, HeadingSize…)
 │       ├── styles/perfumeui-tokens.scss  tokens canónicos (color, tipo, forma, espacio, claro/oscuro)
 │       ├── styles/global.css        reset + .icon-btn + .container (los usan los componentes)
 │       ├── styles/hero-scene.css    primitivas de escena de HeroSlide
-│       ├── lib/auth.ts              SSO de Servaltek (oidc-client-ts) que usa AppNavbar
+│       ├── lib/auth.ts              SSO de Servaltek (oidc-client-ts) que usa PfNavbar
 │       └── index.ts                 exports
 ├── apps/docs/                       perfumeui-docs · el sitio de documentación (Astro)
 │   └── src/
@@ -24,7 +24,7 @@ perfumeui/
 │       ├── components/docs/         DocsHeader, DocsSidebar, DocsFooter, PropsTable, DemoScene
 │       ├── styles/perfumeui-docs.css  clases pui-* de las páginas
 │       ├── data/perfumeui-nav.ts    árbol del sidebar + tabs del navbar
-│       └── pages/                   /, /tokens, /components/<slug>, /demo/app-navbar, /callback, /silent-renew
+│       └── pages/                   /, /tokens, /components/<slug>, /demo/navbar, /callback, /silent-renew
 └── scripts/new-component.mjs        scaffolder
 ```
 
@@ -71,7 +71,7 @@ completa (adornos, tono, tamaños, props, Hacé / No hagas) mirá `pages/compone
 ## Reglas del sistema
 
 - **Ningún hex en un componente.** Todo sale de `var(--*)` de `perfumeui-tokens.scss`. Excepciones: las variantes `glass` y `light` del botón y los tokens "on dark", que viven sobre fotos o bandas siempre oscuras.
-- Tema: `data-wtl-theme` en `<html>` (o en un subárbol), guardado en `localStorage['wtl-theme']`. El switch vive en el `AppNavbar` (`themeToggle`).
+- Tema: `data-wtl-theme` en `<html>` (o en un subárbol), guardado en `localStorage['wtl-theme']`. El switch vive en el `PfNavbar` (`themeToggle`).
 - Copy en español rioplatense.
 
 ## Usar la librería desde otro proyecto Astro
@@ -80,10 +80,10 @@ completa (adornos, tono, tamaños, props, Hacé / No hagas) mirá `pages/compone
 ---
 import '@servaltek/perfumeui/styles/perfumeui-tokens.scss';
 import '@servaltek/perfumeui/styles/global.css';
-import { Button } from '@servaltek/perfumeui';
+import { PfButton } from '@servaltek/perfumeui';
 ---
 
-<Button href="/cotizar">Cotizar</Button>
+<PfButton href="/cotizar">Cotizar</PfButton>
 ```
 
 El paquete publica los `.astro` fuente (no hay paso de build): el proyecto que lo consume los compila y necesita `sass`.

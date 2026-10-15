@@ -1,13 +1,13 @@
 ---
 /**
- * Shell del sitio de docs: el AppNavbar real (el mismo componente que usa
+ * Shell del sitio de docs: el PfNavbar real (el mismo componente que usa
  * la landing) + sidebar de navegación pegada al borde izquierdo + contenido +
  * footer. Sidebar y modo claro/oscuro iguales a los de la guía de
- * Fluxenture (flux-landing): el switch vive en el AppNavbar (`themeToggle`)
+ * Fluxenture (flux-landing): el switch vive en el PfNavbar (`themeToggle`)
  * y la elección se guarda en localStorage["wtl-theme"].
  */
 import BaseLayout from "./BaseLayout.astro";
-import AppNavbar from "@servaltek/perfumeui/components/ui/AppNavbar.astro";
+import PfNavbar from "@servaltek/perfumeui/components/ui/PfNavbar.astro";
 import DocsSidebar from "@/components/docs/DocsSidebar.astro";
 import DocsFooter from "@/components/docs/DocsFooter.astro";
 import { perfumeUINavItems } from "@/data/perfumeui-nav";
@@ -41,7 +41,7 @@ const {
     })();
   </script>
 
-  <AppNavbar
+  <PfNavbar
     title="PerfumeUI"
     navItems={perfumeUINavItems}
     theme="light"

@@ -5,7 +5,7 @@
  */
 import { ChevronRight, ChevronLeft } from "@lucide/astro";
 import type { CtaLink } from "../types";
-import SectionHeading from "./SectionHeading.astro";
+import PfSectionHeading from "./PfSectionHeading.astro";
 
 interface Props {
   title?: string;
@@ -28,7 +28,7 @@ const { title, kicker, link, infinite = false } = Astro.props;
   {
     title && (
       <div class="scroller__head">
-        <SectionHeading
+        <PfSectionHeading
           title={title}
           kicker={kicker}
           link={link}
