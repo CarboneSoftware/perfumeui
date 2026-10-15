@@ -1,6 +1,6 @@
 {
   "name": "@servaltek/perfumeui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "PerfumeUI · el sistema de diseño de Servaltek, en componentes Astro.",
   "type": "module",
   "keywords": ["astro-component", "design-system", "servaltek"],
