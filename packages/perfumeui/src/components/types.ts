@@ -10,6 +10,8 @@
 export interface CtaLink {
   label: string;
   href: string;
+  /** Atributos extra del botón (data-*, aria-*, target, rel). */
+  attrs?: Record<string, string>;
 }
 
 /** Fuente de `<picture>`. `media` opcional para el source por defecto. */

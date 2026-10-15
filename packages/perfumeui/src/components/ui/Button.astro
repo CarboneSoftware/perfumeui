@@ -9,7 +9,9 @@
  *  - light    → blanco sólido con tinta oscura, sobre foto
  *  - ghost    → sin borde ni fondo
  */
-interface Props {
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends Omit<HTMLAttributes<"a">, "class" | "type"> {
   href?: string;
   variant?: "primary" | "outline" | "glass" | "light" | "ghost";
   size?: "sm" | "md" | "lg";
@@ -22,7 +24,7 @@ interface Props {
   id?: string;
 }
 
-const { href, variant = "primary", size = "md", as, class: className, id } = Astro.props;
+const { href, variant = "primary", size = "md", as, class: className, id, ...rest } = Astro.props;
 const Tag = as ?? (href ? "a" : "button");
 ---
 
@@ -30,6 +32,7 @@ const Tag = as ?? (href ? "a" : "button");
   id={id}
   class:list={["btn", `btn--${variant}`, `btn--${size}`, className]}
   href={href}
+  {...rest}
 >
   <slot />
 </Tag>

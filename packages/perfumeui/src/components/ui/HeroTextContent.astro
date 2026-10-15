@@ -76,7 +76,7 @@ const logoSrc = logo && (surface === "dark" && logo.srcOnDark ? logo.srcOnDark :
     (cta || secondaryCta) && (
       <div class="hero-text__actions">
         {cta && (
-          <Button href={cta.href} variant="primary" size="lg">
+          <Button href={cta.href} variant="primary" size="lg" {...cta.attrs}>
             {cta.label}
           </Button>
         )}
@@ -85,6 +85,7 @@ const logoSrc = logo && (surface === "dark" && logo.srcOnDark ? logo.srcOnDark :
             href={secondaryCta.href}
             variant="ghost"
             size="lg"
+            {...secondaryCta.attrs}
           >
             {secondaryCta.label}
           </Button>

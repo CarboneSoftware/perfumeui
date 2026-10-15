@@ -6,9 +6,10 @@
  * aportan su contenido: el fondo, el padding y el ancho máximo salen de estas
  * props, así el ritmo de la página es el mismo en todas.
  */
+import type { HTMLAttributes } from "astro/types";
 import type { Surface } from "../types";
 
-interface Props {
+interface Props extends Omit<HTMLAttributes<"section">, "class"> {
   id?: string;
   /** Fondo de la sección. */
   surface?: Surface;
@@ -38,12 +39,14 @@ const {
   as: Tag = "section",
   class: className,
   label,
+  ...rest
 } = Astro.props;
 ---
 
 <Tag
   id={id}
   aria-label={label}
+  {...rest}
   class:list={[
     "section",
     `section--${surface}`,
